@@ -21,7 +21,7 @@ export default function request(options) {
     }
 
     const match = pathToRegexp.parse(url)
-    url = pathToRegexp.compile(url)(data)
+    // url = pathToRegexp.compile(url)(data)
 
     for (const item of match) {
       if (item instanceof Object && item.name in cloneData) {
@@ -35,13 +35,14 @@ export default function request(options) {
 
   options.url = url
   options.params = cloneData
+  options.method = method
+  options.headers = { 'content-type': 'application/json' }
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
       pathname: window.location.pathname,
       cancel,
     })
   })
-
   return axios(options)
     .then(response => {
       const { statusText, status, data } = response

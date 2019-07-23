@@ -15,4 +15,10 @@ export default {
   queryPostList: '/posts',
 
   queryDashboard: '/dashboard',
+
+  querySourcesList: '/sources',
+  querySources: '/sources/:id',
+  createSources: 'POST /sources',
+  removeSources: 'DELETE /sources/:id',
+  updateSources: 'Patch /sources/:id',
 }

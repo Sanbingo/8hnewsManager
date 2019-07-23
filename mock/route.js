@@ -3,6 +3,15 @@ const { ApiPrefix } = Constant
 
 const database = [
   {
+    id: '6',
+    name: 'Sources',
+    zh: {
+      name: '源管理'
+    },
+    icon: 'appstore',
+    route: '/sources'
+  },
+  {
     id: '1',
     icon: 'dashboard',
     name: 'Dashboard',
@@ -32,7 +41,7 @@ const database = [
     breadcrumbParentId: '1',
     name: 'Posts',
     zh: {
-      name: '用户管理'
+      name: '文章管理'
     },
     'pt-br': {
       name: 'Posts'
