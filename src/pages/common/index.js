@@ -30,7 +30,7 @@ export const createOptions = (obj, msg) => {
     )
   )
   return (
-    <Select style={{ width: '150px' }} placeholder={msg}>
+    <Select style={{ width: '150px' }} placeholder={msg} allowClear={true} showSearch={true} optionFilterProp="children">
       {ret}
     </Select>
   )

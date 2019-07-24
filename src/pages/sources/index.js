@@ -3,6 +3,7 @@ import { Page } from 'components'
 import { router } from 'utils'
 import { stringify } from 'qs'
 import { connect } from 'dva'
+import { Pagination } from 'antd'
 import Filter from './components/filter'
 import Card from './components/card'
 import Modal from './components/modal'
@@ -41,8 +42,9 @@ class SourcesComponent extends React.Component {
         })
       },
       onFilterChange: value => {
-        this.handleRefresh({
-          ...value,
+        dispatch({
+          type: 'sources/filterChange',
+          payload: value
         })
       },
       onAdd() {
@@ -57,10 +59,13 @@ class SourcesComponent extends React.Component {
   }
   get cardProps() {
     const { dispatch, sources, loading } = this.props
-    const { list, constant } = sources
+    const { list, constant,  pagination, filter } = sources
     return {
+      loading,
+      filter,
       list,
       constant,
+      pagination,
       onDeleteItem: id => {
         dispatch({
           type: 'sources/delete',
@@ -78,6 +83,13 @@ class SourcesComponent extends React.Component {
           },
         })
       },
+      onPaginationChange(current) {
+        dispatch({
+          type: 'sources/query',
+          pageNum: current,
+          payload: filter
+        })
+      }
     }
   }
   get modalProps() {

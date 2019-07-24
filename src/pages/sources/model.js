@@ -25,8 +25,6 @@ export default modelExtend(pageModel, {
           dispatch({
             type: 'query',
             payload: {
-              pageNum: 1,
-              pageSize: 10,
               ...payload,
             },
           })
@@ -34,7 +32,6 @@ export default modelExtend(pageModel, {
       })
     },
   },
-
   effects: {
     *initial({ payload = {} }, { call, put }) {
       const data = yield request({
@@ -51,15 +48,17 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    *query({ payload = {} }, { call, put }) {
+    *query({ payload = {}, pageNum, pageSize }, { call, put }) {
       // const data = yield call(querySourcesList, payload)
       const data = yield request({
         url: 'http://139.196.86.217:8089/info/site/queryList',
         method: 'post',
         data: {
-          pageSize: 10,
-          pageNum: 1,
-          ...payload,
+          pageSize: pageSize || 20,
+          pageNum: pageNum || 1,
+          entity: {
+            ...payload,
+          }
         },
       })
       if (data) {
@@ -69,8 +68,8 @@ export default modelExtend(pageModel, {
             list: data.data,
             pagination: {
               current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 10,
-              total: data.total,
+              pageSize: Number(payload.pageSize) || 20,
+              total: data.pageInfo.total,
             },
           },
         })
@@ -149,5 +148,14 @@ export default modelExtend(pageModel, {
         ...payload,
       }
     },
+    filterChange(state, { payload }) {
+      return {
+        ...state,
+        filter: {
+          ...state.filter,
+          ...payload
+        }
+      }
+    }
   },
 })

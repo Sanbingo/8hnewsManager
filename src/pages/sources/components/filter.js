@@ -8,7 +8,6 @@ const { Option } = Select
 const { Search } = Input
 const FormItem = Form.Item
 
-@Form.create()
 class FilterComponent extends Component {
   handleSubmit = () => {
     const { onSearch, form } = this.props
@@ -71,4 +70,6 @@ FilterComponent.propTypes = {
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,
 }
-export default FilterComponent
+export default Form.create({
+  onValuesChange: (props, changedValues ) => { props.onFilterChange(changedValues)}
+})(FilterComponent)
