@@ -54,7 +54,12 @@ export default class Cards extends Component {
           </Row>
         </Spin>
         <div style={{ overflow: 'hidden', clear: 'both' }}>
-          <Pagination total={pagination.total} pageSize={20} onChange={this.handlePaginationChange} style={{ float: 'right' }}/>
+          <Pagination
+            total={pagination.total}
+            pageSize={20}
+            onChange={this.handlePaginationChange}
+            style={{ float: 'right' }}
+          />
         </div>
       </div>
 
