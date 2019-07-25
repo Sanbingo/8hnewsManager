@@ -8,7 +8,7 @@ export default class Cards extends Component {
     if (/^http/.test(url)) {
       return url;
     }
-    return `http://${url}`;
+    return `http://${url}`
   }
   handlePaginationChange = (current) => {
     this.props.onPaginationChange(current);
