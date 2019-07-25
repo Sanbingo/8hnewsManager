@@ -6,7 +6,7 @@ import styles from './card.less'
 export default class Cards extends Component {
   renderSiteUrl = (url) => {
     if (/^http/.test(url)) {
-      return url;
+      return url
     }
     return `http://${url}`
   }
