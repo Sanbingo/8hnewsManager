@@ -13,6 +13,7 @@ const database = Mock.mock({
       'status|1-2': 1,
       title: '@title',
       author: '@last',
+      sources: '@word',
       categories: '@word',
       tags: '@word',
       'views|10-200': 1,

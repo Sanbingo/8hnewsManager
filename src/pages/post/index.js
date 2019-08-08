@@ -7,6 +7,8 @@ import { stringify } from 'qs'
 import { withI18n } from '@lingui/react'
 import { Page } from 'components'
 import List from './components/List'
+import Filter from './components/Filter'
+import Modal from './components/modal'
 
 const { TabPane } = Tabs
 
@@ -29,15 +31,48 @@ class Post extends PureComponent {
     })
   }
 
+  get filterProps() {
+    const { dispatch } = this.props
+    return {
+      onSearch: value => {
+        dispatch({
+          type: 'post/query',
+          payload: value,
+        })
+      },
+    }
+  }
+
   get listProps() {
-    const { post, loading, location } = this.props
-    const { list, pagination } = post
+    const { post, loading, location, dispatch } = this.props
+    const { list, pagination, expandData } = post
     const { query, pathname } = location
 
     return {
       pagination,
       dataSource: list,
+      expandData,
       loading: loading.effects['post/query'],
+      getExpandedRow: value => {
+        dispatch({
+          type: 'post/expanded',
+          payload: value
+        })
+      },
+      onTranslate(payload) {
+        dispatch({
+          type: 'post/showModal',
+          payload: {
+            id: payload
+          },
+        })
+        dispatch({
+          type: 'post/detail',
+          payload: {
+            id: payload
+          }
+        })
+      },
       onChange(page) {
         router.push({
           pathname,
@@ -51,33 +86,38 @@ class Post extends PureComponent {
     }
   }
 
+  get modalProps() {
+    const { dispatch, post } = this.props;
+    const { modalVisible, detail, translation } = post
+    return {
+      detail,
+      translation,
+      title: '正文',
+      width: 1200,
+      visible: modalVisible,
+      onOk: data => {
+        dispatch({
+          type: 'post/create',
+          payload: data,
+        })
+      },
+      onCancel() {
+        dispatch({
+          type: 'post/hideModal',
+        })
+      },
+    }
+  }
+
   render() {
     const { location, i18n } = this.props
     const { query } = location
 
     return (
       <Page inner>
-        <Tabs
-          activeKey={
-            query.status === String(EnumPostStatus.UNPUBLISH)
-              ? String(EnumPostStatus.UNPUBLISH)
-              : String(EnumPostStatus.PUBLISHED)
-          }
-          onTabClick={this.handleTabClick}
-        >
-          <TabPane
-            tab={i18n.t`Publised`}
-            key={String(EnumPostStatus.PUBLISHED)}
-          >
-            <List {...this.listProps} />
-          </TabPane>
-          <TabPane
-            tab={i18n.t`Unpublished`}
-            key={String(EnumPostStatus.UNPUBLISH)}
-          >
-            <List {...this.listProps} />
-          </TabPane>
-        </Tabs>
+        <Filter {...this.filterProps} />
+        <List {...this.listProps} style={{ marginTop: '10px' }} />
+        <Modal {...this.modalProps} />
       </Page>
     )
   }
