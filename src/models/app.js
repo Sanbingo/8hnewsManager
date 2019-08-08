@@ -79,8 +79,8 @@ export default {
         const { permissions } = user
         let routeList = list
         if (
-          permissions.role === ROLE_TYPE.ADMIN ||
-          permissions.role === ROLE_TYPE.DEVELOPER
+          // permissions.role === ROLE_TYPE.ADMIN || permissions.role === ROLE_TYPE.DEVELOPER
+          permissions.role === ROLE_TYPE.ADMIN
         ) {
           permissions.visit = list.map(item => item.id)
         } else {
