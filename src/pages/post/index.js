@@ -7,7 +7,7 @@ import { stringify } from 'qs'
 import { withI18n } from '@lingui/react'
 import { Page } from 'components'
 import List from './components/List'
-import Filter from './components/Filter'
+import Filter from './components/filter'
 import Modal from './components/modal'
 
 const { TabPane } = Tabs
