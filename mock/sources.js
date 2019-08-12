@@ -1,6 +1,29 @@
+import request from 'request';
 import { Mock, Constant, qs, randomAvatar } from './_utils'
 
+
 const { ApiPrefix } = Constant
+
+const bdPicFetch = (keyword, config={}) => {
+  const url = 'https://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&is=&fp=result&queryWord=' + keyword + '&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=0&word=' + keyword + '&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&pn=30&rn=30';
+  const obj = {
+    url,
+    method: 'get',
+    headers: {
+    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+    }
+  }
+  return new Promise((resolve, reject) => {
+    request(obj, (err, res, body) => {
+      if (err) {
+        console.log('err', err.message)
+        reject(err)
+      } else {
+        resolve(body)
+      }
+    })
+  })
+}
 
 let usersListData = Mock.mock({
   'data|80-100': [
@@ -30,5 +53,23 @@ module.exports = {
       data: database,
       total: database.length,
     })
+  },
+  [`GET ${ApiPrefix}/search`](req, res) {
+    const { query } = req
+    let fetch = bdPicFetch(encodeURIComponent(query.keyword))
+    fetch.then((data) => {
+      res.send(data)
+    }, (err) => {
+      res.status(200).json({
+        data: err,
+        message: 'search failure'
+      })
+    })
+    fetch = null
+
+    // res.status(200).json({
+    //   data: database,
+    //   total: database.length,
+    // })
   }
 }

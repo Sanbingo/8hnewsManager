@@ -21,4 +21,5 @@ export default {
   createSources: 'POST /sources',
   removeSources: 'DELETE /sources/:id',
   updateSources: 'Patch /sources/:id',
+  searchKeyWord: '/search'
 }

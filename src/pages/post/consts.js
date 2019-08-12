@@ -15,3 +15,9 @@ export const ERROR_CODE = {
   411: '访问频率受限,请稍后访问',
   412: '长请求过于频繁，请稍后访问'
 }
+
+export const CATEGORY_TEST_DATA = [
+{ label: '互联网', value: 'Internet' },
+{ label: '科技', value: 'Technology' },
+{ label: '游戏', value: 'Game' },
+];

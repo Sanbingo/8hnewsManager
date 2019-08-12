@@ -36,6 +36,7 @@
     "react-helmet": "^5.2.0",
     "react-highcharts": "^16.0.2",
     "react-perfect-scrollbar": "^1.5.0",
+    "react-quill": "^1.3.3",
     "recharts": "^1.6.0",
     "store": "^2.0.0"
   },

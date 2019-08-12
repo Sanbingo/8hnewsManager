@@ -9,6 +9,7 @@ import { Page } from 'components'
 import List from './components/List'
 import Filter from './components/filter'
 import Modal from './components/modal'
+import Upload from './components/upload'
 
 const { TabPane } = Tabs
 
@@ -92,7 +93,7 @@ class Post extends PureComponent {
     return {
       detail,
       translation,
-      title: '正文',
+      title: '翻译',
       width: 1200,
       visible: modalVisible,
       onOk: data => {
@@ -106,6 +107,38 @@ class Post extends PureComponent {
           type: 'post/hideModal',
         })
       },
+      onOpenUpload(){
+        dispatch({
+          type: 'post/openUpload'
+        })
+      }
+    }
+  }
+
+  get uploadProps() {
+    const { dispatch, post } = this.props;
+    const { uploadVisible, search } = post;
+    return {
+      title: '添加媒体',
+      width: 650,
+      search,
+      visible: uploadVisible,
+      onOk: () => {
+        console.log('ok')
+      },
+      onSearch: (value) => {
+        dispatch({
+          type: 'post/search',
+          payload: {
+            keyword: value
+          }
+        })
+      },
+      onCancel: () => {
+        dispatch({
+          type: 'post/closeUpload'
+        })
+      }
     }
   }
 
@@ -118,6 +151,7 @@ class Post extends PureComponent {
         <Filter {...this.filterProps} />
         <List {...this.listProps} style={{ marginTop: '10px' }} />
         <Modal {...this.modalProps} />
+        <Upload {...this.uploadProps} />
       </Page>
     )
   }
