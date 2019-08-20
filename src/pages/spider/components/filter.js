@@ -1,35 +1,38 @@
 import React, { Component } from 'react';
 import { Form, Button, DatePicker } from 'antd'
-import moment from 'moment';
 import { createOptions } from '../../common/index'
 
 const FormItem = Form.Item;
-const TestData = {
+const SITE_Data = {
   'www.itworldcanada.com': 'www.itworldcanada.com',
-  2: '腾讯',
-  3: '搜狐',
-  4: '新浪'
 }
 class FilterComponent extends Component {
   handleSubmit = () => {
-    const { onSearch, form } = this.props
-    const fields = form.getFieldsValue()
-    if (fields.ymd) {
-      fields.ymd = moment(fields.ymd).format('YYYY-MM-DD')
-    }
-    onSearch(fields)
+    this.props.onSearch()
   }
   render() {
+    const { initData } = this.props;
     const { getFieldDecorator } = this.props.form;
+
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
         <FormItem>
           {getFieldDecorator('siteDomain')(
-            createOptions(TestData, '新闻网站')
+            createOptions(SITE_Data, '新闻站点')
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('ymd')(<DatePicker />)}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('spiderInfoStatus')(
+            createOptions(initData.spiderInfoStatus, '爬虫状态')
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('spiderDetailStatus')(
+            createOptions(initData.spiderDetailStatus, '文章状态')
+          )}
         </FormItem>
         <FormItem>
           <Button type="primary" onClick={this.handleSubmit}>查询</Button>
@@ -40,5 +43,7 @@ class FilterComponent extends Component {
 }
 
 export default Form.create({
-
+  onValuesChange: (props, changedValues) => {
+    props.onChange(changedValues)
+  }
 })(FilterComponent);

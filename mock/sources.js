@@ -4,6 +4,22 @@ import { Mock, Constant, qs, randomAvatar } from './_utils'
 
 const { ApiPrefix } = Constant
 
+const reqFetch = (url, method="get", data) => {
+  return new Promise((resolve, reject) => {
+    request({
+      url,
+      method,
+      data,
+    }, (err, res, body) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(body)
+      }
+    })
+  })
+}
+
 const bdPicFetch = (keyword, config={}) => {
   const url = 'https://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&is=&fp=result&queryWord=' + keyword + '&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=0&word=' + keyword + '&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&pn=30&rn=30';
   const obj = {
@@ -66,10 +82,39 @@ module.exports = {
       })
     })
     fetch = null
+  },
+  [`GET ${ApiPrefix}/base`](req, res) {
 
-    // res.status(200).json({
-    //   data: database,
-    //   total: database.length,
+    let fetch = reqFetch('http://www.8hnews.com/wp-json/wp/v2/categories?per_page=100')
+    fetch.then((data) => {
+      res.send(data)
+    }, (err) => {
+      res.status(200).json({
+        data: err,
+        message: 'search failure'
+      })
+    })
+    fetch = null
+  },
+  [`GET ${ApiPrefix}/sanbingo`](req, res) {
+    console.log('sanbingo...')
+    // let fetch = reqFetch('http://www.8hnews.com/wp-json/wp/v2/posts', 'post', {
+    //     title: 'test',
+    //     content: 'content',
+    //     categories: [3, 12, 10]
     // })
-  }
+    // console.log('fetching....', fetch)
+    // fetch.then((data) => {
+    //   console.log('create posts success...', data)
+    //   res.send(data)
+    // }, (err) => {
+    //   console.log('err...', err)
+    //   res.status(200).json({
+    //     data: err,
+    //     message: 'search failure'
+    //   })
+    // })
+    // fetch = null
+  },
+
 }

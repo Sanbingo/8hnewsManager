@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react'
-import { Table, Avatar } from 'antd'
+import { Table, Tag } from 'antd'
 import { withI18n } from '@lingui/react'
-import { Ellipsis } from 'ant-design-pro'
 import SubList from './subList'
 import styles from './List.less'
 
@@ -13,7 +12,7 @@ class List extends PureComponent {
       dataIndex: 'ymd',
     },
     {
-      title: '站点',
+      title: '新闻站点',
       dataIndex: 'siteDomain',
     },
     {
@@ -33,12 +32,10 @@ class List extends PureComponent {
     },
     {
       title: '爬虫状态',
-      dataIndex: 'status',
+      dataIndex: 'spiderInfoStatus',
       render: (text) => {
-        if (text === 1) {
-          return '正常'
-        }
-        return '异常'
+        const {spiderInfoStatus} = this.props.initData
+        return <Tag>{spiderInfoStatus[text]}</Tag> || '-'
       }
     },
   ]
@@ -56,11 +53,13 @@ class List extends PureComponent {
         expandRowByClick={true}
         expandedRowRender={(record) => {
           let tempData = []
-          const { expandData, onTranslate } = tableProps
+          let tempPagination = { current: 1}
+          const { expandData, onTranslate, initData, onSubPagination } = tableProps
           if (expandData && expandData[record.id]) {
             tempData = expandData[record.id].list
+            tempPagination = expandData[record.id].pagination
           }
-          return <SubList data={tempData}  open={onTranslate}/>
+          return <SubList data={tempData}  open={onTranslate} initData={initData} pagination={tempPagination} onChange={(val) => onSubPagination(val, record.id)} />
         }}
         className={styles.table}
         columns={this.columns}

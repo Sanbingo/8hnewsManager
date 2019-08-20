@@ -1,8 +1,8 @@
 export const YOUDAO_URL = 'http://openapi.youdao.com/api'
 export const APP_KEY = '52af186d5198e43e'
 export const APP_SECRET = 'e1ZS2jAOEegKln2yxzWRGXFCGU2gPxZX'
-export const MAX_CONTENT_LENGTH = 5000
-export const ERROR_CODE = {
+
+export const YOUDAO_ERROR_CODE = {
   103: '翻译文本过长，不能超过5000个字符',
   108: 'appKey无效，请注册账号',
   111: '开发者账号无效',
@@ -15,9 +15,3 @@ export const ERROR_CODE = {
   411: '访问频率受限,请稍后访问',
   412: '长请求过于频繁，请稍后访问'
 }
-
-export const CATEGORY_TEST_DATA = [
-{ label: '互联网', value: 'Internet' },
-{ label: '科技', value: 'Technology' },
-{ label: '游戏', value: 'Game' },
-];

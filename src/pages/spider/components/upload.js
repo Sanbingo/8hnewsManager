@@ -9,7 +9,10 @@ export default class UploadComponent extends React.Component {
   renderPictures = (data) => {
     if (data.length) {
       return data.map(item => (
-        <img src={item.middleURL} style={{ width: '100px', height: '100px' }}/>
+        <img src={item.middleURL} style={{ width: '100px', height: '100px' }} onDoubleClick={(e) => {
+          console.log('double Click', item)
+          this.props.onOk(item.middleURL)
+        }}/>
       ))
     }
     return (
@@ -33,7 +36,9 @@ export default class UploadComponent extends React.Component {
             </div>
             <div>
               <div class={style.hotWord}>推荐热词: 华为、5G、Xbox、Switch、Steam、谷歌、微软</div>
+              <div class={style.picArea}>
               {this.renderPictures(search)}
+              </div>
             </div>
           </TabPane>
           <TabPane tab="本地上传" key="2">

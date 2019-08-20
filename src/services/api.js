@@ -21,5 +21,7 @@ export default {
   createSources: 'POST /sources',
   removeSources: 'DELETE /sources/:id',
   updateSources: 'Patch /sources/:id',
-  searchKeyWord: '/search'
+  searchKeyWord: '/search',
+  queryBaseData: '/base',
+  createWordPressPosts: '/sanbingo',
 }

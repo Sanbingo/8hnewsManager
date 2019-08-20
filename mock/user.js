@@ -46,8 +46,8 @@ const userPermission = {
 const adminUsers = [
   {
     id: 0,
-    username: 'admin',
-    password: 'admin',
+    username: 'aquaman',
+    password: 'Mima666',
     permissions: userPermission.ADMIN,
     avatar: randomAvatar(),
   },
@@ -60,8 +60,8 @@ const adminUsers = [
   },
   {
     id: 2,
-    username: 'mao',
-    password: '123456',
+    username: 'zhang',
+    password: '87654312',
     permissions: userPermission.DEFAULT,
     avatar: randomAvatar(),
   },

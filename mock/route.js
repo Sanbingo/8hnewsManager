@@ -39,15 +39,12 @@ const database = [
   {
     id: '7',
     breadcrumbParentId: '1',
-    name: 'Posts',
+    name: 'Spider',
     zh: {
-      name: '文章管理'
-    },
-    'pt-br': {
-      name: 'Posts'
+      name: '爬虫采集'
     },
     icon: 'shopping-cart',
-    route: '/post',
+    route: '/spider',
   },
   {
     id: '21',

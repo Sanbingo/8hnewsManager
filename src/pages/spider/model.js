@@ -1,3 +1,4 @@
+import React from 'react';
 import modelExtend from 'dva-model-extend'
 import api from 'api'
 import { pathMatchRegexp } from 'utils'
@@ -7,14 +8,13 @@ import request from 'utils/request'
 import { pageModel } from 'utils/model'
 import { message } from 'antd'
 import {
-  YOUDAO_URL,
   APP_KEY,
   APP_SECRET,
   MAX_CONTENT_LENGTH,
-  ERROR_CODE
+  YOUDAO_ERROR_CODE
 } from './consts'
 
-const { queryPostList, searchKeyWord } = api
+const { queryBaseData, searchKeyWord, createWordPressPosts } = api
 
 const serialize = (obj) => {
   return Object.keys(obj).reduce((a, k) => {
@@ -57,24 +57,22 @@ const jsonpFetch = (value, options=null) => {
 //   })
 // }
 
-export default modelExtend(pageModel, {
-  namespace: 'post',
+export default {
+  namespace: 'spider',
 
   state: {
     currentItem: {},
     modalVisible: false,
+    // translation: {},
   },
 
   subscriptions: {
     setup({ dispatch, history }) {
       history.listen(location => {
-        if (pathMatchRegexp('/post', location.pathname)) {
+        if (pathMatchRegexp('/spider', location.pathname)) {
           dispatch({
-            type: 'query',
-            payload: {
-              status: 2,
-              ...location.query,
-            },
+            type: 'init',
+            payload: {}
           })
         }
       })
@@ -82,12 +80,31 @@ export default modelExtend(pageModel, {
   },
 
   effects: {
+    *init({ payload = {}}, { call, put}) {
+      const data = yield request({
+        url: 'http://139.196.86.217:8089/info/constant/map',
+        method: 'post',
+        data: payload
+      })
+      if (data) {
+        yield put({
+          type: 'initSuccess',
+          payload: {
+            initData: data.data
+          }
+        })
+        yield put({
+          type: 'query',
+          payload: {}
+        })
+      }
+    },
     *query({ payload = {}, pageNum, pageSize }, { call, put }) {
       const data = yield request({
         url: 'http://139.196.86.217:8089/info/spider/result/groupList',
         method: 'post',
         data: {
-          pageSize: pageSize || 200,
+          pageSize: pageSize || 10,
           pageNum: pageNum || 1,
           entity: {
             ...payload,
@@ -100,21 +117,41 @@ export default modelExtend(pageModel, {
           payload: {
             list: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 20,
+              current: pageNum || 1,
+              pageSize: pageSize || 10,
               total: data.pageInfo.total,
             },
           },
         })
       }
     },
-    *expanded({ payload = '' }, { call, put }) {
+    *base({ payload = {}}, { call, put}) {
+      const data = yield call(queryBaseData, payload)
+      if (data.statusCode === 200) {
+        yield put({
+          type: 'baseSuccess',
+          payload: {
+            categories: data.list
+          }
+        })
+      }
+
+    },
+    *create({ payload = {}}, { call, put}) {
+      console.log('create posts....')
+      const data = yield call(createWordPressPosts, {})
+      console.log('posts data', data)
+      if (data.statusCode === 200) {
+
+      }
+    },
+    *expanded({ payload = '', pageNum, pageSize }, { call, put }) {
       const data = yield request({
         url: 'http://139.196.86.217:8089/info/spider/result/detailList',
         method: 'post',
         data: {
-          pageSize: 20,
-          pageNum: 1,
+          pageSize: pageSize || 10,
+          pageNum: pageNum || 1,
           entity: {
             downloadId: payload,
           }
@@ -127,8 +164,6 @@ export default modelExtend(pageModel, {
             [payload]: {
               list: data.data,
               pagination: {
-                current: Number(payload.page) || 1,
-                pageSize: Number(payload.pageSize) || 20,
                 total: data.pageInfo.total,
               },
             }
@@ -154,7 +189,7 @@ export default modelExtend(pageModel, {
               detail: data.data
             }
           })
-          // 翻译操作，暂时注释，误删
+          // 翻译操作，暂时注释，勿删
           // yield put({
           //   type: 'translate',
           //   payload: data.data
@@ -175,15 +210,25 @@ export default modelExtend(pageModel, {
       //   salt,
       // }
       // const url = `http://openapi.youdao.com/api?${serialize(params)}`;
+      // 标题翻译
       const titleReq = jsonpFetch(payload.title);
-      const contentReq = jsonpFetch(payload.content);
-      const [titleRes, contentRes] = yield Promise.all([titleReq, contentReq])
+      // 正文翻译，由于正文篇幅过长，分段翻译
+      const contentArr = payload.content.split('\r\n');
+      const contentArrReq = contentArr.filter(item => !!item).map(item => jsonpFetch(item));
+      const [titleRes, ...contentRes] = yield Promise.all([titleReq, ...contentArrReq])
+      const results = contentRes.map(item => {
+        if (item.errorCode === '0') {
+          return item && item.translation && item.translation[0];
+        } else {
+          return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n${item.query}`
+        }
+      })
       yield put({
         type: 'translateSuccess',
         payload: {
           'title': titleRes.errorCode === '0' ?
-            titleRes && titleRes.translation && titleRes.translation[0] : `Error: ${ERROR_CODE[titleRes.errorCode]}`,
-          'content': contentRes.errorCode === '0' ? contentRes && contentRes.translation && contentRes.translation[0] : `Error: ${ERROR_CODE[contentRes.errorCode]}`
+            titleRes && titleRes.translation && titleRes.translation[0] : `Error: ${YOUDAO_ERROR_CODE[titleRes.errorCode]}`,
+          'content': results.join('<br /><br />')
         }
       })
     },
@@ -193,10 +238,6 @@ export default modelExtend(pageModel, {
         // 前端请求会出现CORS，故采用node代理
         // const data = yield bdPicFetch(keyword)
         const data = yield call(searchKeyWord, payload)
-        console.log('data', data)
-        // console.log('search result: .....', data.data)
-        // const result = eval("("+data.data+")")
-        // console.log('result', result)
         yield put({
           type: 'searchSuccess',
           payload: {
@@ -215,6 +256,24 @@ export default modelExtend(pageModel, {
     hideModal(state) {
       return { ...state, modalVisible: false }
     },
+    searchChange(state, { payload }) {
+      return {
+        ...state,
+        searchForm: {
+          ...state.searchForm,
+          ...payload
+        }
+      }
+    },
+    formChange(state, { payload }) {
+      return {
+        ...state,
+        translation: {
+          ...state.translation,
+          ...payload
+        }
+      }
+    },
     openUpload(state, {payload}) {
       return {
         ...state,
@@ -229,6 +288,26 @@ export default modelExtend(pageModel, {
         uploadVisible: false
       }
     },
+    pagination(state, { payload }) {
+      return {
+        ...state,
+        pagination: {
+          ...state.pagination,
+          ...payload
+        }
+      }
+    },
+    querySuccess(state, { payload }) {
+      const { list, pagination } = payload
+      return {
+        ...state,
+        list,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
+    },
     expandedSuccess(state, { payload }) {
       return {
         ...state,
@@ -236,6 +315,12 @@ export default modelExtend(pageModel, {
           ...state.expandData,
           ...payload,
         }
+      }
+    },
+    subPaginationChange(state, {payload}) {
+      return {
+        ...state,
+
       }
     },
     detailSuccess(state, { payload}) {
@@ -257,6 +342,20 @@ export default modelExtend(pageModel, {
         ...state,
         ...payload
       }
+    },
+    baseSuccess(state, { payload }) {
+      return {
+        ...state,
+        base: {
+          ...payload
+        }
+      }
+    },
+    initSuccess(state, { payload }) {
+      return {
+        ...state,
+        ...payload,
+      }
     }
   }
-})
+}
