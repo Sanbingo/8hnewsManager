@@ -41,8 +41,7 @@ export default class PostModal extends React.Component {
   imageHandler = (url) => {
     let quill=this.refs.reactQuillRef.getEditor();//获取到编辑器本身
     const lastRange =  quill.selection.lastRange
-    const cursorPosition = lastRange ? lastRange.index : 0;
-    // const cursorPosition =quill.getSelection().index;//获取当前光标位置
+    const cursorPosition = lastRange ? lastRange.index : 0;//获取当前光标位置
     quill.insertEmbed(cursorPosition, "image",url, Quill.sources.USER);//插入图片
     quill.setSelection(cursorPosition + 1);//光标位置加1
   }

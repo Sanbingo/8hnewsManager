@@ -28,7 +28,7 @@ class List extends PureComponent {
     },
     {
       title: '网页数量',
-      dataIndex: 'count',
+      dataIndex: 'validCount',
     },
     {
       title: '爬虫状态',

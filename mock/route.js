@@ -38,13 +38,23 @@ const database = [
   },
   {
     id: '7',
-    breadcrumbParentId: '1',
+    // breadcrumbParentId: '1',
     name: 'Spider',
     zh: {
       name: '爬虫采集'
     },
-    icon: 'shopping-cart',
+    icon: 'bug',
     route: '/spider',
+  },
+  {
+    id: '8',
+    // breadcrumbParentId: '1',
+    name: 'Posts',
+    zh: {
+      name: '文章管理'
+    },
+    icon: 'read',
+    route: '/posts',
   },
   {
     id: '21',

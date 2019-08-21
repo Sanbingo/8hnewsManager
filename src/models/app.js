@@ -69,6 +69,7 @@ export default {
   },
   effects: {
     *query({ payload }, { call, put, select }) {
+      console.log('app query payload', payload)
       // store isInit to prevent query trigger by refresh
       const isInit = store.get('isInit')
       if (isInit) return

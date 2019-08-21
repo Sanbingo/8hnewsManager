@@ -1,7 +1,7 @@
 import { router, pathMatchRegexp } from 'utils'
 import api from 'api'
 
-const { loginUser } = api
+const { loginUser, getWPToken } = api
 
 export default {
   namespace: 'login',
@@ -14,7 +14,10 @@ export default {
       const { locationQuery } = yield select(_ => _.app)
       if (data.success) {
         const { from } = locationQuery
-        yield put({ type: 'app/query' })
+        // 初始化数据
+        yield put({ type: 'app/query', payload })
+        // 获取wp的token
+        // const token = yield call(getWPToken, payload)
         if (!pathMatchRegexp('/login', from)) {
           if (['', '/'].includes(from)) router.push('/dashboard')
           else router.push(from)

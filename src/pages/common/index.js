@@ -1,6 +1,6 @@
 import React from 'react'
 import { Popconfirm, Select, Radio, Input } from 'antd'
-import { forEach } from 'lodash'
+import { forEach, isArray } from 'lodash'
 
 const { Option } = Select
 
@@ -30,7 +30,7 @@ export const createOptions = (obj, msg) => {
     )
   )
   return (
-    <Select style={{ width: '150px' }} placeholder={msg} allowClear={true} showSearch={true} optionFilterProp="children">
+    <Select style={{ width: '200px' }} placeholder={msg} allowClear={true} showSearch={true} optionFilterProp="children" dropdownMatchSelectWidth={false}>
       {ret}
     </Select>
   )
@@ -49,6 +49,16 @@ export const createRadios = obj => {
     )
   )
   return <Radio.Group>{ret}</Radio.Group>
+}
+
+export const arrayToMapObject = (arr, k, v) => {
+  if (isArray(arr)) {
+    return arr.reduce((p, c) => {
+      p[c[k]] = c[v]
+      return p
+    }, {})
+  }
+  return {}
 }
 
 export const ColProps = {

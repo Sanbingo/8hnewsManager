@@ -1,0 +1,70 @@
+import React, { PureComponent } from 'react'
+import { Table, Tag } from 'antd'
+import { isNil } from 'lodash'
+
+export default class ListComponent extends PureComponent {
+  columns = [{
+    key: 'ymd',
+    dataIndex: 'ymd',
+    title: '日期',
+    width: 150
+  }, {
+    key: 'title',
+    dataIndex: 'title',
+    title: '标题',
+    render: (text, record) => {
+      return (
+        <a href={record.downloadUrl} target="__blank">{text}</a>
+      );
+    }
+  }, {
+    key: 'siteDomain',
+    dataIndex: 'siteDomain',
+    title: '文章站点'
+  }, {
+    key: 'categoryId',
+    dataIndex: 'categoryId',
+    title: '类型',
+    render: (text) => {
+      const { categoryId } = this.props.initData
+      if (isNil(text)) return '-'
+      return <Tag>{categoryId[text]}</Tag>
+    }
+  }, {
+    key: 'spiderDetailBizStatus',
+    dataIndex: 'spiderDetailBizStatus',
+    title: '状态',
+    render: (text) => {
+      const { spiderDetailBizStatus } = this.props.initData
+      if (isNil(text)) {
+        return '-'
+      }
+      return <Tag>{spiderDetailBizStatus[text]}</Tag>
+    }
+  }, {
+    key: 'operator',
+    dataIndex: 'operator',
+    title: '操作',
+    width: 100,
+    render: (text, {id}) => {
+      return (
+        <a onClick={() => {
+          console.log('translate')
+          this.props.onHandleTranslate(id)
+        }}>翻译</a>
+      );
+    }
+  }]
+  render() {
+    const { list, pagination, onHandlePagination, loading } = this.props;
+    return (
+      <Table
+        loading={loading.effects['posts/query']}
+        onChange={onHandlePagination}
+        pagination={pagination}
+        columns={this.columns}
+        dataSource={list}
+      />
+    );
+  }
+}

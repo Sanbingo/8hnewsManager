@@ -86,6 +86,7 @@ class Spider extends PureComponent {
   }
 
   get modalProps() {
+    console.log('porps...', this.props)
     const { dispatch, spider } = this.props;
     const { modalVisible, detail, translation, base } = spider
     return {
