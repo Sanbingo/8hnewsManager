@@ -1,4 +1,5 @@
-import { Mock, Constant } from './_utils'
+import { Mock, Constant, getCookieByName } from './_utils'
+import rp from 'request-promise';
 
 const { ApiPrefix } = Constant
 
@@ -38,6 +39,27 @@ const database = Mock.mock({
 }).data
 
 module.exports = {
+  [`POST ${ApiPrefix}/create`](req, res) {
+    const { title, content, categories } = req.body
+    const wptoken = getCookieByName(req.headers.cookie, 'wptoken')
+    rp({
+      uri: 'http://www.8hnews.com/wp-json/wp/v2/posts',
+      method: 'POST',
+      body: {
+        title,
+        content,
+        categories
+      },
+      headers: {
+        'Authorization': `Bearer ${wptoken}`
+      },
+      json: true
+    }).then((data) => {
+      res.status(200).end()
+    }).catch((err) => {
+      res.status(400).end()
+    })
+  },
   [`GET ${ApiPrefix}/posts`](req, res) {
     const { query } = req
     let { pageSize, page, ...other } = query

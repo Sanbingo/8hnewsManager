@@ -17,7 +17,7 @@ export default {
         // 初始化数据
         yield put({ type: 'app/query', payload })
         // 获取wp的token
-        // const token = yield call(getWPToken, payload)
+        const token = yield call(getWPToken, payload)
         if (!pathMatchRegexp('/login', from)) {
           if (['', '/'].includes(from)) router.push('/dashboard')
           else router.push(from)

@@ -1,3 +1,6 @@
+import request from 'request';
+import { trim } from 'lodash';
+
 /**
  * Query objects that specify keys and values in an array where all values are objects.
  * @param   {array}         array   An array where all values are objects, like [{key:1},{key:2}].
@@ -57,3 +60,33 @@ export const Constant = {
 
 export Mock from 'mockjs'
 export qs from 'qs'
+
+export const reqFetch = (url, method="get", data) => {
+  return new Promise((resolve, reject) => {
+    request({
+      url,
+      method,
+      data: JSON.stringify(data),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }, (err, res, body) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(body)
+      }
+    })
+  })
+}
+
+export const getCookieByName = (cookie, name) => {
+  const arr = cookie.split(';')
+  const objArr = arr.map(item => {
+    return {
+      name: trim(item.split('=')[0]),
+      value: trim(item.split('=')[1])
+    }
+  })
+  return objArr.find(item => item.name === name).value
+}

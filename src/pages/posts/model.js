@@ -4,6 +4,7 @@ import md5 from 'md5'
 import jsonp from 'jsonp'
 import request from 'utils/request'
 import { message } from 'antd'
+import { isNil, isEmpty } from 'lodash'
 import moment from 'moment'
 import {
   APP_KEY,
@@ -12,7 +13,7 @@ import {
   YOUDAO_ERROR_CODE
 } from './consts'
 
-const { queryBaseData, searchKeyWord, createWordPressPosts } = api
+const { queryBaseData, searchKeyWord, createPosts } = api
 
 const serialize = (obj) => {
   return Object.keys(obj).reduce((a, k) => {
@@ -139,11 +140,27 @@ export default {
       }
 
     },
-    *create({ payload = {}}, { call, put}) {
-
-      const data = yield call(createWordPressPosts, {})
+    *create({ payload = {}}, { call, put, select}) {
+      const { translation={} } = yield select(_ => _.posts)
+      const { title, content, categories } = translation
+      if (isNil(title)) {
+        message.warning('标题不能为空')
+        return;
+      } else if (isNil(content)) {
+        message.warning('内容不能为空')
+        return;
+      } else if (isEmpty(categories)) {
+        message.warning('请选择栏目~')
+        return
+      }
+      const data = yield call(createPosts, translation)
       if (data.statusCode === 200) {
-
+        message.success('创建成功')
+        yield put({
+          type: 'posts/hideModal',
+        })
+      } else {
+        message.warning('failure')
       }
     },
     *detail({payload}, { call, put }){

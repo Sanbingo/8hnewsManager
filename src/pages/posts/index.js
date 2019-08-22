@@ -83,12 +83,9 @@ class Posts extends React.PureComponent {
       width: 1200,
       visible: modalVisible,
       onOk: (data) => {
-        // dispatch({
-        //   type: 'posts/create',
-        //   payload: {},
-        // })
         dispatch({
-          type: 'posts/hideModal',
+          type: 'posts/create',
+          payload: {},
         })
       },
       onCancel() {

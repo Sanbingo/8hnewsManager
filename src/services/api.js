@@ -23,5 +23,6 @@ export default {
   updateSources: 'Patch /sources/:id',
   searchKeyWord: '/search',
   queryBaseData: '/base',
-  createWordPressPosts: '/sanbingo',
+  createPosts: 'POST /create',
+  getWPToken: 'POST /token',
 }

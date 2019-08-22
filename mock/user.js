@@ -1,4 +1,5 @@
-import { Mock, Constant, qs, randomAvatar } from './_utils'
+import { Mock, Constant, qs, randomAvatar, reqFetch } from './_utils'
+import rp from 'request-promise';
 
 const { ApiPrefix } = Constant
 
@@ -92,6 +93,42 @@ const NOTFOUND = {
 }
 
 module.exports = {
+  [`POST ${ApiPrefix}/token`](req, res) {
+    const { username, password } = req.body
+    rp({
+      uri: 'http://www.8hnews.com/wp-json/jwt-auth/v1/token',
+      method: 'POST',
+      body: {
+        username,
+        password
+      },
+      json: true
+    }).then((data) => {
+      res.cookie('wptoken', data.token, {
+        maxAge: 900000,
+        httpOnly: true,
+      })
+      res.json({ success: true, message: 'Ok' })
+
+    }).catch((err) => {
+      res.status(400).end()
+    })
+    // let fetch = reqFetch('http://www.8hnews.com/wp-json/jwt-auth/v1/token', 'POST', {
+    //   username,
+    //   password
+    // })
+    // fetch.then((data) => {
+    //   console.log('data...', data)
+    //   res.send(data)
+    // }, (err) => {
+    //   console.log('err...', err)
+    //   res.status(200).json({
+    //     data: err,
+    //     message: 'search failure'
+    //   })
+    // })
+    // fetch = null
+  },
   [`POST ${ApiPrefix}/user/login`](req, res) {
     const { username, password } = req.body
     const user = adminUsers.filter(item => item.username === username)
