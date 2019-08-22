@@ -47,15 +47,15 @@ const userPermission = {
 const adminUsers = [
   {
     id: 0,
-    username: 'aquaman',
-    password: 'Mima666',
+    username: 'admin',
+    password: 'admin',
     permissions: userPermission.ADMIN,
     avatar: randomAvatar(),
   },
   {
     id: 1,
-    username: 'develop',
-    password: 'develop',
+    username: 'aquaman',
+    password: 'Mima666',
     permissions: userPermission.DEVELOPER,
     avatar: randomAvatar(),
   },
