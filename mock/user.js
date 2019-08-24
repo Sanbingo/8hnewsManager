@@ -39,7 +39,7 @@ const userPermission = {
     role: EnumRoleType.ADMIN,
   },
   DEVELOPER: {
-    visit: ['6', '7', '8'],
+    visit: ['6', '7', '8', '9'],
     role: EnumRoleType.DEVELOPER,
   },
 }

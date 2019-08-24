@@ -1,6 +1,7 @@
 export const YOUDAO_URL = 'http://openapi.youdao.com/api'
 export const APP_KEY = '52af186d5198e43e'
 export const APP_SECRET = 'e1ZS2jAOEegKln2yxzWRGXFCGU2gPxZX'
+export const MAX_CONTENT_LENGTH = 5000
 
 export const YOUDAO_ERROR_CODE = {
   103: '翻译文本过长，不能超过5000个字符',

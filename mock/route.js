@@ -6,7 +6,7 @@ const database = [
     id: '6',
     name: 'Sources',
     zh: {
-      name: '源管理'
+      name: '站点导航'
     },
     icon: 'appstore',
     route: '/sources'
@@ -55,6 +55,15 @@ const database = [
     },
     icon: 'read',
     route: '/posts',
+  },
+  {
+    id: '9',
+    name: 'Setting',
+    zh: {
+      name: '系统设置'
+    },
+    icon: 'setting',
+    route: '/setting'
   },
   {
     id: '21',

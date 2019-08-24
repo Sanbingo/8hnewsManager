@@ -18,6 +18,10 @@ export default class ListComponent extends PureComponent {
       );
     }
   }, {
+    key: 'wordCount',
+    dataIndex: 'wordCount',
+    title: '字数统计'
+  }, {
     key: 'siteDomain',
     dataIndex: 'siteDomain',
     title: '文章站点'
@@ -59,6 +63,7 @@ export default class ListComponent extends PureComponent {
     const { list, pagination, onHandlePagination, loading } = this.props;
     return (
       <Table
+        rowKey="id"
         loading={loading.effects['posts/query']}
         onChange={onHandlePagination}
         pagination={pagination}

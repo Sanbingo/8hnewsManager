@@ -1,11 +1,9 @@
-import React from 'react';
-import modelExtend from 'dva-model-extend'
 import api from 'api'
 import { pathMatchRegexp } from 'utils'
 import md5 from 'md5'
 import jsonp from 'jsonp'
 import request from 'utils/request'
-import { pageModel } from 'utils/model'
+import moment from 'moment'
 import { message } from 'antd'
 import {
   APP_KEY,
@@ -108,6 +106,7 @@ export default {
           pageNum: pageNum || 1,
           entity: {
             ...payload,
+            ymd: payload.ymd && moment(payload.ymd).format('YYYY-MM-DD')
           }
         },
       })

@@ -58,6 +58,12 @@ export default class PostModal extends React.Component {
       label: item.name,
       value: item.id
     }))
+    const categorieStyle = {
+      marginBottom: '10px',
+      border: '1px solid lightgray',
+      borderRadius: '3px',
+      padding: '5px'
+    }
 
     return (
       <Modal
@@ -71,7 +77,7 @@ export default class PostModal extends React.Component {
           </Col>
           <Col span={12}>
             <Spin spinning={loading.effects['posts/translate']}>
-              <div style={{ marginBottom: '10px' }}>
+              <div style={categorieStyle}>
                 <Checkbox.Group options={CATEGORY_TEST_DATA} onChange={(val) => this.handleChange('categories', val)}/>
               </div>
               <Input value={translation.title} onChange={(e) => this.handleChange('title', e.target.value)} style={{ marginBottom: '10px' }}/>

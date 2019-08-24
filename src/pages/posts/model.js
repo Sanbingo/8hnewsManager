@@ -1,43 +1,15 @@
 import api from 'api'
 import { pathMatchRegexp } from 'utils'
-import md5 from 'md5'
-import jsonp from 'jsonp'
 import request from 'utils/request'
 import { message } from 'antd'
 import { isNil, isEmpty } from 'lodash'
 import moment from 'moment'
+import { youdaoTranslate } from '../common/youdao';
 import {
-  APP_KEY,
-  APP_SECRET,
-  MAX_CONTENT_LENGTH,
   YOUDAO_ERROR_CODE
-} from './consts'
+} from '../common/consts'
 
 const { queryBaseData, searchKeyWord, createPosts } = api
-
-const serialize = (obj) => {
-  return Object.keys(obj).reduce((a, k) => {
-    a.push(`${k}=${encodeURIComponent(obj[k])}`)
-    return a
-  }, []).join('&')
-}
-const jsonpFetch = (value, options=null) => {
-  const salt = (new Date).getTime();
-  const query = value.length > MAX_CONTENT_LENGTH ? value.slice(0, MAX_CONTENT_LENGTH): value
-  const str = APP_KEY+query+salt+APP_SECRET
-  const params = {
-    q: query,
-    appKey: APP_KEY,
-    from: 'en',
-    to: 'zh-CHS',
-    sign: md5(str),
-    salt,
-  }
-  const url = `http://openapi.youdao.com/api?${serialize(params)}`;
-  return new Promise((resolve, reject) => {
-    jsonp(url, options, (err, data) => err ? reject(err) : resolve(data))
-  })
-}
 
 export default {
   namespace: 'posts',
@@ -191,10 +163,10 @@ export default {
     },
     *translate({ payload }, { call, put}) {
       // 标题翻译
-      const titleReq = jsonpFetch(payload.title);
+      const titleReq = youdaoTranslate(payload.title);
       // 正文翻译，由于正文篇幅过长，分段翻译
       const contentArr = payload.content.split('\r\n');
-      const contentArrReq = contentArr.filter(item => !!item).map(item => jsonpFetch(item));
+      const contentArrReq = contentArr.filter(item => !!item).map(item => youdaoTranslate(item));
       const [titleRes, ...contentRes] = yield Promise.all([titleReq, ...contentArrReq])
       const results = contentRes.map(item => {
         if (item.errorCode === '0') {

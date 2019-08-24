@@ -8,6 +8,7 @@ import { queryLayout, pathMatchRegexp } from 'utils'
 import { CANCEL_REQUEST_MESSAGE } from 'utils/constant'
 import api from 'api'
 import config from 'config'
+import request from 'utils/request'
 
 const { queryRouteList, logoutUser, queryUserInfo } = api
 
@@ -25,6 +26,7 @@ export default {
     ],
     locationPathname: '',
     locationQuery: {},
+    base: {},
     theme: store.get('theme') || 'light',
     collapsed: store.get('collapsed') || false,
     notifications: [
@@ -41,6 +43,7 @@ export default {
   subscriptions: {
     setup({ dispatch }) {
       dispatch({ type: 'query' })
+      dispatch({ type: 'base' })
     },
     setupHistory({ dispatch, history }) {
       history.listen(location => {
@@ -69,7 +72,6 @@ export default {
   },
   effects: {
     *query({ payload }, { call, put, select }) {
-      console.log('app query payload', payload)
       // store isInit to prevent query trigger by refresh
       const isInit = store.get('isInit')
       if (isInit) return
@@ -114,7 +116,21 @@ export default {
         })
       }
     },
-
+    *base({ payload }, { call, put}) {
+      const constMap = yield request({
+        url: 'http://139.196.86.217:8089/info/constant/map',
+        method: 'post',
+        data: payload
+      })
+      if (constMap) {
+        store.set('appkey', '52af186d5198e43e')
+        store.set('appSecret', 'e1ZS2jAOEegKln2yxzWRGXFCGU2gPxZX')
+          yield put({
+            type: 'app/baseSuccess',
+            payload: constMap.data
+          })
+      }
+    },
     *signOut({ payload }, { call, put }) {
       const data = yield call(logoutUser)
       if (data.success) {
@@ -149,5 +165,13 @@ export default {
     allNotificationsRead(state) {
       state.notifications = []
     },
+    baseSuccess(state, { payload }) {
+      return {
+        ...state,
+        base: {
+          ...payload
+        }
+      }
+    }
   },
 }
