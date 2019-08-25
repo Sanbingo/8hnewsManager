@@ -1,5 +1,7 @@
 import { Mock, Constant, getCookieByName } from './_utils'
 import rp from 'request-promise';
+import { isNil } from 'lodash';
+import { message } from 'antd';
 
 const { ApiPrefix } = Constant
 
@@ -42,6 +44,9 @@ module.exports = {
   [`POST ${ApiPrefix}/create`](req, res) {
     const { title, content, categories } = req.body
     const wptoken = getCookieByName(req.headers.cookie, 'wptoken')
+    if (isNil(wptoken)) {
+      res.status(201).end()
+    }
     rp({
       uri: 'http://www.8hnews.com/wp-json/wp/v2/posts',
       method: 'POST',

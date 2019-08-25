@@ -39,7 +39,7 @@ const userPermission = {
     role: EnumRoleType.ADMIN,
   },
   DEVELOPER: {
-    visit: ['6', '7', '8', '9'],
+    visit: ['6', '7', '8'],
     role: EnumRoleType.DEVELOPER,
   },
 }
@@ -61,9 +61,16 @@ const adminUsers = [
   },
   {
     id: 2,
+    username: 'jiang',
+    password: '87654312',
+    permissions: userPermission.DEVELOPER,
+    avatar: randomAvatar(),
+  },
+  {
+    id: 3,
     username: 'zhang',
     password: '87654312',
-    permissions: userPermission.DEFAULT,
+    permissions: userPermission.DEVELOPER,
     avatar: randomAvatar(),
   },
 ]
@@ -105,7 +112,7 @@ module.exports = {
       json: true
     }).then((data) => {
       res.cookie('wptoken', data.token, {
-        maxAge: 900000,
+        maxAge: 365*24*60*60,
         httpOnly: true,
       })
       res.json({ success: true, message: 'Ok' })

@@ -131,8 +131,11 @@ export default {
         yield put({
           type: 'posts/hideModal',
         })
+        yield put({
+          type: 'posts/query'
+        })
       } else {
-        message.warning('failure')
+        message.warning('登录信息已过期，请重新登录')
       }
     },
     *detail({payload}, { call, put }){

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Modal, Tabs, Input, Spin } from 'antd';
+import { isArray } from 'lodash'
 import style from './upload.less'
 
 const { TabPane } = Tabs;
@@ -7,7 +8,7 @@ const { Search } = Input;
 
 export default class UploadComponent extends React.Component {
   renderPictures = (data) => {
-    if (data.length) {
+    if (isArray(data) && data.length) {
       return data.map(item => (
         <img src={item.middleURL} style={{ width: '100px', height: '100px', cursor: 'pointer' }} onDoubleClick={(e) => {
           console.log('double Click', item)
@@ -17,7 +18,7 @@ export default class UploadComponent extends React.Component {
     }
     return (
       <div>
-        <p class={style.addIcon}></p>
+        <p class={style.addIcon}>暂无图片</p>
       </div>
     )
   }

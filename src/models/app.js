@@ -126,7 +126,7 @@ export default {
         store.set('appkey', '52af186d5198e43e')
         store.set('appSecret', 'e1ZS2jAOEegKln2yxzWRGXFCGU2gPxZX')
           yield put({
-            type: 'app/baseSuccess',
+            type: 'baseSuccess',
             payload: constMap.data
           })
       }

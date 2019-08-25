@@ -1,5 +1,5 @@
 import request from 'request';
-import { trim } from 'lodash';
+import { trim, isNil } from 'lodash';
 
 /**
  * Query objects that specify keys and values in an array where all values are objects.
@@ -88,5 +88,9 @@ export const getCookieByName = (cookie, name) => {
       value: trim(item.split('=')[1])
     }
   })
-  return objArr.find(item => item.name === name).value
+  const result = objArr.find(item => item.name === name)
+  if (isNil(result)){
+    return undefined;
+  }
+  return result.value
 }

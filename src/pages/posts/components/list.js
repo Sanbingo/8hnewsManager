@@ -39,7 +39,7 @@ export default class ListComponent extends PureComponent {
     dataIndex: 'spiderDetailBizStatus',
     title: '状态',
     render: (text) => {
-      const { spiderDetailBizStatus } = this.props.initData
+      const { spiderDetailBizStatus={} } = this.props.initData
       if (isNil(text)) {
         return '-'
       }
