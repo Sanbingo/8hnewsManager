@@ -40,7 +40,6 @@
     "recharts": "^1.6.0",
     "request-promise": "^4.2.4",
     "store": "^2.0.0",
-    "translate.js": "^1.2.7",
     "translation.js": "^0.7.9"
   },
   "devDependencies": {
