@@ -1,7 +1,6 @@
 import request from 'request';
 import { Mock, Constant, qs, randomAvatar } from './_utils'
 
-
 const { ApiPrefix } = Constant
 
 const reqFetch = (url, method="get", data) => {
@@ -32,7 +31,6 @@ const bdPicFetch = (keyword, config={}) => {
   return new Promise((resolve, reject) => {
     request(obj, (err, res, body) => {
       if (err) {
-        console.log('err', err.message)
         reject(err)
       } else {
         resolve(body)
@@ -96,25 +94,4 @@ module.exports = {
     })
     fetch = null
   },
-  [`GET ${ApiPrefix}/sanbingo`](req, res) {
-    console.log('sanbingo...')
-    // let fetch = reqFetch('http://www.8hnews.com/wp-json/wp/v2/posts', 'post', {
-    //     title: 'test',
-    //     content: 'content',
-    //     categories: [3, 12, 10]
-    // })
-    // console.log('fetching....', fetch)
-    // fetch.then((data) => {
-    //   console.log('create posts success...', data)
-    //   res.send(data)
-    // }, (err) => {
-    //   console.log('err...', err)
-    //   res.status(200).json({
-    //     data: err,
-    //     message: 'search failure'
-    //   })
-    // })
-    // fetch = null
-  },
-
 }

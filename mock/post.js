@@ -1,7 +1,7 @@
 import { Mock, Constant, getCookieByName } from './_utils'
 import rp from 'request-promise';
 import { isNil } from 'lodash';
-import { message } from 'antd';
+import { googleApi } from '../src/pages/common/trans';
 
 const { ApiPrefix } = Constant
 
@@ -64,6 +64,27 @@ module.exports = {
     }).catch((err) => {
       res.status(400).end()
     })
+  },
+  [`POST ${ApiPrefix}/translate`](req, res) {
+    const { title, content } = req.body
+    const titleReq = googleApi(title)
+    const contentArr = content.split('\r\n');
+    const contentArrReq = contentArr.filter(item => !!item).map(item => googleApi(item))
+    Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
+      res.status(200).json({
+        data: {
+          title: titleRes && titleRes.result && titleRes.result[0],
+          content: contentRes && contentRes.map(item => item.result && item.result.join(''))
+        }
+      })
+    }).catch((err) => {
+      res.status(400).json({
+        data: {
+          error: err
+        }
+      })
+    })
+
   },
   [`GET ${ApiPrefix}/posts`](req, res) {
     const { query } = req

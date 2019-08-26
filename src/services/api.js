@@ -25,4 +25,5 @@ export default {
   queryBaseData: '/base',
   createPosts: 'POST /create',
   getWPToken: 'POST /token',
+  transApi: 'POST /translate'
 }

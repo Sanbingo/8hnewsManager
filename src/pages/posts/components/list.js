@@ -53,7 +53,6 @@ export default class ListComponent extends PureComponent {
     render: (text, {id}) => {
       return (
         <a onClick={() => {
-          console.log('translate')
           this.props.onHandleTranslate(id)
         }}>翻译</a>
       );

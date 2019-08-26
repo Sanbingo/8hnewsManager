@@ -4,12 +4,10 @@ import request from 'utils/request'
 import { message } from 'antd'
 import { isNil, isEmpty } from 'lodash'
 import moment from 'moment'
-import { youdaoTranslate } from '../common/youdao';
-import {
-  YOUDAO_ERROR_CODE
-} from '../common/consts'
+// import { youdaoTranslate } from '../common/youdao';
+// import { YOUDAO_ERROR_CODE } from '../common/consts'
 
-const { queryBaseData, searchKeyWord, createPosts } = api
+const { queryBaseData, searchKeyWord, createPosts, transApi } = api
 
 export default {
   namespace: 'posts',
@@ -165,6 +163,21 @@ export default {
       }
     },
     *translate({ payload }, { call, put}) {
+      // 方法一：使用免费的谷歌API
+      const {data, statusCode} = yield call(transApi, payload)
+      if (statusCode === 200) {
+        const { title, content} = data
+        yield put({
+          type: 'translateSuccess',
+          payload: {
+            title,
+            'content': content.join('<br /><br />')
+          }
+        })
+      }
+
+      // 方法二：使用付费的有道API
+      /*
       // 标题翻译
       const titleReq = youdaoTranslate(payload.title);
       // 正文翻译，由于正文篇幅过长，分段翻译
@@ -186,12 +199,12 @@ export default {
           'content': results.join('<br /><br />')
         }
       })
+      */
     },
     *search({ payload }, { call, put}) {
       const keyword = payload.keyword || ''
       if (keyword) {
         // 前端请求会出现CORS，故采用node代理
-        // const data = yield bdPicFetch(keyword)
         const data = yield call(searchKeyWord, payload)
         yield put({
           type: 'searchSuccess',

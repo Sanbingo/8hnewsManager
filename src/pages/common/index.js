@@ -60,3 +60,13 @@ export const arrayToMapObject = (arr, k, v) => {
   }
   return {}
 }
+
+export const ColProps = {
+  xs: 24,
+  sm: 12,
+  md: 8,
+  xl: 4,
+  style: {
+    marginBottom: 16,
+  },
+}
