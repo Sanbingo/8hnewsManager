@@ -1,10 +1,11 @@
 import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Input, InputNumber, Radio, Modal, Cascader } from 'antd'
+import { Form, Input, InputNumber, Radio, Modal, Select, DatePicker } from 'antd'
 import { Trans, withI18n } from '@lingui/react'
 import city from 'utils/city'
 
 const FormItem = Form.Item
+const { Option } = Select
 
 const formItemLayout = {
   labelCol: {
@@ -40,8 +41,8 @@ class UserModal extends PureComponent {
 
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
-        <Form layout="horizontal">
-          <FormItem label={i18n.t`Name`} hasFeedback {...formItemLayout}>
+        <Form layout="horizontal" {...formItemLayout}>
+          <FormItem label="姓名">
             {getFieldDecorator('name', {
               initialValue: item.name,
               rules: [
@@ -51,8 +52,18 @@ class UserModal extends PureComponent {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label={i18n.t`NickName`} hasFeedback {...formItemLayout}>
-            {getFieldDecorator('nickName', {
+          <FormItem label="账号">
+            {getFieldDecorator('userName', {
+              initialValue: item.name,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="密码">
+            {getFieldDecorator('password', {
               initialValue: item.nickName,
               rules: [
                 {
@@ -61,7 +72,7 @@ class UserModal extends PureComponent {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label={i18n.t`Gender`} hasFeedback {...formItemLayout}>
+          <FormItem label={i18n.t`Gender`}>
             {getFieldDecorator('isMale', {
               initialValue: item.isMale,
               rules: [
@@ -73,15 +84,15 @@ class UserModal extends PureComponent {
             })(
               <Radio.Group>
                 <Radio value>
-                  <Trans>Male</Trans>
+                  <Trans>男</Trans>
                 </Radio>
                 <Radio value={false}>
-                  <Trans>Female</Trans>
+                  <Trans>女</Trans>
                 </Radio>
               </Radio.Group>
             )}
           </FormItem>
-          <FormItem label={i18n.t`Age`} hasFeedback {...formItemLayout}>
+          <FormItem label="出生日期">
             {getFieldDecorator('age', {
               initialValue: item.age,
               rules: [
@@ -90,9 +101,9 @@ class UserModal extends PureComponent {
                   type: 'number',
                 },
               ],
-            })(<InputNumber min={18} max={100} />)}
+            })(<DatePicker />)}
           </FormItem>
-          <FormItem label={i18n.t`Phone`} hasFeedback {...formItemLayout}>
+          <FormItem label={i18n.t`Phone`}>
             {getFieldDecorator('phone', {
               initialValue: item.phone,
               rules: [
@@ -104,19 +115,19 @@ class UserModal extends PureComponent {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label={i18n.t`Email`} hasFeedback {...formItemLayout}>
+          <FormItem label={i18n.t`Email`}>
             {getFieldDecorator('email', {
               initialValue: item.email,
               rules: [
                 {
-                  required: true,
+                  // required: true,
                   pattern: /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(.[a-zA-Z0-9_-])+/,
                   message: i18n.t`The input is not valid E-mail!`,
                 },
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label={i18n.t`Address`} hasFeedback {...formItemLayout}>
+          <FormItem label="分配站点">
             {getFieldDecorator('address', {
               initialValue: item.address && item.address.split(' '),
               rules: [
@@ -125,11 +136,11 @@ class UserModal extends PureComponent {
                 },
               ],
             })(
-              <Cascader
-                style={{ width: '100%' }}
-                options={city}
-                placeholder={i18n.t`Pick an address`}
-              />
+              <Select mode="multiple" style={{ width: '100%' }} placeholder="搜索站点" allowClear={true}>
+                <Option key="0" value="0">全选</Option>
+                <Option key="1" value="1">www.baidu.com</Option>
+                <Option key="2" value="2">www.qq.com</Option>
+              </Select>
             )}
           </FormItem>
         </Form>

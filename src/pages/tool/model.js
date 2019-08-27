@@ -6,7 +6,7 @@ import {
 } from '../common/consts'
 
 export default {
-  namespace: 'setting',
+  namespace: 'tool',
   state: {
     appKey: '',
     appSecret: ''

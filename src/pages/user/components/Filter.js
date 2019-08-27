@@ -4,8 +4,10 @@ import PropTypes from 'prop-types'
 import moment from 'moment'
 import { FilterItem } from 'components'
 import { Trans, withI18n } from '@lingui/react'
-import { Form, Button, Row, Col, DatePicker, Input, Cascader } from 'antd'
+import { Form, Button, Row, Col, DatePicker, Input, Select } from 'antd'
 import city from 'utils/city'
+
+const { Option } = Select
 
 const { Search } = Input
 const { RangePicker } = DatePicker
@@ -100,40 +102,14 @@ class Filter extends Component {
           {...ColProps}
           xl={{ span: 4 }}
           md={{ span: 8 }}
-          id="addressCascader"
+          id="siteDomain"
         >
-          {getFieldDecorator('address', { initialValue: address })(
-            <Cascader
-              style={{ width: '100%' }}
-              options={city}
-              placeholder={i18n.t`Please pick an address`}
-              onChange={this.handleChange.bind(this, 'address')}
-              getPopupContainer={() =>
-                document.getElementById('addressCascader')
-              }
-            />
+          {getFieldDecorator('siteDomain')(
+            <Select style={{ width: '100%' }} placeholder="搜索站点" allowClear={true}>
+              <Option key="1" value="1">www.baidu.com</Option>
+              <Option key="2" value="2">www.qq.com</Option>
+            </Select>
           )}
-        </Col>
-        <Col
-          {...ColProps}
-          xl={{ span: 6 }}
-          md={{ span: 8 }}
-          sm={{ span: 12 }}
-          id="createTimeRangePicker"
-        >
-          <FilterItem label={i18n.t`CreateTime`}>
-            {getFieldDecorator('createTime', {
-              initialValue: initialCreateTime,
-            })(
-              <RangePicker
-                style={{ width: '100%' }}
-                onChange={this.handleChange.bind(this, 'createTime')}
-                getCalendarContainer={() => {
-                  return document.getElementById('createTimeRangePicker')
-                }}
-              />
-            )}
-          </FilterItem>
         </Col>
         <Col
           {...TwoColProps}
@@ -150,13 +126,10 @@ class Filter extends Component {
               >
                 <Trans>Search</Trans>
               </Button>
-              <Button onClick={this.handleReset}>
-                <Trans>Reset</Trans>
+              <Button type="ghost" onClick={onAdd}>
+                <Trans>Create</Trans>
               </Button>
             </div>
-            <Button type="ghost" onClick={onAdd}>
-              <Trans>Create</Trans>
-            </Button>
           </Row>
         </Col>
       </Row>

@@ -3,15 +3,6 @@ const { ApiPrefix } = Constant
 
 const database = [
   {
-    id: '6',
-    name: 'Sources',
-    zh: {
-      name: '站点导航'
-    },
-    icon: 'appstore',
-    route: '/sources'
-  },
-  {
     id: '1',
     icon: 'dashboard',
     name: 'Dashboard',
@@ -24,17 +15,13 @@ const database = [
     route: '/dashboard',
   },
   {
-    id: '2',
-    breadcrumbParentId: '1',
-    name: 'Users',
+    id: '6',
+    name: 'Sources',
     zh: {
-      name: '用户管理'
+      name: '新闻源'
     },
-    'pt-br': {
-      name: 'Usuário'
-    },
-    icon: 'user',
-    route: '/user',
+    icon: 'appstore',
+    route: '/sources'
   },
   {
     id: '7',
@@ -62,8 +49,84 @@ const database = [
     zh: {
       name: '系统设置'
     },
-    icon: 'setting',
-    route: '/setting'
+    icon: 'setting'
+  },
+  {
+    id: '91',
+    breadcrumbParentId: '9',
+    menuParentId: '9',
+    name: 'site',
+    zh: {
+      name: '站点管理'
+    },
+    icon: 'ie',
+    route: '/site',
+  },
+  {
+    id: '92',
+    breadcrumbParentId: '9',
+    menuParentId: '9',
+    name: 'Users',
+    zh: {
+      name: '用户管理'
+    },
+    'pt-br': {
+      name: 'Usuário'
+    },
+    icon: 'user',
+    route: '/user',
+  },
+  {
+    id: '93',
+    breadcrumbParentId: '9',
+    menuParentId: '9',
+    name: 'tool',
+    zh: {
+      name: '参数设置'
+    },
+    icon: 'tool',
+    route: '/tool'
+  },
+  {
+    id: '10',
+    name: 'platform',
+    zh: {
+      name: '平台管理'
+    },
+    icon: 'global',
+  },
+  {
+    id: '101',
+    breadcrumbParentId: '10',
+    menuParentId: '10',
+    name: 'administrator',
+    zh: {
+      name: '超级账号'
+    },
+    icon: 'team',
+    route: '/administrator',
+  },
+  {
+    id: '102',
+    breadcrumbParentId: '10',
+    menuParentId: '10',
+    name: 'Sources',
+    zh: {
+      name: '爬虫配置'
+    },
+    icon: 'form',
+    route: '/sources'
+  },
+  {
+    id: '103',
+    breadcrumbParentId: '10',
+    menuParentId: '10',
+    name: 'Spider',
+    zh: {
+      name: '爬虫任务'
+    },
+    icon: 'bug',
+    route: '/spider',
   },
   {
     id: '21',

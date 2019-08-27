@@ -11,6 +11,9 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalVisible: false,
     modalType: 'create',
+    spiderModalvisible: false,
+    spiderCurrentItem: {},
+    spiderModalType: 'create'
   },
 
   subscriptions: {
@@ -76,14 +79,17 @@ export default modelExtend(pageModel, {
       }
     },
     *create({ payload }, { call, put }) {
-      const postData = []
-      postData.push(payload)
+      // const postData = []
+      // postData.push(payload)
       const data = yield axios({
-        url: 'http://139.196.86.217:8089/info/site/batch/insert',
+        url: 'http://139.196.86.217:8089/info/site/add',
         method: 'post',
         headers: { 'content-type': 'application/json' },
         data: JSON.stringify({
-          entities: postData,
+          entity: {
+            ...payload,
+          },
+
         }),
       })
       if (data.status === 200) {
@@ -117,11 +123,13 @@ export default modelExtend(pageModel, {
       // const data = yield call(removeUser, { id: payload })
 
       const data = yield axios({
-        url: 'http://139.196.86.217:8089/info/site/batch/hardRemove',
+        url: 'http://139.196.86.217:8089/info/site/hardRemove',
         method: 'post',
         headers: { 'content-type': 'application/json' },
         data: JSON.stringify({
-          longIds: [payload],
+          entity:{
+            id: payload
+          }
         }),
       })
       if (data.status === 200) {
@@ -141,6 +149,12 @@ export default modelExtend(pageModel, {
 
     hideModal(state) {
       return { ...state, modalVisible: false }
+    },
+    spiderShowModal(state, { payload }) {
+      return { ...state, ...payload, spiderModalVisible: true }
+    },
+    spiderHideModal(state) {
+      return { ...state, spiderModalVisible: false }
     },
     initialSuccess(state, { payload }) {
       return {
