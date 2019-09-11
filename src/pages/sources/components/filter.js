@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Form, Button, Select, Row, Col, Input } from 'antd'
-import { ColProps, createOptions } from '../../common/index'
+import { Form, Button, Select, Input } from 'antd'
+import { createOptions } from '../../common/index'
 import styles from './filter.less'
 
-const { Option } = Select
 const { Search } = Input
 const FormItem = Form.Item
 
@@ -32,22 +31,6 @@ class FilterComponent extends Component {
           )}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('siteType')(
-            createOptions(constant.siteType, '网站属性')
-          )}
-        </FormItem>
-        <FormItem>
-          {getFieldDecorator('siteAbroad')(
-            createOptions(constant.siteAbroad, '网站归属')
-          )}
-        </FormItem>
-        <FormItem>
-          {getFieldDecorator('siteGfw')(
-            createOptions(constant.siteGfw, '是否翻墙')
-          )}
-        </FormItem>
-
-        <FormItem>
           <Button
             type="primary"
             onClick={this.handleSubmit}
@@ -70,6 +53,19 @@ FilterComponent.propTypes = {
   filter: PropTypes.object,
   onFilterChange: PropTypes.func,
 }
+
 export default Form.create({
-  onValuesChange: (props, changedValues ) => { props.onFilterChange(changedValues)}
+  onValuesChange: (props, changedValues) => {
+    props.onChange(changedValues)
+  },
+  mapPropsToFields: (props) => {
+    return {
+      siteName: Form.createFormField({
+        value: props.searchForm.siteName
+      }),
+      categoryId: Form.createFormField({
+        value: props.searchForm.categoryId
+      }),
+    }
+  }
 })(FilterComponent)

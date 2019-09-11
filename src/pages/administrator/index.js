@@ -8,8 +8,28 @@ import Modal from './components/modal';
 @connect(({ administrator, loading }) => ({ administrator, loading }))
 class SiteComponent extends PureComponent {
   get filterProps() {
-    const { dispatch } = this.props;
+    const { dispatch, administrator } = this.props;
+    const { searchForm={} } = administrator
     return {
+      searchForm,
+      onChange: (payload) => {
+        dispatch({
+          type: 'administrator/changeSearchForm',
+          payload
+        })
+      },
+      onSearch: (payload) => {
+        dispatch({
+          type: 'administrator/pagination',
+          payload: {
+            current: 1
+          }
+        })
+        dispatch({
+          type: 'administrator/query',
+          payload
+        })
+      },
       onAddItem: (payload) => {
         dispatch({
           type: 'administrator/showModal',
@@ -19,12 +39,31 @@ class SiteComponent extends PureComponent {
     }
   }
   get listProps() {
-    const { dispatch } = this.props;
+    const { dispatch, administrator, loading } = this.props;
+    const { list=[], pagination={}, searchForm={} } = administrator
     return {
-      onEditItem: (payload) => {
+      list,
+      loading,
+      pagination,
+      onHandlePagination: (page) => {
+        dispatch({
+          type: 'administrator/pagination',
+          payload: page
+        })
+        dispatch({
+          type: 'administrator/query',
+          payload: searchForm,
+          pageNum: page.current,
+          pageSize: page.pageSize,
+        })
+      },
+      onEditItem: (item) => {
         dispatch({
           type: 'administrator/showModal',
-          payload
+          payload: {
+            modalType: 'update',
+            currentItem: item
+          }
         })
       },
       onDeleteItem: (payload) => {
@@ -48,10 +87,10 @@ class SiteComponent extends PureComponent {
       title: `${modalType === 'create' ? '新建' : '编辑'}`,
       centered: true,
       onOk: data => {
-        // dispatch({
-        //   type: `administrator/${modalType}`,
-        //   payload: data,
-        // })
+        dispatch({
+          type: `administrator/${modalType}`,
+          payload: data,
+        })
       },
       onCancel() {
         dispatch({

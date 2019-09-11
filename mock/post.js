@@ -1,7 +1,8 @@
-import { Mock, Constant, getCookieByName } from './_utils'
+import { Mock, Constant, getCookieByName, reqFetch } from './_utils'
 import rp from 'request-promise';
 import { isNil } from 'lodash';
 import { googleApi } from '../src/pages/common/trans';
+import { jinshanApi } from '../src/pages/common/jinshan';
 
 const { ApiPrefix } = Constant
 
@@ -66,10 +67,11 @@ module.exports = {
     })
   },
   [`POST ${ApiPrefix}/translate`](req, res) {
+    // 金山翻译
     const { title, content } = req.body
-    const titleReq = googleApi(title)
+    const titleReq = jinshanApi(title)
     const contentArr = content.split('\r\n');
-    const contentArrReq = contentArr.filter(item => !!item).map(item => googleApi(item))
+    const contentArrReq = contentArr.filter(item => !!item).map(item => jinshanApi(item))
     Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
       res.status(200).json({
         data: {
@@ -84,7 +86,25 @@ module.exports = {
         }
       })
     })
-
+    // google 翻译API
+    // const { title, content } = req.body
+    // const titleReq = googleApi(title)
+    // const contentArr = content.split('\r\n');
+    // const contentArrReq = contentArr.filter(item => !!item).map(item => googleApi(item))
+    // Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
+    //   res.status(200).json({
+    //     data: {
+    //       title: titleRes && titleRes.result && titleRes.result[0],
+    //       content: contentRes && contentRes.map(item => item.result && item.result.join(''))
+    //     }
+    //   })
+    // }).catch((err) => {
+    //   res.status(400).json({
+    //     data: {
+    //       error: err
+    //     }
+    //   })
+    // })
   },
   [`GET ${ApiPrefix}/posts`](req, res) {
     const { query } = req

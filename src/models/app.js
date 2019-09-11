@@ -16,13 +16,13 @@ export default {
   namespace: 'app',
   state: {
     routeList: [
-      {
-        id: '1',
-        icon: 'laptop',
-        name: 'Dashboard',
-        zhName: '仪表盘',
-        router: '/dashboard',
-      },
+      // {
+      //   id: '1',
+      //   icon: 'laptop',
+      //   name: 'Dashboard',
+      //   zhName: '仪表盘',
+      //   router: '/dashboard',
+      // },
     ],
     locationPathname: '',
     locationQuery: {},
@@ -30,14 +30,14 @@ export default {
     theme: store.get('theme') || 'light',
     collapsed: store.get('collapsed') || false,
     notifications: [
-      {
-        title: 'New User is registered.',
-        date: new Date(Date.now() - 10000000),
-      },
-      {
-        title: 'Application has been approved.',
-        date: new Date(Date.now() - 50000000),
-      },
+      // {
+      //   title: 'New User is registered.',
+      //   date: new Date(Date.now() - 10000000),
+      // },
+      // {
+      //   title: 'Application has been approved.',
+      //   date: new Date(Date.now() - 50000000),
+      // },
     ],
   },
   subscriptions: {
@@ -74,17 +74,23 @@ export default {
     *query({ payload }, { call, put, select }) {
       // store isInit to prevent query trigger by refresh
       const isInit = store.get('isInit')
-      if (isInit) return
+      if (isInit) {
+        return
+      }
+
       const { locationPathname } = yield select(_ => _.app)
-      const { success, user } = yield call(queryUserInfo, payload)
-      if (success && user) {
+
+      const userInfo = yield call(queryUserInfo, {
+        ...payload,
+      })
+
+      const { success, user, permissions} = userInfo;
+
+      if (success) {
+
         const { list } = yield call(queryRouteList)
-        const { permissions } = user
         let routeList = list
-        if (
-          // permissions.role === ROLE_TYPE.ADMIN || permissions.role === ROLE_TYPE.DEVELOPER
-          permissions.role === ROLE_TYPE.ADMIN
-        ) {
+        if (permissions.role === ROLE_TYPE.ADMIN) {
           permissions.visit = list.map(item => item.id)
         } else {
           routeList = list.filter(item => {
@@ -118,9 +124,9 @@ export default {
     },
     *base({ payload }, { call, put}) {
       const constMap = yield request({
-        url: 'http://139.196.86.217:8089/info/constant/map',
+        url: 'http://139.196.86.217:8088/info/constant/map',
         method: 'post',
-        data: payload
+        data: payload || { entity: {}}
       })
       if (constMap) {
         store.set('appkey', '52af186d5198e43e')
@@ -131,14 +137,21 @@ export default {
           })
       }
     },
-    *signOut({ payload }, { call, put }) {
+    *signOut({ payload }, { call, put, select }) {
       const data = yield call(logoutUser)
       if (data.success) {
         store.set('routeList', [])
         store.set('permissions', { visit: [] })
         store.set('user', {})
         store.set('isInit', false)
-        yield put({ type: 'query' })
+        // yield put({ type: 'query' })
+        const { locationPathname } = yield select(_ => _.app)
+        router.push({
+          pathname: '/login',
+          search: stringify({
+            from: locationPathname,
+          }),
+        })
       } else {
         throw data
       }

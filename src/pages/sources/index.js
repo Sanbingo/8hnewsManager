@@ -6,8 +6,10 @@ import { connect } from 'dva'
 import { Pagination } from 'antd'
 import Filter from './components/filter'
 import Card from './components/card'
+import List from './components/list'
 import Modal from './components/modal'
 import Spider from './components/spider'
+import Columns from './components/columns'
 
 @connect(({ sources, loading }) => ({ sources, loading }))
 class SourcesComponent extends React.Component {
@@ -29,12 +31,19 @@ class SourcesComponent extends React.Component {
   get filterProps() {
     const { location, dispatch, sources } = this.props
     const { query } = location
-    const { constant } = sources
+    const { constant, searchForm } = sources
 
     return {
       constant,
+      searchForm,
       filter: {
         ...query,
+      },
+      onChange: (payload) => {
+        dispatch({
+          type: 'sources/changeSearchForm',
+          payload
+        })
       },
       onSearch: value => {
         dispatch({
@@ -58,15 +67,26 @@ class SourcesComponent extends React.Component {
       },
     }
   }
-  get cardProps() {
+  get listProps() {
     const { dispatch, sources, loading } = this.props
-    const { list, constant,  pagination, filter } = sources
+    const { list, constant, pagination, searchForm={} } = sources
     return {
       loading,
-      filter,
       list,
       constant,
       pagination,
+      onHandlePagination: (page) => {
+        dispatch({
+          type: 'sources/pagination',
+          payload: page
+        })
+        dispatch({
+          type: 'sources/query',
+          payload: searchForm,
+          pageNum: page.current,
+          pageSize: page.pageSize,
+        })
+      },
       onDeleteItem: id => {
         dispatch({
           type: 'sources/delete',
@@ -84,12 +104,20 @@ class SourcesComponent extends React.Component {
           },
         })
       },
+      onColumnsItem(item) {
+        dispatch({
+          type: 'sources/columnsShowModal',
+          payload: {
+            columnsModalType: 'update',
+            columnsCurrentItem: item,
+          },
+        })
+      },
       onSpiderItem(item) {
-        console.log('dispatch spider config modal....')
         dispatch({
           type: 'sources/spiderShowModal',
           payload: {
-            modalType: 'update',
+            spiderModalType: 'update',
             spiderCurrentItem: item,
           },
         })
@@ -129,6 +157,33 @@ class SourcesComponent extends React.Component {
       },
     }
   }
+  get columnsProps() {
+    const { dispatch, sources, loading } = this.props
+    const { columnsModalVisible, columnsCurrentItem, columnsModalType, constant } = sources
+
+    return {
+      item: columnsModalType === 'create' ? {} : columnsCurrentItem,
+      visible: columnsModalVisible,
+      constant,
+      width: 800,
+      destroyOnClose: true,
+      maskClosable: false,
+      confirmLoading: loading.effects[`sources/${columnsModalType}`],
+      title: `${columnsModalType === 'create' ? '新建' : '编辑'}`,
+      centered: true,
+      onOk: data => {
+        dispatch({
+          type: 'sources/addColumns',
+          payload: data,
+        })
+      },
+      onCancel() {
+        dispatch({
+          type: 'sources/columnsHideModal',
+        })
+      },
+    }
+  }
   get spiderProps() {
     const { dispatch, sources, loading } = this.props
     const { spiderModalVisible, spiderCurrentItem, spiderModalType, constant } = sources
@@ -137,6 +192,7 @@ class SourcesComponent extends React.Component {
       item: spiderModalType === 'create' ? {} : spiderCurrentItem,
       visible: spiderModalVisible,
       constant,
+      width: 800,
       destroyOnClose: true,
       maskClosable: false,
       confirmLoading: loading.effects[`sources/${spiderModalType}`],
@@ -144,7 +200,7 @@ class SourcesComponent extends React.Component {
       centered: true,
       onOk: data => {
         dispatch({
-          type: `sources/${spiderModalType}`,
+          type: 'sources/spiderConfig',
           payload: data,
         })
       },
@@ -159,8 +215,9 @@ class SourcesComponent extends React.Component {
     return (
       <Page inner>
         <Filter {...this.filterProps} />
-        <Card {...this.cardProps} />
+        <List {...this.listProps} />
         <Modal {...this.modalProps} />
+        <Columns {...this.columnsProps} />
         <Spider {...this.spiderProps} />
       </Page>
     )

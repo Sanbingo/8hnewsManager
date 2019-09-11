@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Select, Radio, Button, Input, Modal } from 'antd'
+import { Form, Select, Radio, Button, Switch, Input, Modal } from 'antd'
 import { createOptions, createRadios } from '../../common'
 
 const FormItem = Form.Item
@@ -30,15 +30,33 @@ class SourcesModal extends Component {
       onOk(data)
     })
   }
+  renderVerifyConfig() {
+    const { form: { getFieldDecorator, getFieldValue }, item={} } = this.props
+    const isVerify = getFieldValue('spiderConfigVerify')
+    if (isVerify === 0) {
+      return (
+        <FormItem label="登陆Xpath">
+          {getFieldDecorator('verifyXpath', {
+            initialValue: item.verifyXpath,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input />)}
+        </FormItem>
+      );
+    }
+  }
   render() {
     const { item = {}, onOk, form, constant = {}, ...modalProps } = this.props
     const { getFieldDecorator } = form
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
         <Form layout="horizontal" {...formItemLayout}>
-          <FormItem label="网站名称">
-            {getFieldDecorator('siteName', {
-              initialValue: item.siteName,
+          <FormItem label="链接正则">
+            {getFieldDecorator('linksRegex', {
+              initialValue: item.linksRegex,
               rules: [
                 {
                   required: true,
@@ -46,9 +64,9 @@ class SourcesModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label="网站地址">
-            {getFieldDecorator('siteUrl', {
-              initialValue: item.siteUrl,
+          <FormItem label="标题XPath">
+            {getFieldDecorator('titleXpath', {
+              initialValue: item.titleXpath,
               rules: [
                 {
                   required: true,
@@ -56,50 +74,36 @@ class SourcesModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label="网站类型">
-            {getFieldDecorator('categoryId', {
-              initialValue: item.categoryId,
+          <FormItem label="内容XPath">
+            {getFieldDecorator('contentXpath', {
+              initialValue: item.contentXpath,
               rules: [
                 {
                   required: true,
                 },
               ],
-            })(createRadios(constant.categoryId))}
+            })(<Input />)}
           </FormItem>
-          <FormItem label="网站属性">
-            {getFieldDecorator('siteType', {
-              initialValue: item.siteType,
+          <FormItem label="验证">
+            {getFieldDecorator('spiderConfigVerify', {
+              initialValue: item.spiderConfigVerify,
               rules: [
                 {
                   required: true,
                 },
               ],
-            })(createRadios(constant.siteType))}
+            })(createRadios({0: '开启', 1: '关闭'}))}
           </FormItem>
-          <FormItem label="网站归属">
-            {getFieldDecorator('siteAbroad', {
-              initialValue: item.siteAbroad,
+          {this.renderVerifyConfig()}
+          <FormItem label="环境">
+            {getFieldDecorator('spiderConfigType', {
+              initialValue: item.spiderConfigType,
               rules: [
                 {
                   required: true,
                 },
               ],
-            })(createRadios(constant.siteAbroad))}
-          </FormItem>
-          <FormItem label="是否翻墙">
-            {getFieldDecorator('siteGfw', {
-              initialValue: item.siteGfw,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(createRadios(constant.siteGfw))}
-          </FormItem>
-          <FormItem label="网站备注">
-            {getFieldDecorator('siteRemark', {
-              initialValue: item.siteRemark,
-            })(<TextArea />)}
+            })(createRadios({0: '线上', 1: '测试'}))}
           </FormItem>
         </Form>
       </Modal>

@@ -1,5 +1,5 @@
 import request from 'request';
-import { Mock, Constant, qs, randomAvatar } from './_utils'
+import { Mock, Constant, ReqWithAuth, randomAvatar } from './_utils'
 
 const { ApiPrefix } = Constant
 
@@ -61,12 +61,21 @@ let usersListData = Mock.mock({
 let database = usersListData.data
 
 module.exports = {
-  [`GET ${ApiPrefix}/sources`](req, res) {
-    // const { query } = req
-    res.status(200).json({
-      data: database,
-      total: database.length,
-    })
+  // 查询
+  [`POST ${ApiPrefix}/sources`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/site/queryList')
+  },
+  // 新建
+  [`POST ${ApiPrefix}/source`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/site/add')
+  },
+  // 添加栏目
+  [`POST ${ApiPrefix}/addcolumnsdata`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/site/update')
+  },
+  // 添加爬虫配置
+  [`POST ${ApiPrefix}/addspiderconfig`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/spider/config/add')
   },
   [`GET ${ApiPrefix}/search`](req, res) {
     const { query } = req

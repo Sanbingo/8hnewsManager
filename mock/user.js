@@ -1,5 +1,14 @@
-import { Mock, Constant, qs, randomAvatar, reqFetch } from './_utils'
+import { Mock, Constant, qs, randomAvatar } from './_utils'
 import rp from 'request-promise';
+
+const ROLE_TYPE = {
+  SUPERADMIN: 0,
+  ADMINISTRATOR: 1,
+  EMPLOYEE: 2,
+  ADMIN: 'admin',
+  DEFAULT: 'admin',
+  DEVELOPER: 'developer',
+}
 
 const { ApiPrefix } = Constant
 
@@ -26,11 +35,24 @@ let database = usersListData.data
 
 const EnumRoleType = {
   ADMIN: 'admin',
-  DEFAULT: 'guest',
+  DEFAULT: 'default',
   DEVELOPER: 'developer',
 }
 
 const userPermission = {
+  [ROLE_TYPE.SUPERADMIN]: {
+    // visit: ['1', '6', '8', '9', '91', '92', '93', '10', '101', '102', '103', '104'],
+    visit: ['101', '102', '103', '104', '105'],
+    role: ROLE_TYPE.SUPERADMIN,
+  },
+  [ROLE_TYPE.ADMINISTRATOR]: {
+    visit: ['1', '6', '8', '9', '91', '92'],
+    role: ROLE_TYPE.ADMINISTRATOR,
+  },
+  [ROLE_TYPE.EMPLOYEE]: {
+    visit: ['6', '8'],
+    role: ROLE_TYPE.EMPLOYEE,
+  },
   DEFAULT: {
     visit: ['6', '8'],
     role: EnumRoleType.DEFAULT,
@@ -149,23 +171,31 @@ module.exports = {
   },
   [`POST ${ApiPrefix}/user/login`](req, res) {
     const { username, password } = req.body
-    const user = adminUsers.filter(item => item.username === username)
-
-    if (user.length > 0 && user[0].password === password) {
+    rp({
+      uri: 'http://139.196.86.217:8088/info/test/auth/login',
+      method: 'POST',
+      body: {
+        userAcc: username,
+        passWord: password
+      },
+      json: true,
+      resolveWithFullResponse: true
+    }).then(({headers, body}, other) => {
       const now = new Date()
       now.setDate(now.getDate() + 1)
-      res.cookie(
-        'token',
-        JSON.stringify({ id: user[0].id, deadline: now.getTime() }),
-        {
-          maxAge: 900000,
-          httpOnly: true,
-        }
-      )
-      res.json({ success: true, message: 'Ok' })
-    } else {
+        res.cookie(
+          'token',
+          JSON.stringify({ id: body.data.roles[0].roleType, deadline: now.getTime(), key: headers.authorization }),
+          {
+            maxAge: 365*24*60*60,
+            httpOnly: true,
+          }
+        )
+      res.json({ success: true, message: 'Ok', data: body.data })
+    }).catch((err) => {
+      console.log('err...', err)
       res.status(400).end()
-    }
+    })
   },
 
   [`GET ${ApiPrefix}/user/logout`](req, res) {
@@ -174,25 +204,24 @@ module.exports = {
   },
 
   [`GET ${ApiPrefix}/user`](req, res) {
+    const { username } = req.query
     const cookie = req.headers.cookie || ''
     const cookies = qs.parse(cookie.replace(/\s/g, ''), { delimiter: ';' })
     const response = {}
-    let user = {}
+    let user = {
+      avatar: randomAvatar(),
+      username
+    }
     if (!cookies.token) {
-      res.status(200).send({ message: 'Not Login' })
+      res.status(401).send({ message: 'token无效，请重新登录~' })
       return
     }
     const token = JSON.parse(cookies.token)
-    if (token) {
-      response.success = token.deadline > new Date().getTime()
+    if (token && token.deadline < new Date().getTime()) {
+      res.status(401).send({ message: 'token无效，请重新登录~' })
+      return
     }
-    if (response.success) {
-      const userItem = adminUsers.find(_ => _.id === token.id)
-      if (userItem) {
-        const { password, ...other } = userItem
-        user = other
-      }
-    }
+    response.permissions = userPermission[token.id]
     response.user = user
     res.json(response)
   },

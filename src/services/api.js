@@ -16,14 +16,29 @@ export default {
 
   queryDashboard: '/dashboard',
 
-  querySourcesList: '/sources',
+  addColumnsData: 'POST /addcolumnsdata',
+  addSpiderConfig: 'POST /addspiderconfig',
+  querySourcesList: 'POST /sources',
   querySources: '/sources/:id',
-  createSources: 'POST /sources',
+  createSources: 'POST /source',
   removeSources: 'DELETE /sources/:id',
   updateSources: 'Patch /sources/:id',
   searchKeyWord: '/search',
   queryBaseData: '/base',
   createPosts: 'POST /create',
   getWPToken: 'POST /token',
-  transApi: 'POST /translate'
+  transApi: 'POST /translate',
+  transJinShan: 'POST /translate/jinshan',
+  transGoogle: 'POST /translate/google',
+  queryCooperateList: 'POST /cooperates',
+  createCooperate: 'POST /cooperate',
+  querySpiderCfgList: 'POST /spiders',
+  createSpiderCfg: 'POST /spider',
+  queryEmployeeList: 'POST /employees',
+  createEmployee: 'POST /employee',
+  querySiteList: 'POST /sites',
+  createSite: 'POST /site',
+  queryTagsList: 'POST /tags',
+  getAllTags: 'POST /all-tags',
+  createTags: 'POST /tag'
 }

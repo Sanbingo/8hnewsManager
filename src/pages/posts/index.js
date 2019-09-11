@@ -20,7 +20,6 @@ class Posts extends React.PureComponent {
           type: 'posts/changeSearchForm',
           payload
         })
-
       },
       onSearch: (payload) => {
         dispatch({

@@ -3,14 +3,110 @@ import { Page } from 'components';
 import { connect } from 'dva'
 import Filter from './components/filter';
 import List from './components/list';
+import Modal from './components/modal';
 
-@connect(({ sites, loading }) => ({ sites, loading }))
+@connect(({ site, loading }) => ({ site, loading }))
 class SiteComponent extends PureComponent {
+  get filterProps() {
+    const { dispatch, site } = this.props;
+    const { searchForm={} } = site
+    return {
+      searchForm,
+      onChange: (payload) => {
+        dispatch({
+          type: 'site/changeSearchForm',
+          payload
+        })
+      },
+      onSearch: (payload) => {
+        dispatch({
+          type: 'site/pagination',
+          payload: {
+            current: 1
+          }
+        })
+        dispatch({
+          type: 'site/query',
+          payload
+        })
+      },
+      onAddItem: (payload) => {
+        dispatch({
+          type: 'site/showModal',
+          payload
+        })
+      }
+    }
+  }
+  get listProps() {
+    const { dispatch, site, loading } = this.props;
+    const { list=[], pagination={}, searchForm={} } = site
+    return {
+      list,
+      loading,
+      pagination,
+      onHandlePagination: (page) => {
+        dispatch({
+          type: 'site/pagination',
+          payload: page
+        })
+        dispatch({
+          type: 'site/query',
+          payload: searchForm,
+          pageNum: page.current,
+          pageSize: page.pageSize,
+        })
+      },
+      onEditItem: (item) => {
+        dispatch({
+          type: 'site/showModal',
+          payload: {
+            modalType: 'update',
+            currentItem: item
+          }
+        })
+      },
+      onDeleteItem: (payload) => {
+        dispatch({
+          type: 'site/delete',
+          payload
+        })
+      }
+    }
+  }
+  get modalProps() {
+    const { dispatch, site, loading } = this.props
+    const { currentItem, modalVisible, modalType } = site
+
+    return {
+      item: modalType === 'create' ? {} : currentItem,
+      visible: modalVisible,
+      destroyOnClose: true,
+      maskClosable: false,
+      confirmLoading: loading.effects[`site/${modalType}`],
+      title: `${modalType === 'create' ? '新建' : '编辑'}`,
+      centered: true,
+      onOk: data => {
+        console.log('disptach ok', data);
+        dispatch({
+          type: `site/${modalType}`,
+          payload: data,
+        })
+      },
+      onCancel() {
+        dispatch({
+          type: 'site/hideModal',
+        })
+      },
+    }
+  }
+
   render() {
     return (
       <Page inner>
-        <Filter />
-        <List />
+        <Filter {...this.filterProps}/>
+        <List {...this.listProps} />
+        <Modal {...this.modalProps} />
       </Page>
     );
   }

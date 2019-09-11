@@ -18,15 +18,15 @@ class SourcesModal extends Component {
   handleOk = () => {
     const { item = {}, onOk, form } = this.props
     const { validateFields, getFieldsValue } = form
-
+    console.log('handle ok', this.props)
     validateFields(errors => {
       if (errors) {
         return
       }
       const data = {
         ...getFieldsValue(),
-        key: item.key,
       }
+      console.log('formdata', data)
       onOk(data)
     })
   }
@@ -36,29 +36,9 @@ class SourcesModal extends Component {
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
         <Form layout="horizontal" {...formItemLayout}>
-          <FormItem label="账号">
-            {getFieldDecorator('adminName', {
-              initialValue: item.adminName,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-          <FormItem label="密码">
-            {getFieldDecorator('adminPassword', {
-              initialValue: item.adminPassword,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
           <FormItem label="公司">
-            {getFieldDecorator('company', {
-              initialValue: item.company,
+            {getFieldDecorator('cooperateName', {
+              initialValue: item.cooperateName,
               rules: [
                 {
                   required: true,
@@ -67,8 +47,8 @@ class SourcesModal extends Component {
             })(<Input />)}
           </FormItem>
           <FormItem label="客户姓名">
-            {getFieldDecorator('customer', {
-              initialValue: item.customer,
+            {getFieldDecorator('cooperatePersonName', {
+              initialValue: item.cooperatePersonName,
               rules: [
                 {
                   required: true,
@@ -77,8 +57,8 @@ class SourcesModal extends Component {
             })(<Input />)}
           </FormItem>
           <FormItem label="客户手机号">
-            {getFieldDecorator('mobile', {
-              initialValue: item.mobile,
+            {getFieldDecorator('cooperateContactInfo', {
+              initialValue: item.cooperateContactInfo,
               rules: [
                 {
                   required: true,

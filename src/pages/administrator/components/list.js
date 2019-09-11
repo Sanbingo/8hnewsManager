@@ -22,24 +22,25 @@ class ListComponent extends PureComponent {
     }
   }
   columns = [{
-    key: 'adminName',
-    dataIndex: 'adminName',
+    key: 'userAcc',
+    dataIndex: 'userAcc',
     title: '账号'
   }, {
-    key: 'adminPassword',
-    dataIndex: 'adminPassword',
+    key: 'userPwd',
+    dataIndex: 'userPwd',
     title: '密码',
+    render: () => 123456
   }, {
-    key: 'company',
-    dataIndex: 'company',
+    key: 'cooperateName',
+    dataIndex: 'cooperateName',
     title: '公司'
   }, {
-    key: 'customer',
-    dataIndex: 'customer',
+    key: 'cooperatePersonName',
+    dataIndex: 'cooperatePersonName',
     title: '客户姓名'
   }, {
-    key: 'mobile',
-    dataIndex: 'mobile',
+    key: 'cooperateContactInfo',
+    dataIndex: 'cooperateContactInfo',
     title: '客户手机号'
   }, {
     key: 'remark',
@@ -50,37 +51,29 @@ class ListComponent extends PureComponent {
     dataIndex: 'operator',
     title: '操作',
     render: (text, record) => {
-      return (
-        <DropOption
-          onMenuClick={e => this.handleMenuClick(record, e)}
-          menuOptions={[
-            { key: '1', name: '编辑' },
-            { key: '2', name: '删除' },
-          ]}
-        />
-      )
+      return '-'
+      // 暂不开放操作
+      // return (
+      //   <DropOption
+      //     onMenuClick={e => this.handleMenuClick(record, e)}
+      //     menuOptions={[
+      //       { key: '1', name: '编辑' },
+      //       { key: '2', name: '删除' },
+      //     ]}
+      //   />
+      // )
     }
   }]
   render() {
-    const { list=[] } = this.props;
+    const { list=[], pagination, onHandlePagination, loading } = this.props;
     return (
       <Table
         columns={this.columns}
-        dataSource={[{
-          adminName: 'zhangSan',
-          adminPassword: '123456',
-          company: 'xx网络科技有限公司',
-          customer: '张三',
-          mobile: '13980809090',
-          remark: '星级客户',
-        }, {
-          adminName: 'zhangSan',
-          adminPassword: '123456',
-          company: 'xx网络科技有限公司',
-          customer: '张三',
-          mobile: '13980809090',
-          remark: '星级客户',
-        }]}
+        dataSource={list}
+        rowKey="id"
+        loading={loading.effects['administrator/query']}
+        onChange={onHandlePagination}
+        pagination={pagination}
       />
     );
   }

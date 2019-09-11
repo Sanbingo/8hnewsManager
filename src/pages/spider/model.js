@@ -80,9 +80,9 @@ export default {
   effects: {
     *init({ payload = {}}, { call, put}) {
       const data = yield request({
-        url: 'http://139.196.86.217:8089/info/constant/map',
+        url: 'http://139.196.86.217:8088/info/constant/map',
         method: 'post',
-        data: payload
+        data: { entity: payload}
       })
       if (data) {
         yield put({
@@ -99,7 +99,7 @@ export default {
     },
     *query({ payload = {}, pageNum, pageSize }, { call, put }) {
       const data = yield request({
-        url: 'http://139.196.86.217:8089/info/spider/result/groupList',
+        url: 'http://139.196.86.217:8088/info/spider/result/groupList',
         method: 'post',
         data: {
           pageSize: pageSize || 10,
@@ -146,7 +146,7 @@ export default {
     },
     *expanded({ payload = '', pageNum, pageSize }, { call, put }) {
       const data = yield request({
-        url: 'http://139.196.86.217:8089/info/spider/result/detailList',
+        url: 'http://139.196.86.217:8088/info/spider/result/detailList',
         method: 'post',
         data: {
           pageSize: pageSize || 10,
@@ -173,7 +173,7 @@ export default {
     *detail({payload}, { call, put }){
       if (payload) {
         const data = yield request({
-          url: 'http://139.196.86.217:8089/info/spider/result/detail',
+          url: 'http://139.196.86.217:8088/info/spider/result/detail',
           method: 'post',
           data: {
             entity: {

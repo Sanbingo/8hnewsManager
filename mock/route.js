@@ -16,12 +16,12 @@ const database = [
   },
   {
     id: '6',
-    name: 'Sources',
+    name: 'news',
     zh: {
       name: '新闻源'
     },
     icon: 'appstore',
-    route: '/sources'
+    route: '/news'
   },
   {
     id: '7',
@@ -66,15 +66,12 @@ const database = [
     id: '92',
     breadcrumbParentId: '9',
     menuParentId: '9',
-    name: 'Users',
+    name: 'Employee',
     zh: {
-      name: '用户管理'
-    },
-    'pt-br': {
-      name: 'Usuário'
+      name: '员工管理'
     },
     icon: 'user',
-    route: '/user',
+    route: '/employee',
   },
   {
     id: '93',
@@ -97,36 +94,58 @@ const database = [
   },
   {
     id: '101',
-    breadcrumbParentId: '10',
-    menuParentId: '10',
-    name: 'administrator',
+    // breadcrumbParentId: '10',
+    // menuParentId: '10',
+    name: 'Sources',
     zh: {
-      name: '超级账号'
+      name: '采集管理'
     },
-    icon: 'team',
-    route: '/administrator',
+    icon: 'appstore',
+    route: '/sources'
   },
   {
     id: '102',
-    breadcrumbParentId: '10',
-    menuParentId: '10',
-    name: 'Sources',
+    // breadcrumbParentId: '10',
+    // menuParentId: '10',
+    name: 'spidercfg',
     zh: {
       name: '爬虫配置'
     },
     icon: 'form',
-    route: '/sources'
+    route: '/spidercfg'
   },
   {
     id: '103',
-    breadcrumbParentId: '10',
-    menuParentId: '10',
+    // breadcrumbParentId: '10',
+    // menuParentId: '10',
     name: 'Spider',
     zh: {
       name: '爬虫任务'
     },
     icon: 'bug',
     route: '/spider',
+  },
+  {
+    id: '104',
+    // breadcrumbParentId: '10',
+    // menuParentId: '10',
+    name: 'tags',
+    zh: {
+      name: '标签管理'
+    },
+    icon: 'tags',
+    route: '/tags'
+  },
+  {
+    id: '105',
+    // breadcrumbParentId: '10',
+    // menuParentId: '10',
+    name: 'administrator',
+    zh: {
+      name: '合作管理'
+    },
+    icon: 'team',
+    route: '/administrator',
   },
   {
     id: '21',

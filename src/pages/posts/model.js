@@ -7,7 +7,7 @@ import moment from 'moment'
 // import { youdaoTranslate } from '../common/youdao';
 // import { YOUDAO_ERROR_CODE } from '../common/consts'
 
-const { queryBaseData, searchKeyWord, createPosts, transApi } = api
+const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan, transGoogle } = api
 
 export default {
   namespace: 'posts',
@@ -46,12 +46,12 @@ export default {
   effects: {
     *init({ payload = {}}, { call, put}) {
       const constMap = yield request({
-        url: 'http://139.196.86.217:8089/info/constant/map',
+        url: 'http://139.196.86.217:8088/info/constant/map',
         method: 'post',
-        data: payload
+        data: { entity: payload }
       })
       const siteDomains = yield request({
-        url: 'http://139.196.86.217:8089/info/site/queryList',
+        url: 'http://139.196.86.217:8088/info/site/queryList',
         method: 'post',
         data: { pageNum: 1, pageSize: 100, entity: {}}
       })
@@ -73,7 +73,7 @@ export default {
       const { searchForm, pagination } = yield select(_ => _.posts);
       const { current, pageSize } = pagination
       const data = yield request({
-        url: 'http://139.196.86.217:8089/info/document/queryList',
+        url: 'http://139.196.86.217:8088/info/document/queryList',
         method: 'post',
         data: {
           pageSize,
@@ -139,7 +139,7 @@ export default {
     *detail({payload}, { call, put }){
       if (payload) {
         const data = yield request({
-          url: 'http://139.196.86.217:8089/info/document/detail',
+          url: 'http://139.196.86.217:8088/info/document/detail',
           method: 'post',
           data: {
             entity: {
@@ -164,7 +164,21 @@ export default {
     },
     *translate({ payload }, { call, put}) {
       // 方法一：使用免费的谷歌API
-      const {data, statusCode} = yield call(transApi, payload)
+      // console.log('payload', payload)
+      // const {data, statusCode} = yield call(transGoogle, payload)
+      // if (statusCode === 200) {
+      //   const { title, content} = data
+      //   yield put({
+      //     type: 'translateSuccess',
+      //     payload: {
+      //       title,
+      //       'content': content.join('<br /><br />')
+      //     }
+      //   })
+      // }
+      // 方法二：使用免费的金山词霸
+      console.log('payload', payload)
+      const {data, statusCode} = yield call(transJinShan, payload)
       if (statusCode === 200) {
         const { title, content} = data
         yield put({
@@ -176,7 +190,7 @@ export default {
         })
       }
 
-      // 方法二：使用付费的有道API
+      // 方法三：使用付费的有道API
       /*
       // 标题翻译
       const titleReq = youdaoTranslate(payload.title);

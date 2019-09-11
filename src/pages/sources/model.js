@@ -3,6 +3,9 @@ import { pathMatchRegexp } from 'utils'
 import { pageModel } from 'utils/model'
 import request from 'utils/request'
 import axios from 'axios'
+import api from 'api'
+
+const { querySourcesList, addColumnsData, getAllTags, addSpiderConfig } = api;
 
 export default modelExtend(pageModel, {
   namespace: 'sources',
@@ -11,9 +14,17 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalVisible: false,
     modalType: 'create',
+    columnsModalvisible: false,
+    columnsCurrentItem: {},
+    columnsModalType: 'create',
     spiderModalvisible: false,
     spiderCurrentItem: {},
-    spiderModalType: 'create'
+    spiderModalType: 'create',
+    searchForm: {},
+    pagination: {
+      current: 1,
+      pageSize: 10
+    }
   },
 
   subscriptions: {
@@ -37,12 +48,8 @@ export default modelExtend(pageModel, {
   },
   effects: {
     *initial({ payload = {} }, { call, put }) {
-      const data = yield request({
-        url: 'http://139.196.86.217:8089/info/constant/map',
-        method: 'post',
-        data: payload,
-      })
-      if (data) {
+      const { data, success } = yield call(getAllTags, {});
+      if (success) {
         yield put({
           type: 'initialSuccess',
           payload: {
@@ -51,27 +58,24 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    *query({ payload = {}, pageNum, pageSize }, { call, put }) {
-      // const data = yield call(querySourcesList, payload)
-      const data = yield request({
-        url: 'http://139.196.86.217:8089/info/site/queryList',
-        method: 'post',
-        data: {
-          pageSize: pageSize || 20,
-          pageNum: pageNum || 1,
-          entity: {
-            ...payload,
-          }
-        },
+    *query({ payload = {}}, { call, put, select }) {
+      const { searchForm, pagination } = yield select(_ => _.sources);
+      const { current, pageSize } = pagination
+      const {data, success } = yield call(querySourcesList, {
+        pageSize: 10,
+        pageNum: current,
+        entity: {
+          ...searchForm
+        }
       })
-      if (data) {
+      if (success) {
         yield put({
           type: 'querySuccess',
           payload: {
             list: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 20,
+              current,
+              pageSize,
               total: data.pageInfo.total,
             },
           },
@@ -82,7 +86,7 @@ export default modelExtend(pageModel, {
       // const postData = []
       // postData.push(payload)
       const data = yield axios({
-        url: 'http://139.196.86.217:8089/info/site/add',
+        url: 'http://139.196.86.217:8088/info/site/add',
         method: 'post',
         headers: { 'content-type': 'application/json' },
         data: JSON.stringify({
@@ -105,7 +109,7 @@ export default modelExtend(pageModel, {
       const newUser = { ...payload, id }
       // const data = yield call(updateUser, newUser)
       const data = yield axios({
-        url: 'http://139.196.86.217:8089/info/site/update',
+        url: 'http://139.196.86.217:8088/info/site/update',
         method: 'post',
         headers: { 'content-type': 'application/json' },
         data: JSON.stringify({
@@ -121,9 +125,8 @@ export default modelExtend(pageModel, {
     },
     *delete({ payload }, { call, put, select }) {
       // const data = yield call(removeUser, { id: payload })
-
       const data = yield axios({
-        url: 'http://139.196.86.217:8089/info/site/hardRemove',
+        url: 'http://139.196.86.217:8088/info/site/hardRemove',
         method: 'post',
         headers: { 'content-type': 'application/json' },
         data: JSON.stringify({
@@ -141,6 +144,52 @@ export default modelExtend(pageModel, {
         throw data
       }
     },
+    *addColumns({ payload }, {call, put, select}) {
+      const { columnsCurrentItem } = yield select(_ => _.sources);
+      const {
+        id,
+        siteName,
+        siteUrl,
+        siteRemark,
+        siteRank,
+        siteNotifyStatus
+      } = columnsCurrentItem
+      const { success, message } = yield call(addColumnsData, {
+        entity: {
+          id,
+          siteName,
+          siteUrl,
+          siteRemark,
+          siteRank,
+          siteNotifyStatus: 1,
+          ...payload
+        }
+      })
+
+      if ( success ) {
+        yield put({ type: 'query' })
+        yield put({ type: 'columnsHideModal' })
+      } else {
+        console.log('err', message)
+      }
+    },
+    *spiderConfig({payload}, {call, put, select}) {
+      const { spiderCurrentItem } = yield select( _ => _.sources)
+      const { siteId, siteSourceId } = spiderCurrentItem
+      const { success, message} = yield call(addSpiderConfig, {
+        entity: {
+          siteId,
+          siteSourceId,
+          ...payload
+        }
+      })
+      if (success) {
+        yield put({ type: 'query' })
+        yield put({ type: 'spiderHideModal' })
+      } else {
+        console.log('err', message)
+      }
+    }
   },
   reducers: {
     showModal(state, { payload }) {
@@ -149,6 +198,12 @@ export default modelExtend(pageModel, {
 
     hideModal(state) {
       return { ...state, modalVisible: false }
+    },
+    columnsShowModal(state, { payload }) {
+      return { ...state, ...payload, columnsModalVisible: true }
+    },
+    columnsHideModal(state) {
+      return { ...state, columnsModalVisible: false }
     },
     spiderShowModal(state, { payload }) {
       return { ...state, ...payload, spiderModalVisible: true }
@@ -162,14 +217,23 @@ export default modelExtend(pageModel, {
         ...payload,
       }
     },
-    filterChange(state, { payload }) {
+    changeSearchForm(state, { payload }) {
       return {
         ...state,
-        filter: {
-          ...state.filter,
+        searchForm: {
+          ...state.searchForm,
           ...payload
         }
       }
-    }
+    },
+    pagination(state, { payload }) {
+      return {
+        ...state,
+        pagination: {
+          ...state.pagination,
+          ...payload
+        }
+      }
+    },
   },
 })

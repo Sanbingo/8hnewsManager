@@ -1,28 +1,55 @@
 import React, { PureComponent } from 'react';
-import { Table } from 'antd';
+import { Table, Modal } from 'antd';
+import { isNil } from 'lodash';
 import { DropOption } from 'components'
+import { Trans, withI18n } from '@lingui/react'
 
-export default class ListComponent extends PureComponent {
+const { confirm } = Modal
+
+@withI18n()
+class ListComponent extends PureComponent {
+  handleMenuClick = (record, e) => {
+    const { onDeleteItem, onEditItem, i18n } = this.props
+
+    if (e.key === '1') {
+      onEditItem(record)
+    } else if (e.key === '2') {
+      confirm({
+        title: i18n.t`Are you sure delete this record?`,
+        onOk() {
+          onDeleteItem(record.id)
+        },
+      })
+    }
+  }
   columns = [{
-    key: 'siteName',
-    dataIndex: 'siteName',
+    key: 'dstSiteName',
+    dataIndex: 'dstSiteName',
     title: '站点名称'
   }, {
-    key: 'siteUrl',
-    dataIndex: 'siteUrl',
-    title: '站点地址',
+    key: 'dstSiteUrl',
+    dataIndex: 'dstSiteUrl',
+    title: '站点URL',
+  }, {
+    key: 'dstSiteRootAcc',
+    dataIndex: 'dstSiteRootAcc',
+    title: '管理员账号'
+  }, {
+    key: 'dstSiteRootPwd',
+    dataIndex: 'dstSiteRootPwd',
+    title: '管理员密码'
+  }, {
+    key: 'dstSiteAccPrefix',
+    dataIndex: 'dstSiteAccPrefix',
+    title: '站点前缀'
+  }, {
+    key: 'remark',
+    dataIndex: 'remark',
+    title: '备注',
     render: (text) => {
-      if (!text) return '-'
-      return <a href={text} target="__blank">{text}</a>
+      if (isNil(text)) return '-'
+      return text
     }
-  }, {
-    key: 'adminName',
-    dataIndex: 'adminName',
-    title: '管理者账号'
-  }, {
-    key: 'adminPassword',
-    dataIndex: 'adminPassword',
-    title: '管理者密码'
   }, {
     key: 'operator',
     dataIndex: 'operator',
@@ -40,22 +67,18 @@ export default class ListComponent extends PureComponent {
     }
   }]
   render() {
-    const { list=[] } = this.props;
+    const { list=[], pagination, onHandlePagination, loading } = this.props;
     return (
       <Table
         columns={this.columns}
-        dataSource={[{
-          siteName: '8小时资讯网',
-          siteUrl: 'http://www.8hnews.com',
-          adminName: 'aquaman',
-          adminPassword: 'Mima666'
-        }, {
-          siteName: '紫皮资讯网',
-          siteUrl: 'http://www.zipppp.com',
-          adminName: 'aquaman',
-          adminPassword: 'Mima666'
-        }]}
+        dataSource={list}
+        rowKey="id"
+        loading={loading.effects['site/query']}
+        onChange={onHandlePagination}
+        pagination={pagination}
       />
     );
   }
 }
+
+export default ListComponent;

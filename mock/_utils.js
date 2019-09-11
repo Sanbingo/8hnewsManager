@@ -1,4 +1,5 @@
 import request from 'request';
+import rp from 'request-promise'
 import { trim, isNil } from 'lodash';
 
 /**
@@ -93,4 +94,62 @@ export const getCookieByName = (cookie, name) => {
     return undefined;
   }
   return result.value
+}
+
+const PROD_PORT = 8089;
+const TEST_PORT = 8088;
+const env = 'test' ; // prod or test
+const Apis = {
+  prod: url => `http://139.196.86.217:${PROD_PORT}${url}`,
+  test: url => `http://139.196.86.217:${TEST_PORT}${url}`
+}
+
+export const ReqWithAuth = (req, res, url, method='POST') => {
+  const token = getCookieByName(req.headers.cookie, 'token')
+  const MakeApifix = Apis[env]
+  const uri = MakeApifix(url)
+  let authorization = ''
+  if (!token){
+    res.status(401).redirect('/zh/login')
+  } else {
+    const tokenInfo = JSON.parse(decodeURIComponent(token))
+    const now = new Date().getTime()
+    if (now > tokenInfo.deadline) {
+      res.status(401).redirect('/zh/login')
+    } else {
+      authorization = tokenInfo && tokenInfo.key
+    }
+  }
+  console.info('[API Request]=>', uri, method)
+  rp({
+    uri,
+    method,
+    body: req.body,
+    json: true,
+    headers: {
+      'Authorization': authorization
+    }
+  }).then((data) => {
+    console.info('[API Done]=>', uri)
+    if (data && data.meta && data.meta.success) {
+      res.status(200).json({
+        status: 0,
+        data: data,
+        message: 'ok',
+        success: true
+      })
+    } else {
+      res.status(200).json({
+        status: 1002,
+        data: null,
+        message: data && data.meta && data.meta.message,
+        success: false
+      })
+    }
+  }).catch((err) => {
+    res.status(200).json({
+      status: 1002,
+      message: err && err.message
+    })
+  })
 }
