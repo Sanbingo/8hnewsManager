@@ -88,6 +88,12 @@ class NewsComponent extends React.Component {
           },
         })
       },
+      onDeleteItem(id){
+        dispatch({
+          type: 'news/delete',
+          payload: id,
+        })
+      },
       onPaginationChange(current) {
         dispatch({
           type: 'news/query',

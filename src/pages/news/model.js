@@ -5,7 +5,7 @@ import request from 'utils/request'
 import axios from 'axios'
 import api from 'api'
 
-const { querySourcesList, createSources } = api
+const { querySourcesList, createSources, sourceUpdate, getAllTags, sourceDelete } = api
 
 export default modelExtend(pageModel, {
   namespace: 'news',
@@ -42,12 +42,8 @@ export default modelExtend(pageModel, {
   },
   effects: {
     *initial({ payload = {} }, { call, put }) {
-      const data = yield request({
-        url: 'http://139.196.86.217:8088/info/constant/map',
-        method: 'post',
-        data: { entity: payload },
-      })
-      if (data) {
+      const { data, success } = yield call(getAllTags, {});
+      if (success) {
         yield put({
           type: 'initialSuccess',
           payload: {
@@ -95,38 +91,38 @@ export default modelExtend(pageModel, {
     },
 
     *update({ payload }, { select, call, put }) {
-      const id = yield select(({ news }) => news.currentItem.id)
-      const newUser = { ...payload, id }
-      // const data = yield call(updateUser, newUser)
-      const data = yield axios({
-        url: 'http://139.196.86.217:8088/info/site/update',
-        method: 'post',
-        headers: { 'content-type': 'application/json' },
-        data: JSON.stringify({
-          entity: newUser,
-        }),
+      const { currentItem } = yield select(_ => _.news);
+      const {
+        id,
+        siteRank,
+        siteNotifyStatus,
+        sourceList,
+      } = currentItem
+      const { success, message } = yield call(sourceUpdate, {
+        entity: {
+          id,
+          siteName: payload.siteName,
+          siteUrl: payload.siteUrl,
+          siteRemark: payload.siteRemark,
+          siteRank,
+          siteNotifyStatus,
+          sourceList
+        }
       })
-      if (data.status === 200) {
+      if (success) {
         yield put({ type: 'query' })
         yield put({ type: 'hideModal' })
       } else {
-        throw data
+        throw message
       }
     },
     *delete({ payload }, { call, put, select }) {
-      // const data = yield call(removeUser, { id: payload })
-
-      const data = yield axios({
-        url: 'http://139.196.86.217:8088/info/site/hardRemove',
-        method: 'post',
-        headers: { 'content-type': 'application/json' },
-        data: JSON.stringify({
-          entity:{
-            id: payload
-          }
-        }),
+      const {data, success } = yield call(sourceDelete, {
+        entity: {
+          id: payload
+        }
       })
-      if (data.status === 200) {
+      if (success) {
         yield put({
           type: 'query',
           payload: {},

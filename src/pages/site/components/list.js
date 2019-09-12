@@ -2,18 +2,21 @@ import React, { PureComponent } from 'react';
 import { Table, Modal } from 'antd';
 import { isNil } from 'lodash';
 import { DropOption } from 'components'
-import { Trans, withI18n } from '@lingui/react'
+import { withI18n } from '@lingui/react'
+import SubList from './subList'
 
 const { confirm } = Modal
 
 @withI18n()
 class ListComponent extends PureComponent {
   handleMenuClick = (record, e) => {
-    const { onDeleteItem, onEditItem, i18n } = this.props
+    const { onBindEmployee, onDeleteItem, onEditItem, i18n } = this.props
 
     if (e.key === '1') {
-      onEditItem(record)
+      onBindEmployee(record)
     } else if (e.key === '2') {
+      onEditItem(record)
+    } else if (e.key === '3') {
       confirm({
         title: i18n.t`Are you sure delete this record?`,
         onOk() {
@@ -59,8 +62,9 @@ class ListComponent extends PureComponent {
         <DropOption
           onMenuClick={e => this.handleMenuClick(record, e)}
           menuOptions={[
-            { key: '1', name: '编辑' },
-            { key: '2', name: '删除' },
+            { key: '1', name: '添加员工' },
+            { key: '2', name: '编辑' },
+            { key: '3', name: '删除' },
           ]}
         />
       )
@@ -73,6 +77,9 @@ class ListComponent extends PureComponent {
         columns={this.columns}
         dataSource={list}
         rowKey="id"
+        expandedRowRender={(record) => {
+          return <SubList data={record.users || []} />
+        }}
         loading={loading.effects['site/query']}
         onChange={onHandlePagination}
         pagination={pagination}

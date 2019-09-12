@@ -4,6 +4,7 @@ import { connect } from 'dva'
 import Filter from './components/filter';
 import List from './components/list';
 import Modal from './components/modal';
+import Bind from './components/bind';
 
 @connect(({ site, loading }) => ({ site, loading }))
 class SiteComponent extends PureComponent {
@@ -57,6 +58,19 @@ class SiteComponent extends PureComponent {
           pageSize: page.pageSize,
         })
       },
+      onBindEmployee: (item) => {
+        dispatch({
+          type: 'site/bindShowModal',
+          payload: {
+            bindModalType: 'update',
+            bindCurrentItem: item
+          }
+        })
+        dispatch({
+          type: 'site/employees',
+          payload: {}
+        })
+      },
       onEditItem: (item) => {
         dispatch({
           type: 'site/showModal',
@@ -100,6 +114,32 @@ class SiteComponent extends PureComponent {
       },
     }
   }
+  get bindProps() {
+    const { dispatch, site, loading } = this.props
+    const { bindCurrentItem, bindModalVisible, bindModalType, employees } = site
+
+    return {
+      item: bindModalType === 'create' ? {} : bindCurrentItem,
+      visible: bindModalVisible,
+      destroyOnClose: true,
+      maskClosable: false,
+      confirmLoading: loading.effects[`site/${bindModalType}`],
+      title: `${bindModalType === 'create' ? '新建' : '绑定员工'}`,
+      centered: true,
+      employees,
+      onOk: data => {
+        dispatch({
+          type: `site/${bindModalType}`,
+          payload: data,
+        })
+      },
+      onCancel() {
+        dispatch({
+          type: 'site/bindHideModal',
+        })
+      },
+    }
+  }
 
   render() {
     return (
@@ -107,6 +147,7 @@ class SiteComponent extends PureComponent {
         <Filter {...this.filterProps}/>
         <List {...this.listProps} />
         <Modal {...this.modalProps} />
+        <Bind {...this.bindProps} />
       </Page>
     );
   }

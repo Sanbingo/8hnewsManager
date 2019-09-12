@@ -69,8 +69,12 @@ module.exports = {
   [`POST ${ApiPrefix}/source`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/site/add')
   },
+  // 删除
+  [`POST ${ApiPrefix}/sourceDelete`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/site/hardRemove')
+  },
   // 添加栏目
-  [`POST ${ApiPrefix}/addcolumnsdata`]: async (req, res) => {
+  [`POST ${ApiPrefix}/sourceUpdate`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/site/update')
   },
   // 添加爬虫配置

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Form, Button, Select, Row, Col, Input } from 'antd'
-import { ColProps, createOptions } from '../../common/index'
+import { arrayToMapObject, createOptions } from '../../common/index'
 import styles from './filter.less'
 
 const { Option } = Select
@@ -25,6 +25,11 @@ class FilterComponent extends Component {
       <Form layout="inline" className={styles.mb15}>
         <FormItem>
           {getFieldDecorator('siteName')(<Search placeholder="网站名称" />)}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('categoryId')(
+            createOptions(arrayToMapObject(constant, 'categoryId', 'categoryName'), '网站类型')
+          )}
         </FormItem>
         <FormItem>
           <Button

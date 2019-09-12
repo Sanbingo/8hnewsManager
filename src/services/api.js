@@ -16,7 +16,8 @@ export default {
 
   queryDashboard: '/dashboard',
 
-  addColumnsData: 'POST /addcolumnsdata',
+  sourceUpdate: 'POST /sourceUpdate',
+  sourceDelete: 'POST /sourceDelete',
   addSpiderConfig: 'POST /addspiderconfig',
   querySourcesList: 'POST /sources',
   querySources: '/sources/:id',
@@ -38,6 +39,7 @@ export default {
   createEmployee: 'POST /employee',
   querySiteList: 'POST /sites',
   createSite: 'POST /site',
+  updateSite: 'POST /siteUpdate',
   queryTagsList: 'POST /tags',
   getAllTags: 'POST /all-tags',
   createTags: 'POST /tag'

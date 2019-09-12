@@ -8,4 +8,7 @@ module.exports = {
   [`POST ${ApiPrefix}/site`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/site/dst/add');
   },
+  [`POST ${ApiPrefix}/siteUpdate`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/site/dst/update');
+  },
 }

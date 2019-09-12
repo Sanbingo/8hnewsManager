@@ -17,7 +17,7 @@ export default class UploadComponent extends React.Component {
     }
     return (
       <div>
-        <p class={style.addIcon}></p>
+        <p className={style.addIcon}></p>
       </div>
     )
   }
@@ -35,15 +35,15 @@ export default class UploadComponent extends React.Component {
             />
             </div>
             <div>
-              <div class={style.hotWord}>推荐热词: 华为、5G、Xbox、Switch、Steam、谷歌、微软</div>
-              <div class={style.picArea}>
+              <div className={style.hotWord}>推荐热词: 华为、5G、Xbox、Switch、Steam、谷歌、微软</div>
+              <div className={style.picArea}>
               {this.renderPictures(search)}
               </div>
             </div>
           </TabPane>
           <TabPane tab="本地上传" key="2">
             <div>
-              <p class={style.addIcon}></p>
+              <p className={style.addIcon}></p>
             </div>
           </TabPane>
         </Tabs>

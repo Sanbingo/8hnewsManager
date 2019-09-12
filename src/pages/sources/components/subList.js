@@ -37,6 +37,7 @@ export default class SubList extends PureComponent {
     const { data=[] } = this.props;
     return (
       <Table
+        rowKey="id"
         columns={this.columns}
         dataSource={data}
         pagination={false}

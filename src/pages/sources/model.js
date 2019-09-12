@@ -1,11 +1,10 @@
 import modelExtend from 'dva-model-extend'
 import { pathMatchRegexp } from 'utils'
 import { pageModel } from 'utils/model'
-import request from 'utils/request'
 import axios from 'axios'
 import api from 'api'
 
-const { querySourcesList, addColumnsData, getAllTags, addSpiderConfig } = api;
+const { querySourcesList, sourceUpdate, getAllTags, addSpiderConfig, createSources, sourceDelete } = api;
 
 export default modelExtend(pageModel, {
   namespace: 'sources',
@@ -83,20 +82,12 @@ export default modelExtend(pageModel, {
       }
     },
     *create({ payload }, { call, put }) {
-      // const postData = []
-      // postData.push(payload)
-      const data = yield axios({
-        url: 'http://139.196.86.217:8088/info/site/add',
-        method: 'post',
-        headers: { 'content-type': 'application/json' },
-        data: JSON.stringify({
-          entity: {
-            ...payload,
-          },
-
-        }),
+      const { success, data } = yield call(createSources, {
+        entity: {
+          ...payload
+        }
       })
-      if (data.status === 200) {
+      if (success) {
         yield put({ type: 'query' })
         yield put({ type: 'hideModal' })
       } else {
@@ -124,18 +115,12 @@ export default modelExtend(pageModel, {
       }
     },
     *delete({ payload }, { call, put, select }) {
-      // const data = yield call(removeUser, { id: payload })
-      const data = yield axios({
-        url: 'http://139.196.86.217:8088/info/site/hardRemove',
-        method: 'post',
-        headers: { 'content-type': 'application/json' },
-        data: JSON.stringify({
-          entity:{
-            id: payload
-          }
-        }),
+      const {data, success } = yield call(sourceDelete, {
+        entity: {
+          id: payload
+        }
       })
-      if (data.status === 200) {
+      if (success) {
         yield put({
           type: 'query',
           payload: {},
@@ -152,17 +137,18 @@ export default modelExtend(pageModel, {
         siteUrl,
         siteRemark,
         siteRank,
-        siteNotifyStatus
+        siteNotifyStatus,
+        sourceList
       } = columnsCurrentItem
-      const { success, message } = yield call(addColumnsData, {
+      const { success, message } = yield call(sourceUpdate, {
         entity: {
           id,
           siteName,
           siteUrl,
           siteRemark,
           siteRank,
-          siteNotifyStatus: 1,
-          ...payload
+          siteNotifyStatus,
+          sourceList: payload ? (sourceList ? [...sourceList, ...payload] : payload) : sourceList
         }
       })
 

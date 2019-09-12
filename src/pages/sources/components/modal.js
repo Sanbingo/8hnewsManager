@@ -36,71 +36,31 @@ class SourcesModal extends Component {
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
         <Form layout="horizontal" {...formItemLayout}>
-          <FormItem label="网站名称">
-            {getFieldDecorator('siteName', {
-              initialValue: item.siteName,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-          <FormItem label="网站地址">
-            {getFieldDecorator('siteUrl', {
-              initialValue: item.siteUrl,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-          <FormItem label="网站类型">
-            {getFieldDecorator('categoryId', {
-              initialValue: item.categoryId,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(createRadios(constant.categoryId))}
-          </FormItem>
-          <FormItem label="网站属性">
-            {getFieldDecorator('siteType', {
-              initialValue: item.siteType,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(createRadios(constant.siteType))}
-          </FormItem>
-          <FormItem label="网站归属">
-            {getFieldDecorator('siteAbroad', {
-              initialValue: item.siteAbroad,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(createRadios(constant.siteAbroad))}
-          </FormItem>
-          <FormItem label="是否翻墙">
-            {getFieldDecorator('siteGfw', {
-              initialValue: item.siteGfw,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(createRadios(constant.siteGfw))}
-          </FormItem>
-          <FormItem label="网站备注">
-            {getFieldDecorator('siteRemark', {
-              initialValue: item.siteRemark,
-            })(<TextArea />)}
-          </FormItem>
+        <FormItem label="网站名称">
+          {getFieldDecorator('siteName', {
+            initialValue: item.siteName,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input />)}
+        </FormItem>
+        <FormItem label="网站地址">
+          {getFieldDecorator('siteUrl', {
+            initialValue: item.siteUrl,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input />)}
+        </FormItem>
+        <FormItem label="网站备注">
+          {getFieldDecorator('siteRemark', {
+            initialValue: item.siteRemark,
+          })(<TextArea />)}
+        </FormItem>
         </Form>
       </Modal>
     )

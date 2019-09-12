@@ -53,12 +53,10 @@ class ColumnsModal extends Component {
         const { keys, names, category } = values;
         // console.log('Received values of form: ', values);
         // console.log('Merged values:', keys.map(key => names[key]));
-        onOk({
-          sourceList: keys.map(key => ({
-            siteUrl: names[key],
-            categoryId: category[key]
-          }))
-        })
+        onOk(keys.map(key => ({
+          siteUrl: names[key],
+          categoryId: category[key]
+        })))
       }
     });
   };
