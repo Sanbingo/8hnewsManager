@@ -107,7 +107,7 @@ class Posts extends React.PureComponent {
             payload: {},
           })
         }}>
-          确定
+          发布
         </Button>,
       ],
       onOk: (data) => {
