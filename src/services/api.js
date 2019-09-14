@@ -30,17 +30,4 @@ export default {
   getWPToken: 'POST /token',
   transApi: 'POST /translate',
   transJinShan: 'POST /translate/jinshan',
-  transGoogle: 'POST /translate/google',
-  queryCooperateList: 'POST /cooperates',
-  createCooperate: 'POST /cooperate',
-  querySpiderCfgList: 'POST /spiders',
-  createSpiderCfg: 'POST /spider',
-  queryEmployeeList: 'POST /employees',
-  createEmployee: 'POST /employee',
-  querySiteList: 'POST /sites',
-  createSite: 'POST /site',
-  updateSite: 'POST /siteUpdate',
-  queryTagsList: 'POST /tags',
-  getAllTags: 'POST /all-tags',
-  createTags: 'POST /tag'
 }

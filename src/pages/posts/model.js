@@ -7,7 +7,7 @@ import moment from 'moment'
 // import { youdaoTranslate } from '../common/youdao';
 // import { YOUDAO_ERROR_CODE } from '../common/consts'
 
-const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan, transGoogle } = api
+const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan } = api
 
 export default {
   namespace: 'posts',
@@ -123,7 +123,10 @@ export default {
         message.warning('请选择栏目~')
         return
       }
-      const data = yield call(createPosts, translation)
+      const data = yield call(createPosts, {
+        ...translation,
+        status: payload.status || 'publish'
+      })
       if (data.statusCode === 200) {
         message.success('创建成功')
         yield put({
@@ -164,8 +167,7 @@ export default {
     },
     *translate({ payload }, { call, put}) {
       // 方法一：使用免费的谷歌API
-      // console.log('payload', payload)
-      // const {data, statusCode} = yield call(transGoogle, payload)
+      // const {data, statusCode} = yield call(transApi, payload)
       // if (statusCode === 200) {
       //   const { title, content} = data
       //   yield put({

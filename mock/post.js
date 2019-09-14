@@ -42,8 +42,29 @@ const database = Mock.mock({
 }).data
 
 module.exports = {
+  [`POST ${ApiPrefix}/translate/jinshan`](req, res) {
+    // 金山翻译
+    const { title, content } = req.body
+    const titleReq = jinshanApi(title)
+    const contentArr = content.split('\r\n');
+    const contentArrReq = contentArr.filter(item => !!item).map(item => jinshanApi(item))
+    Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
+      res.status(200).json({
+        data: {
+          title: titleRes && titleRes.content && titleRes.content.out,
+          content: contentRes && contentRes.map(item => item.content && item.content.out)
+        }
+      })
+    }).catch((err) => {
+      res.status(400).json({
+        data: {
+          error: err
+        }
+      })
+    })
+  },
   [`POST ${ApiPrefix}/create`](req, res) {
-    const { title, content, categories } = req.body
+    const { title, content, categories, status } = req.body
     const wptoken = getCookieByName(req.headers.cookie, 'wptoken')
     if (isNil(wptoken)) {
       res.status(201).end()
@@ -52,6 +73,7 @@ module.exports = {
       uri: 'http://www.8hnews.com/wp-json/wp/v2/posts',
       method: 'POST',
       body: {
+        status,
         title,
         content,
         categories
