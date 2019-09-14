@@ -7,7 +7,7 @@ import moment from 'moment'
 // import { youdaoTranslate } from '../common/youdao';
 // import { YOUDAO_ERROR_CODE } from '../common/consts'
 
-const { queryBaseData, searchKeyWord, createPosts, transApi } = api
+const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan } = api
 
 export default {
   namespace: 'posts',
@@ -123,7 +123,10 @@ export default {
         message.warning('请选择栏目~')
         return
       }
-      const data = yield call(createPosts, translation)
+      const data = yield call(createPosts, {
+        ...translation,
+        status: payload.status || 'publish'
+      })
       if (data.statusCode === 200) {
         message.success('创建成功')
         yield put({
@@ -164,7 +167,21 @@ export default {
     },
     *translate({ payload }, { call, put}) {
       // 方法一：使用免费的谷歌API
-      const {data, statusCode} = yield call(transApi, payload)
+      // const {data, statusCode} = yield call(transApi, payload)
+      // if (statusCode === 200) {
+      //   const { title, content} = data
+      //   yield put({
+      //     type: 'translateSuccess',
+      //     payload: {
+      //       title,
+      //       'content': content.join('<br /><br />')
+      //     }
+      //   })
+      // }
+
+      // 方法二：使用免费的金山词霸
+      console.log('payload', payload)
+      const {data, statusCode} = yield call(transJinShan, payload)
       if (statusCode === 200) {
         const { title, content} = data
         yield put({
@@ -176,7 +193,7 @@ export default {
         })
       }
 
-      // 方法二：使用付费的有道API
+      // 方法三：使用付费的有道API
       /*
       // 标题翻译
       const titleReq = youdaoTranslate(payload.title);

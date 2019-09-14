@@ -9,11 +9,14 @@ const { Search } = Input;
 export default class UploadComponent extends React.Component {
   renderPictures = (data) => {
     if (isArray(data) && data.length) {
-      return data.map(item => (
-        <img src={item.middleURL} style={{ width: '100px', height: '100px', cursor: 'pointer' }} onDoubleClick={(e) => {
-          console.log('double Click', item)
-          this.props.onOk(item.middleURL)
-        }}/>
+      return data.filter(_ => !!_.middleURL).map(item => (
+        <span style={{ position: 'relative', display: 'inline-block'}}>
+          <img src={item.middleURL} style={{ width: '100px', height: '100px', cursor: 'pointer' }} onDoubleClick={(e) => {
+            console.log('double Click', item)
+            this.props.onOk(item.middleURL)
+          }}/>
+          <span style={{ position: 'absolute', bottom: 0, right: 0, padding: '0 2px', background: 'rgba(0,0,0,.6)', color: 'white'}}>{item.width}*{item.height}</span>
+        </span>
       ))
     }
     return (

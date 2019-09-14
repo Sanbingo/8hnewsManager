@@ -30,6 +30,7 @@ export default class PostModal extends React.Component {
       width: 680,
       search,
       visible: uploadVisible,
+      footer: null,
       onOk: (val) => {
         this.imageHandler(val);
         dispatch({
@@ -78,7 +79,7 @@ export default class PostModal extends React.Component {
           <Col span={12}>
             <Spin spinning={loading.effects['posts/translate']}>
               <div style={categorieStyle}>
-                <Checkbox.Group options={CATEGORY_TEST_DATA} onChange={(val) => this.handleChange('categories', val)}/>
+                <Checkbox.Group options={CATEGORY_TEST_DATA} value={translation.categories || []} onChange={(val) => this.handleChange('categories', val)}/>
               </div>
               <Input value={translation.title} onChange={(e) => this.handleChange('title', e.target.value)} style={{ marginBottom: '10px' }}/>
               <div style={{ maxHeight: '450px', overflowY: 'scroll'}}>

@@ -1,6 +1,7 @@
 import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
+import { Button } from 'antd'
 import Filter from './components/filter'
 import List from './components/list'
 import Modal from './components/modal'
@@ -82,6 +83,33 @@ class Posts extends React.PureComponent {
       title: '翻译',
       width: 1200,
       visible: modalVisible,
+      footer: [
+        <Button key="draft" loading={loading.effects['posts/create']} onClick={() => {
+          dispatch({
+            type: 'posts/create',
+            payload: {
+              status: 'draft'
+            }
+          })
+        }}>
+          保存草稿
+        </Button>,
+        <Button key="cancel" onClick={() => {
+          dispatch({
+            type: 'posts/hideModal',
+          })
+        }}>
+          取消
+        </Button>,
+        <Button key="submit" type="primary" loading={loading.effects['posts/create']} onClick={() => {
+          dispatch({
+            type: 'posts/create',
+            payload: {},
+          })
+        }}>
+          确定
+        </Button>,
+      ],
       onOk: (data) => {
         dispatch({
           type: 'posts/create',
