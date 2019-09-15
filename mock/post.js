@@ -1,6 +1,6 @@
 import { Mock, Constant, getCookieByName, reqFetch } from './_utils'
 import rp from 'request-promise';
-import { isNil } from 'lodash';
+import { isNil } from 'lodash'
 import { googleApi } from '../src/pages/common/trans';
 import { jinshanApi } from '../src/pages/common/jinshan';
 
