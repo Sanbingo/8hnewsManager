@@ -2,7 +2,7 @@ import { Mock, Constant, getCookieByName } from './_utils'
 import rp from 'request-promise';
 import { isNil } from 'lodash';
 import { googleApi } from '../src/pages/common/trans';
-import { jinshanApi } from '../src/pages/common/jinshan';
+import { jinshanApi } from '../src/pages/common/jinshan'
 
 const { ApiPrefix } = Constant
 
