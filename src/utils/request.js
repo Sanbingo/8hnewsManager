@@ -34,7 +34,7 @@ export default function request(options) {
   }
 
   options.url = url
-  options.params = cloneData
+  options.data = cloneData
   options.method = method
   options.headers = { 'content-type': 'application/json' }
   options.cancelToken = new CancelToken(cancel => {

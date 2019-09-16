@@ -35,7 +35,7 @@ class SourcesModal extends Component {
     const isVerify = getFieldValue('spiderConfigVerify')
     if (isVerify === 0) {
       return (
-        <FormItem label="登陆Xpath">
+        <FormItem label="验证Xpath">
           {getFieldDecorator('verifyXpath', {
             initialValue: item.verifyXpath,
             rules: [
@@ -48,8 +48,26 @@ class SourcesModal extends Component {
       );
     }
   }
+  renderSpiderCron() {
+    const { form: { getFieldDecorator, getFieldValue }, item={} } = this.props
+    const configType = getFieldValue('spiderConfigType')
+    if (configType === 0) {
+      return (
+        <FormItem label="Cron计划">
+          {getFieldDecorator('cron', {
+            initialValue: item.cron,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input />)}
+        </FormItem>
+      );
+    }
+  }
   render() {
-    const { item = {}, onOk, form, constant = {}, ...modalProps } = this.props
+    const { item = {}, onOk, form, ...modalProps } = this.props
     const { getFieldDecorator } = form
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
@@ -74,9 +92,29 @@ class SourcesModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
+          <FormItem label="标题过滤">
+            {getFieldDecorator('titleReplaceRegex', {
+              initialValue: item.titleReplaceRegex,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
           <FormItem label="内容XPath">
             {getFieldDecorator('contentXpath', {
               initialValue: item.contentXpath,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="内容过滤">
+            {getFieldDecorator('contentReplaceRegex', {
+              initialValue: item.contentReplaceRegex,
               rules: [
                 {
                   required: true,
@@ -103,8 +141,9 @@ class SourcesModal extends Component {
                   required: true,
                 },
               ],
-            })(createRadios({0: '线上', 1: '测试'}))}
+            })(createRadios({0: '正式', 1: '测试'}))}
           </FormItem>
+          {this.renderSpiderCron()}
         </Form>
       </Modal>
     )
