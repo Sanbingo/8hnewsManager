@@ -21,7 +21,7 @@ export default {
   createSources: 'POST /sources',
   removeSources: 'DELETE /sources/:id',
   updateSources: 'Patch /sources/:id',
-  searchKeyWord: '/search',
+  searchKeyWord: 'POST /search',
   queryBaseData: '/base',
   createPosts: 'POST /create',
   getWPToken: 'POST /token',
