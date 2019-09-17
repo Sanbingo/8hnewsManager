@@ -1,14 +1,14 @@
 export default {
   queryRouteList: '/routes',
 
-  queryUserInfo: '/user',
+  queryUserInfo: 'POST /user',
   logoutUser: '/user/logout',
   loginUser: 'POST /user/login',
 
   queryUser: '/user/:id',
   queryUserList: '/users',
   updateUser: 'Patch /user/:id',
-  createUser: 'POST /user',
+  // createUser: 'POST /user',
   removeUser: 'DELETE /user/:id',
   removeUserList: 'POST /users/delete',
 
@@ -24,7 +24,7 @@ export default {
   createSources: 'POST /source',
   removeSources: 'DELETE /sources/:id',
   updateSources: 'Patch /sources/:id',
-  searchKeyWord: '/search',
+  searchKeyWord: 'POST /search',
   queryBaseData: '/base',
   createPosts: 'POST /create',
   getWPToken: 'POST /token',

@@ -81,9 +81,9 @@ module.exports = {
   [`POST ${ApiPrefix}/addspiderconfig`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/spider/config/add')
   },
-  [`GET ${ApiPrefix}/search`](req, res) {
-    const { query } = req
-    let fetch = bdPicFetch(encodeURIComponent(query.keyword))
+  [`POST ${ApiPrefix}/search`](req, res) {
+    const { keyword } = req.body
+    let fetch = bdPicFetch(encodeURIComponent(keyword))
     fetch.then((data) => {
       res.send(data)
     }, (err) => {

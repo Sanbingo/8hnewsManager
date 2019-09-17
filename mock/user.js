@@ -203,8 +203,8 @@ module.exports = {
     res.status(200).end()
   },
 
-  [`GET ${ApiPrefix}/user`](req, res) {
-    const { username } = req.query
+  [`POST ${ApiPrefix}/user`](req, res) {
+    const { username } = req.body
     const cookie = req.headers.cookie || ''
     const cookies = qs.parse(cookie.replace(/\s/g, ''), { delimiter: ';' })
     const response = {}
@@ -272,24 +272,24 @@ module.exports = {
     res.status(204).end()
   },
 
-  [`POST ${ApiPrefix}/user`](req, res) {
-    const newData = req.body
-    newData.createTime = Mock.mock('@now')
-    newData.avatar =
-      newData.avatar ||
-      Mock.Random.image(
-        '100x100',
-        Mock.Random.color(),
-        '#757575',
-        'png',
-        newData.nickName.substr(0, 1)
-      )
-    newData.id = Mock.mock('@id')
-
-    database.unshift(newData)
-
-    res.status(200).end()
-  },
+  // [`POST ${ApiPrefix}/user`](req, res) {
+  //   const newData = req.body
+  //   newData.createTime = Mock.mock('@now')
+  //   newData.avatar =
+  //     newData.avatar ||
+  //     Mock.Random.image(
+  //       '100x100',
+  //       Mock.Random.color(),
+  //       '#757575',
+  //       'png',
+  //       newData.nickName.substr(0, 1)
+  //     )
+  //   newData.id = Mock.mock('@id')
+  //
+  //   database.unshift(newData)
+  //
+  //   res.status(200).end()
+  // },
 
   [`GET ${ApiPrefix}/user/:id`](req, res) {
     const { id } = req.params

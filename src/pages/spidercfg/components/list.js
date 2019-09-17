@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Table, Modal } from 'antd';
+import { Table, Modal, Tag } from 'antd';
 import { DropOption } from 'components'
 import { Trans, withI18n } from '@lingui/react'
 
@@ -44,11 +44,11 @@ class ListComponent extends PureComponent {
     dataIndex: 'contentXpath',
     title: '内容Xpath'
   }, {
-    key: 'spiderConfigVerify',
-    dataIndex: 'spiderConfigVerify',
-    title: '验证',
+    key: 'spiderConfigStatus',
+    dataIndex: 'spiderConfigStatus',
+    title: '爬虫状态',
     render: (text) => {
-      return text ? '关闭' : '开启'
+      return text ? <Tag color="#9e9e9e">停用</Tag> : <Tag color="#87d068">启用</Tag>
     }
   }, {
     key: 'updateTime',

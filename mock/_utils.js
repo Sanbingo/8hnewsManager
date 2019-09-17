@@ -82,7 +82,7 @@ export const reqFetch = (url, method="get", data) => {
 }
 
 export const getCookieByName = (cookie, name) => {
-  const arr = cookie.split(';')
+  const arr = cookie ? cookie.split(';') : []
   const objArr = arr.map(item => {
     return {
       name: trim(item.split('=')[0]),
