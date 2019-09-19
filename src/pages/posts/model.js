@@ -4,10 +4,11 @@ import request from 'utils/request'
 import { message } from 'antd'
 import { isNil, isEmpty } from 'lodash'
 import moment from 'moment'
+import { searchToObject } from '../common'
 // import { youdaoTranslate } from '../common/youdao';
 // import { YOUDAO_ERROR_CODE } from '../common/consts'
 
-const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan, transGoogle } = api
+const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan, transGoogle, queryAllSiteList } = api
 
 export default {
   namespace: 'posts',
@@ -38,6 +39,12 @@ export default {
             type: 'base',
             payload: {}
           })
+          dispatch({
+            type: "changeSearchForm",
+            payload: {
+              ...searchToObject()
+            }
+          })
         }
       })
     },
@@ -55,6 +62,7 @@ export default {
         method: 'post',
         data: { pageNum: 1, pageSize: 100, entity: {}}
       })
+      // const { data, success} = yield call(queryAllSiteList, {})
       if (constMap && siteDomains) {
         yield put({
           type: 'initSuccess',

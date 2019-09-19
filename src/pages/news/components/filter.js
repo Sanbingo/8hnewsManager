@@ -10,10 +10,10 @@ const FormItem = Form.Item
 
 class FilterComponent extends Component {
   handleSubmit = () => {
-    const { onSearch, form } = this.props
-    const { getFieldsValue } = form
-    const fields = getFieldsValue()
-    onSearch(fields)
+    // const { onSearch, form } = this.props
+    // const { getFieldsValue } = form
+    // const fields = getFieldsValue()
+    this.props.onSearch()
   }
 
   render() {
@@ -55,5 +55,15 @@ FilterComponent.propTypes = {
   onFilterChange: PropTypes.func,
 }
 export default Form.create({
-  onValuesChange: (props, changedValues ) => { props.onFilterChange(changedValues)}
+  onValuesChange: (props, changedValues ) => { props.onFilterChange(changedValues)},
+  mapPropsToFields: (props) => {
+    return {
+      siteName: Form.createFormField({
+        value: props.filter.siteName
+      }),
+      categoryId: Form.createFormField({
+        value: props.filter.categoryId
+      }),
+    }
+  }
 })(FilterComponent)

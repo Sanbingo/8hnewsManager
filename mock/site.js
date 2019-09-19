@@ -11,4 +11,7 @@ module.exports = {
   [`POST ${ApiPrefix}/siteUpdate`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/site/dst/update');
   },
+  [`POST ${ApiPrefix}/allSites`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/site/all');
+  },
 }

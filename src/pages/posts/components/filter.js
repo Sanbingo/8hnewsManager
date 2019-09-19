@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Button, DatePicker } from 'antd'
+import { Form, Button, DatePicker, Input } from 'antd'
 import { createOptions, arrayToMapObject } from '../../common/index'
 
 const FormItem = Form.Item;
@@ -17,8 +17,7 @@ class FilterComponent extends Component {
           {getFieldDecorator('ymd')(<DatePicker />)}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('siteDomain')(
-            createOptions(arrayToMapObject(siteDomains, 'siteUrl', 'siteUrl'), '新闻站点')
+          {getFieldDecorator('siteDomain')(<Input />
           )}
         </FormItem>
         <FormItem>

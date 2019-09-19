@@ -95,7 +95,6 @@ module.exports = {
     fetch = null
   },
   [`GET ${ApiPrefix}/base`](req, res) {
-
     let fetch = reqFetch('http://www.8hnews.com/wp-json/wp/v2/categories?per_page=100')
     fetch.then((data) => {
       res.send(data)

@@ -110,12 +110,20 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
   const uri = MakeApifix(url)
   let authorization = ''
   if (!token){
-    res.status(401).redirect('/zh/login')
+    return res.status(401).json({
+      status: 401,
+      message: '登录信息已过期，请重新登录',
+      data: null
+    })
   } else {
     const tokenInfo = JSON.parse(decodeURIComponent(token))
     const now = new Date().getTime()
     if (now > tokenInfo.deadline) {
-      res.status(401).redirect('/zh/login')
+      return res.status(200).json({
+        status: 401,
+        message: '登录信息已过期，请重新登录',
+        data: null
+      })
     } else {
       authorization = tokenInfo && tokenInfo.key
     }

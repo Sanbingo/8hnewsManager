@@ -14,10 +14,10 @@ export default modelExtend(pageModel, {
     currentItem: {},
     modalVisible: false,
     modalType: 'create',
-    searchForm: {},
+    filter: {},
     pagination: {
       current: 1,
-      pageSize: 10
+      pageSize: 20
     }
   },
 
@@ -52,12 +52,14 @@ export default modelExtend(pageModel, {
         })
       }
     },
-    *query({ payload = {}, pageNum, pageSize }, { call, put }) {
-      const {data, success } = yield call(querySourcesList, {
-        pageSize: 20,
-        pageNum: 1,
+    *query({ payload = {} }, { call, put, select }) {
+      const { filter, pagination } = yield select(_ => _.news);
+      const { current, pageSize } = pagination
+      const {data, success} = yield call(querySourcesList, {
+        pageSize: pageSize ||20,
+        pageNum: current || 1,
         entity: {
-          ...payload
+          ...filter
         }
       })
       if (success) {
@@ -66,8 +68,8 @@ export default modelExtend(pageModel, {
           payload: {
             list: data.data,
             pagination: {
-              current: Number(payload.page) || 1,
-              pageSize: Number(payload.pageSize) || 20,
+              current: data.pageInfo.pageNum,
+              pageSize: data.pageInfo.pageSize,
               total: data.pageInfo.total,
             },
           },
@@ -160,6 +162,26 @@ export default modelExtend(pageModel, {
           ...payload
         }
       }
-    }
+    },
+    querySuccess(state, { payload }) {
+      const { list, pagination } = payload
+      return {
+        ...state,
+        list,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        },
+      }
+    },
+    pagination(state, { payload }) {
+      return {
+        ...state,
+        pagination: {
+          ...state.pagination,
+          ...payload
+        }
+      }
+    },
   },
 })

@@ -95,6 +95,7 @@ export default class Cards extends Component {
             pageSize={20}
             onChange={this.handlePaginationChange}
             style={{ float: 'right' }}
+            current={pagination.current}
           />
         </div>
       </div>

@@ -38,6 +38,7 @@ export default {
   queryEmployeeList: 'POST /employees',
   createEmployee: 'POST /employee',
   querySiteList: 'POST /sites',
+  queryAllSiteList: 'POST /allSites',
   createSite: 'POST /site',
   updateSite: 'POST /siteUpdate',
   queryTagsList: 'POST /tags',

@@ -27,18 +27,22 @@ class NewsComponent extends React.Component {
   }
   get filterProps() {
     const { location, dispatch, news } = this.props
-    const { query } = location
-    const { constant } = news
+    // const { query } = location
+    const { constant, filter } = news
 
     return {
       constant,
-      filter: {
-        ...query,
-      },
+      filter,
       onSearch: value => {
         dispatch({
+          type: 'news/pagination',
+          payload: {
+            current: 1
+          }
+        })
+        dispatch({
           type: 'news/query',
-          payload: value,
+          payload: {},
         })
       },
       onFilterChange: value => {
@@ -73,7 +77,7 @@ class NewsComponent extends React.Component {
           search: stringify(
             {
               ...query,
-              siteName: item.siteName
+              siteDomain: item.siteName
             },
             { arrayFormat: 'repeat' }
           ),
@@ -96,9 +100,14 @@ class NewsComponent extends React.Component {
       },
       onPaginationChange(current) {
         dispatch({
+          type: 'news/pagination',
+          payload: {
+            current
+          }
+        })
+        dispatch({
           type: 'news/query',
-          pageNum: current,
-          payload: filter
+          payload: {}
         })
       }
     }
