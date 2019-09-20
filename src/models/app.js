@@ -9,8 +9,9 @@ import { CANCEL_REQUEST_MESSAGE } from 'utils/constant'
 import api from 'api'
 import config from 'config'
 import request from 'utils/request'
+import { arrayToMapObject } from '../pages/common'
 
-const { queryRouteList, logoutUser, queryUserInfo } = api
+const { queryRouteList, logoutUser, queryUserInfo, getAllTags } = api
 
 export default {
   namespace: 'app',
@@ -44,6 +45,7 @@ export default {
     setup({ dispatch }) {
       dispatch({ type: 'query' })
       dispatch({ type: 'base' })
+      dispatch({ type: 'alltags' })
     },
     setupHistory({ dispatch, history }) {
       history.listen(location => {
@@ -137,6 +139,15 @@ export default {
           })
       }
     },
+    *alltags({ payload }, { call, put}) {
+      const { data, success } = yield call(getAllTags, {});
+      if (success) {
+        yield put({
+          type: 'tagsSuccess',
+          payload: arrayToMapObject(data.data|| [], 'categoryId', 'categoryName'),
+        })
+      }
+    },
     *signOut({ payload }, { call, put, select }) {
       const data = yield call(logoutUser)
       if (data.success) {
@@ -182,6 +193,14 @@ export default {
       return {
         ...state,
         base: {
+          ...payload
+        }
+      }
+    },
+    tagsSuccess(state, { payload }) {
+      return {
+        ...state,
+        tags: {
           ...payload
         }
       }

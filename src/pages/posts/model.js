@@ -227,11 +227,12 @@ export default {
       const keyword = payload.keyword || ''
       if (keyword) {
         // 前端请求会出现CORS，故采用node代理
-        const data = yield call(searchKeyWord, payload)
+        const { data } = yield call(searchKeyWord, payload)
+        const results = Array.isArray(data) ? data : eval('('+ data +')')
         yield put({
           type: 'searchSuccess',
           payload: {
-            search: data.data
+            search: results
           }
         })
       } else {

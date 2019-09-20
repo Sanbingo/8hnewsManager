@@ -1,6 +1,7 @@
 import modelExtend from 'dva-model-extend'
 import { pathMatchRegexp } from 'utils'
 import { pageModel } from 'utils/model'
+import { isNil } from 'lodash'
 import axios from 'axios'
 import api from 'api'
 
@@ -172,6 +173,38 @@ export default modelExtend(pageModel, {
       if (success) {
         yield put({ type: 'query' })
         yield put({ type: 'spiderHideModal' })
+      } else {
+        console.log('err', message)
+      }
+    },
+    *deleteSpiderItem({payload}, { call, put, select}) {
+      const { index, original } = payload;
+      const {
+        id,
+        siteName,
+        siteUrl,
+        siteRemark,
+        siteRank,
+        siteNotifyStatus,
+        sourceList=[]
+      } = original
+      if (!isNil(index)){
+        sourceList.splice(index, 1)
+      }
+      const { success, message } = yield call(sourceUpdate, {
+        entity: {
+          id,
+          siteName,
+          siteUrl,
+          siteRemark,
+          siteRank,
+          siteNotifyStatus,
+          sourceList
+        }
+      })
+
+      if ( success ) {
+        yield put({ type: 'query' })
       } else {
         console.log('err', message)
       }

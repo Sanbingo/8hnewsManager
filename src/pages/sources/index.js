@@ -11,7 +11,7 @@ import Modal from './components/modal'
 import Spider from './components/spider'
 import Columns from './components/columns'
 
-@connect(({ sources, loading }) => ({ sources, loading }))
+@connect(({ sources, loading, app }) => ({ sources, loading, app }))
 class SourcesComponent extends React.Component {
   handleRefresh = newQuery => {
     const { location } = this.props
@@ -29,13 +29,14 @@ class SourcesComponent extends React.Component {
     })
   }
   get filterProps() {
-    const { location, dispatch, sources } = this.props
+    const { location, dispatch, sources, app } = this.props
     const { query } = location
     const { constant, searchForm } = sources
-
+    const tags = app.tags || {}
     return {
       constant,
       searchForm,
+      tags,
       filter: {
         ...query,
       },
@@ -46,6 +47,12 @@ class SourcesComponent extends React.Component {
         })
       },
       onSearch: value => {
+        dispatch({
+          type: 'sources/pagination',
+          payload: {
+            current: 1
+          }
+        })
         dispatch({
           type: 'sources/query',
           payload: value,
@@ -120,6 +127,12 @@ class SourcesComponent extends React.Component {
             spiderModalType: 'update',
             spiderCurrentItem: item,
           },
+        })
+      },
+      onDeleteSpiderItem(record) {
+        dispatch({
+          type: 'sources/deleteSpiderItem',
+          payload: record
         })
       },
       onPaginationChange(current) {

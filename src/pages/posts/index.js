@@ -1,20 +1,23 @@
 import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
+import { Button } from 'antd'
 import Filter from './components/filter'
 import List from './components/list'
 import Modal from './components/modal'
 
-@connect(({ posts, loading }) => ({ posts, loading }))
+@connect(({ posts, loading, app }) => ({ posts, loading, app }))
 class Posts extends React.PureComponent {
   get filterProps() {
-    const { dispatch, posts } = this.props;
+    const { dispatch, posts, app } = this.props;
     const { initData={}, siteDomains=[], searchForm={} } = posts;
-
+    console.log('app', app)
+    const tags = app.tags || {}
     return {
       initData,
       siteDomains,
       searchForm,
+      tags,
       onChange: (payload) => {
         dispatch({
           type: 'posts/changeSearchForm',
@@ -81,6 +84,15 @@ class Posts extends React.PureComponent {
       title: '翻译',
       width: 1200,
       visible: modalVisible,
+      footer: [
+        <Button type="primary" onClick={() => {
+          dispatch({
+            type: 'posts/hideModal',
+          })
+        }}>
+          关闭
+        </Button>
+      ],
       onOk: (data) => {
         dispatch({
           type: 'posts/create',

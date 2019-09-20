@@ -1,24 +1,22 @@
 import React, { Component } from 'react';
 import { Form, Button, DatePicker } from 'antd'
-import { createOptions } from '../../common/index'
+import { createOptions, arrayToMapObject } from '../../common/index'
 
 const FormItem = Form.Item;
-const SITE_Data = {
-  'www.itworldcanada.com': 'www.itworldcanada.com',
-}
+
 class FilterComponent extends Component {
   handleSubmit = () => {
     this.props.onSearch()
   }
   render() {
-    const { initData } = this.props;
+    const { initData, allSources } = this.props;
     const { getFieldDecorator } = this.props.form;
-
+    const sourcesMap = arrayToMapObject(allSources, 'siteDomain', 'siteDomain');
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
         <FormItem>
           {getFieldDecorator('siteDomain')(
-            createOptions(SITE_Data, '新闻站点')
+            createOptions(sourcesMap, '新闻站点')
           )}
         </FormItem>
         <FormItem>

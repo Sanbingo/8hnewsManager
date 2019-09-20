@@ -30,6 +30,7 @@ export default class PostModal extends React.Component {
       width: 680,
       search,
       visible: uploadVisible,
+      footer: null,
       onOk: (val) => {
         this.imageHandler(val);
         dispatch({
@@ -51,8 +52,8 @@ export default class PostModal extends React.Component {
       }
     }
   }
-  render() {
-    const { detail={}, translation={}, base={}, loading } = this.props;
+  renderColumns() {
+    const {  base={} } = this.props;
     const { categories=[] } = base
     const CATEGORY_TEST_DATA = categories.map(item => ({
       label: item.name,
@@ -64,6 +65,20 @@ export default class PostModal extends React.Component {
       borderRadius: '3px',
       padding: '5px'
     }
+    return (
+      <div style={categorieStyle}>
+        <Checkbox.Group options={CATEGORY_TEST_DATA} onChange={(val) => this.handleChange('categories', val)}/>
+      </div>
+    );
+  }
+  render() {
+    const { detail={}, translation={}, base={}, loading } = this.props;
+    const { categories=[] } = base
+    const CATEGORY_TEST_DATA = categories.map(item => ({
+      label: item.name,
+      value: item.id
+    }))
+
 
     return (
       <Modal
@@ -77,9 +92,7 @@ export default class PostModal extends React.Component {
           </Col>
           <Col span={12}>
             <Spin spinning={loading.effects['posts/translate']}>
-              <div style={categorieStyle}>
-                <Checkbox.Group options={CATEGORY_TEST_DATA} onChange={(val) => this.handleChange('categories', val)}/>
-              </div>
+              {/* this.renderColumns() 栏目功能先隐藏，后期开放*/}
               <Input value={translation.title} onChange={(e) => this.handleChange('title', e.target.value)} style={{ marginBottom: '10px' }}/>
               <div style={{ maxHeight: '450px', overflowY: 'scroll'}}>
                 <QuillEdit

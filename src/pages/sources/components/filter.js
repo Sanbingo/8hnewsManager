@@ -16,7 +16,7 @@ class FilterComponent extends Component {
   }
 
   render() {
-    const { form, filter, onAdd, constant = {} } = this.props
+    const { form, filter, onAdd, constant = {}, tags, } = this.props
     const { getFieldDecorator } = form
     const { type, categoryId, siteName } = filter || {}
 
@@ -27,7 +27,7 @@ class FilterComponent extends Component {
         </FormItem>
         <FormItem>
           {getFieldDecorator('categoryId')(
-            createOptions(constant.categoryId, '网站类型')
+            createOptions(tags, '网站类型')
           )}
         </FormItem>
         <FormItem>

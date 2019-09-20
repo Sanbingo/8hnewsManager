@@ -5,12 +5,14 @@ import Filter from './components/filter';
 import List from './components/list';
 import Modal from './components/modal';
 
-@connect(({ spidercfg, loading }) => ({ spidercfg, loading }))
+@connect(({ spidercfg, loading, app }) => ({ spidercfg, loading, app }))
 class SiteComponent extends PureComponent {
   get filterProps() {
-    const { dispatch, spidercfg } = this.props;
+    const { dispatch, spidercfg, app } = this.props;
     const { searchForm={} } = spidercfg
+    const tags = app.tags || {}
     return {
+      tags,
       searchForm,
       onChange: (payload) => {
         dispatch({
@@ -87,7 +89,6 @@ class SiteComponent extends PureComponent {
       title: `${modalType === 'create' ? '新建' : '编辑'}`,
       centered: true,
       onOk: data => {
-        console.log('disptach ok', data);
         dispatch({
           type: `spidercfg/${modalType}`,
           payload: data,

@@ -62,14 +62,14 @@ export default class ListComponent extends PureComponent {
     }
   }]
   render() {
-    const { list=[], pagination, onHandlePagination, loading, constant, onSpiderItem } = this.props;
+    const { list=[], pagination, onHandlePagination, loading, constant, onSpiderItem, onDeleteSpiderItem } = this.props;
     const categoryMap = arrayToMapObject(constant, 'categoryId', 'categoryName')
     return (
       <Table
         columns={this.columns}
         dataSource={list}
         expandedRowRender={(record) => {
-          return <SubList data={record.sourceList} map={categoryMap || {}} onSpiderItem={onSpiderItem} />
+          return <SubList original={record} data={record.sourceList} map={categoryMap || {}} onSpiderItem={onSpiderItem} onDeleteSpiderItem={onDeleteSpiderItem} />
         }}
         rowKey="id"
         loading={loading.effects['sources/query']}

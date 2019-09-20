@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Table } from 'antd'
+import { Table, Divider, Popconfirm, Icon } from 'antd'
 
 export default class SubList extends PureComponent {
   columns = [{
@@ -25,10 +25,24 @@ export default class SubList extends PureComponent {
     key: 'operation',
     dataIndex: 'operation',
     title: '操作',
-    render: (text, record) => {
+    render: (text, record, index) => {
       return (
         <span>
           <a href="#" onClick={() => this.props.onSpiderItem(record)}>配置</a>
+          <Divider type="vertical" />
+          <Popconfirm
+            title="确定执行这个操作"
+            onConfirm={() => {
+               this.props.onDeleteSpiderItem({
+                 index,
+                 original: this.props.original
+               })
+            }}
+            okText="确定"
+            cancelText="取消"
+          >
+            <a><Icon type="delete" key="delete" />删除</a>
+          </Popconfirm>
         </span>
       );
     }

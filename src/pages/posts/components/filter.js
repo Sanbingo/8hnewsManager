@@ -10,24 +10,24 @@ class FilterComponent extends Component {
   }
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { siteDomains, initData } = this.props;
+    const { tags, initData } = this.props;
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
         <FormItem>
           {getFieldDecorator('ymd')(<DatePicker />)}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('siteDomain')(<Input />
+          {getFieldDecorator('siteDomain')(<Input placeholder="站点地址" />
+          )}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('categoryId')(
+            createOptions(tags, '文章类型')
           )}
         </FormItem>
         <FormItem>
           {getFieldDecorator('spiderDetailBizStatus')(
             createOptions(initData.spiderDetailBizStatus, '文章状态')
-          )}
-        </FormItem>
-        <FormItem>
-          {getFieldDecorator('categoryId')(
-            createOptions(initData.categoryId, '文章类型')
           )}
         </FormItem>
         <FormItem>

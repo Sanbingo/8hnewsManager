@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { pathMatchRegexp } from 'utils'
 import api from 'api'
-const  { querySpiderCfgList, createSpiderCfg } = api
+const  { querySpiderCfgList, updateSpiderCfg } = api
 
 export default {
   namespace: 'spidercfg',
@@ -62,11 +62,11 @@ export default {
       }
     },
     *update({ payload }, { call, put, select }) {
-      const data = yield call(createSpiderCfg, payload)
       const { currentItem } = yield select( _ => _.spidercfg)
-      const { siteId, siteSourceId } = currentItem
-      const { success, message } = yield call(createSpiderCfg, {
+      const { siteId, siteSourceId, id } = currentItem
+      const { data, success, message } = yield call(updateSpiderCfg, {
         entity: {
+          id,
           siteId,
           siteSourceId,
           ...payload

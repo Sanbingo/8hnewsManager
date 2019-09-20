@@ -2,22 +2,23 @@ import React, { Component } from 'react'
 import { Form, Input, Icon, Button, Modal, Select } from 'antd';
 import { createOptions, arrayToMapObject } from '../../common'
 
-const Option = Select.Option;
-const FormItem = Form.Item
-const { TextArea } = Input
-const formItemLayout = {
-  labelCol: {
-    span: 6,
-  },
-  wrapperCol: {
-    span: 14,
-  },
-}
-
 let id = 0;
 
 @Form.create()
 class ColumnsModal extends Component {
+  constructor(props) {
+    super(props);
+    console.log('props...', props)
+    const { form } = props;
+    // can use data-binding to get
+    // const keys = form.getFieldValue('keys');
+    // const nextKeys = keys.concat(id++);
+    // can use data-binding to set
+    // important! notify form to detect changes
+    // form.setFieldsValue({
+    //   keys: nextKeys,
+    // });
+  }
   remove = k => {
     const { form } = this.props;
     // can use data-binding to get

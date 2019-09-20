@@ -12,7 +12,7 @@ import {
   YOUDAO_ERROR_CODE
 } from './consts'
 
-const { queryBaseData, searchKeyWord, createWordPressPosts } = api
+const { queryBaseData, searchKeyWord, createWordPressPosts, allSourcesList } = api
 
 const serialize = (obj) => {
   return Object.keys(obj).reduce((a, k) => {
@@ -72,6 +72,10 @@ export default {
             type: 'init',
             payload: {}
           })
+          dispatch({
+            type: 'allSources',
+            payload: {}
+          })
         }
       })
     },
@@ -95,6 +99,20 @@ export default {
           type: 'query',
           payload: {}
         })
+      }
+    },
+    *allSources({payload}, { call, put}) {
+      const { data, success, message } = yield call(allSourcesList, {
+        entity: {}
+      })
+      if (success) {
+        yield put({
+          type: "allSourcesSuccess",
+          payload: data.data
+        })
+      } else {
+        console.log('get all sources error', message)
+        throw message;
       }
     },
     *query({ payload = {}, pageNum, pageSize }, { call, put }) {
@@ -354,6 +372,12 @@ export default {
       return {
         ...state,
         ...payload,
+      }
+    },
+    allSourcesSuccess(state, { payload = []}) {
+      return {
+        ...state,
+        allSources: payload
       }
     }
   }

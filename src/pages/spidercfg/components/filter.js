@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Form, Input, Button } from 'antd';
+import { createOptions } from '../../common/index'
 
 const FormItem = Form.Item;
 
@@ -9,7 +10,7 @@ class FilterComponent extends PureComponent {
   }
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { onAddItem } = this.props;
+    const { tags } = this.props;
     return (
       <Form layout="inline" style={{ marginBottom: "10px" }}>
         <FormItem>
@@ -19,12 +20,11 @@ class FilterComponent extends PureComponent {
         </FormItem>
         <FormItem>
           {getFieldDecorator('categoryId')(
-            <Input placeholder="栏目类型" />
+            createOptions(tags, '栏目类型')
           )}
         </FormItem>
         <FormItem>
           <Button type="primary" onClick={this.handleSubmit}>查询</Button>
-          <Button style={{ marginLeft: '10px' }} onClick={() => onAddItem()}>新建</Button>
         </FormItem>
       </Form>
     );

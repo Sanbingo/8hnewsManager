@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Select, Radio, Button, Input, Modal } from 'antd'
+import { Form, Select, Radio, Button, Switch, Input, Modal } from 'antd'
 import { createOptions, createRadios } from '../../common'
 
 const FormItem = Form.Item
@@ -18,15 +18,15 @@ class SourcesModal extends Component {
   handleOk = () => {
     const { item = {}, onOk, form } = this.props
     const { validateFields, getFieldsValue } = form
-    console.log('handle ok', this.props)
+
     validateFields(errors => {
       if (errors) {
         return
       }
       const data = {
         ...getFieldsValue(),
+        key: item.key,
       }
-      console.log('formdata', data)
       onOk(data)
     })
   }
@@ -35,7 +35,7 @@ class SourcesModal extends Component {
     const isVerify = getFieldValue('spiderConfigVerify')
     if (isVerify === 0) {
       return (
-        <FormItem label="登陆Xpath">
+        <FormItem label="验证Xpath">
           {getFieldDecorator('verifyXpath', {
             initialValue: item.verifyXpath,
             rules: [
@@ -48,8 +48,26 @@ class SourcesModal extends Component {
       );
     }
   }
+  renderSpiderCron() {
+    const { form: { getFieldDecorator, getFieldValue }, item={} } = this.props
+    const configType = getFieldValue('spiderConfigType')
+    if (configType === 0) {
+      return (
+        <FormItem label="Cron计划">
+          {getFieldDecorator('cron', {
+            initialValue: item.cron,
+            rules: [
+              {
+                required: true,
+              },
+            ],
+          })(<Input />)}
+        </FormItem>
+      );
+    }
+  }
   render() {
-    const { item = {}, onOk, form, constant = {}, ...modalProps } = this.props
+    const { item = {}, onOk, form, ...modalProps } = this.props
     const { getFieldDecorator } = form
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
@@ -74,9 +92,29 @@ class SourcesModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
+          <FormItem label="标题过滤">
+            {getFieldDecorator('titleReplaceRegex', {
+              initialValue: item.titleReplaceRegex,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
           <FormItem label="内容XPath">
             {getFieldDecorator('contentXpath', {
               initialValue: item.contentXpath,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="内容过滤">
+            {getFieldDecorator('contentReplaceRegex', {
+              initialValue: item.contentReplaceRegex,
               rules: [
                 {
                   required: true,
@@ -103,8 +141,9 @@ class SourcesModal extends Component {
                   required: true,
                 },
               ],
-            })(createRadios({0: '线上', 1: '测试'}))}
+            })(createRadios({0: '正式', 1: '测试'}))}
           </FormItem>
+          {this.renderSpiderCron()}
         </Form>
       </Modal>
     )
