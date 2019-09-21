@@ -12,6 +12,7 @@ export default class ListComponent extends PureComponent {
     key: 'title',
     dataIndex: 'title',
     title: '标题',
+    width: 400,
     render: (text, record) => {
       return (
         <a href={record.downloadUrl} target="__blank">{text}</a>
@@ -30,9 +31,7 @@ export default class ListComponent extends PureComponent {
     dataIndex: 'categoryId',
     title: '类型',
     render: (text) => {
-      const { categoryId } = this.props.initData
-      if (isNil(text)) return '-'
-      return <Tag>{categoryId[text]}</Tag>
+      return this.props.tags[text] || '-'
     }
   }, {
     key: 'spiderDetailBizStatus',

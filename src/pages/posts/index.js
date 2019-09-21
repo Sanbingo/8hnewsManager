@@ -11,7 +11,6 @@ class Posts extends React.PureComponent {
   get filterProps() {
     const { dispatch, posts, app } = this.props;
     const { initData={}, siteDomains=[], searchForm={} } = posts;
-    console.log('app', app)
     const tags = app.tags || {}
     return {
       initData,
@@ -39,9 +38,11 @@ class Posts extends React.PureComponent {
     }
   }
   get listProps() {
-    const { dispatch, posts, loading } = this.props;
+    const { dispatch, posts, loading, app} = this.props;
     const { list=[], initData={}, pagination={}, searchForm={} } = posts;
+    const tags = app.tags || {}
     return {
+      tags,
       loading,
       list,
       initData,
