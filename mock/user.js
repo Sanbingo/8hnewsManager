@@ -46,11 +46,11 @@ const userPermission = {
     role: ROLE_TYPE.SUPERADMIN,
   },
   [ROLE_TYPE.ADMINISTRATOR]: {
-    visit: ['6', '8', '9', '91', '92', '104'],
+    visit: ['6', '8', '9', '91', '92'],
     role: ROLE_TYPE.ADMINISTRATOR,
   },
   [ROLE_TYPE.EMPLOYEE]: {
-    visit: ['6', '8', '104'],
+    visit: ['6', '8'],
     role: ROLE_TYPE.EMPLOYEE,
   },
   DEFAULT: {
