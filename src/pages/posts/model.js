@@ -5,10 +5,18 @@ import { message } from 'antd'
 import { isNil, isEmpty } from 'lodash'
 import moment from 'moment'
 import { searchToObject } from '../common'
-// import { youdaoTranslate } from '../common/youdao';
-// import { YOUDAO_ERROR_CODE } from '../common/consts'
+import { youdaoTranslate } from '../common/youdao'
+import { YOUDAO_ERROR_CODE } from '../common/consts'
 
-const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan, transGoogle, queryAllSiteList } = api
+const {
+  queryBaseData,
+  searchKeyWord,
+  createPosts,
+  transApi,
+  transJinShan,
+  transGoogle,
+  queryAllSiteList,
+} = api
 
 export default {
   namespace: 'posts',
@@ -19,12 +27,12 @@ export default {
     translation: {},
     searchForm: {
       ymd: moment().subtract(1, 'days'),
-      spiderDetailBizStatus: '0'
+      spiderDetailBizStatus: '0',
     },
     pagination: {
       current: 1,
-      pageSize: 10
-    }
+      pageSize: 10,
+    },
   },
 
   subscriptions: {
@@ -33,17 +41,17 @@ export default {
         if (pathMatchRegexp('/posts', location.pathname)) {
           dispatch({
             type: 'init',
-            payload: {}
+            payload: {},
           })
           dispatch({
             type: 'base',
-            payload: {}
+            payload: {},
           })
           dispatch({
-            type: "changeSearchForm",
+            type: 'changeSearchForm',
             payload: {
-              ...searchToObject()
-            }
+              ...searchToObject(),
+            },
           })
         }
       })
@@ -51,16 +59,16 @@ export default {
   },
 
   effects: {
-    *init({ payload = {}}, { call, put}) {
+    *init({ payload = {} }, { call, put }) {
       const constMap = yield request({
         url: 'http://139.196.86.217:8088/info/constant/map',
         method: 'post',
-        data: { entity: payload }
+        data: { entity: payload },
       })
       const siteDomains = yield request({
         url: 'http://139.196.86.217:8088/info/site/queryList',
         method: 'post',
-        data: { pageNum: 1, pageSize: 100, entity: {}}
+        data: { pageNum: 1, pageSize: 100, entity: {} },
       })
       // const { data, success} = yield call(queryAllSiteList, {})
       if (constMap && siteDomains) {
@@ -68,17 +76,17 @@ export default {
           type: 'initSuccess',
           payload: {
             initData: constMap.data,
-            siteDomains: siteDomains.data
-          }
+            siteDomains: siteDomains.data,
+          },
         })
         yield put({
           type: 'query',
-          payload: {}
+          payload: {},
         })
       }
     },
     *query(payload, { call, put, select }) {
-      const { searchForm, pagination } = yield select(_ => _.posts);
+      const { searchForm, pagination } = yield select(_ => _.posts)
       const { current, pageSize } = pagination
       const data = yield request({
         url: 'http://139.196.86.217:8088/info/document/queryList',
@@ -88,8 +96,8 @@ export default {
           pageNum: current,
           entity: {
             ...searchForm,
-            ymd: searchForm.ymd && moment(searchForm.ymd).format('YYYY-MM-DD')
-          }
+            ymd: searchForm.ymd && moment(searchForm.ymd).format('YYYY-MM-DD'),
+          },
         },
       })
       if (data) {
@@ -106,27 +114,26 @@ export default {
         })
       }
     },
-    *base({ payload = {}}, { call, put}) {
+    *base({ payload = {} }, { call, put }) {
       const data = yield call(queryBaseData, payload)
       if (data.statusCode === 200) {
         yield put({
           type: 'baseSuccess',
           payload: {
-            categories: data.list
-          }
+            categories: data.list,
+          },
         })
       }
-
     },
-    *create({ payload = {}}, { call, put, select}) {
-      const { translation={} } = yield select(_ => _.posts)
+    *create({ payload = {} }, { call, put, select }) {
+      const { translation = {} } = yield select(_ => _.posts)
       const { title, content, categories } = translation
       if (isNil(title)) {
         message.warning('标题不能为空')
-        return;
+        return
       } else if (isNil(content)) {
         message.warning('内容不能为空')
-        return;
+        return
       } else if (isEmpty(categories)) {
         message.warning('请选择栏目~')
         return
@@ -138,13 +145,13 @@ export default {
           type: 'posts/hideModal',
         })
         yield put({
-          type: 'posts/query'
+          type: 'posts/query',
         })
       } else {
         message.warning('登录信息已过期，请重新登录')
       }
     },
-    *detail({payload}, { call, put }){
+    *detail({ payload }, { call, put }) {
       if (payload) {
         const data = yield request({
           url: 'http://139.196.86.217:8088/info/document/detail',
@@ -152,93 +159,104 @@ export default {
           data: {
             entity: {
               ...payload,
-            }
+            },
           },
-        });
+        })
         if (data) {
           yield put({
             type: 'detailSuccess',
             payload: {
-              detail: data.data
-            }
+              detail: data.data,
+            },
           })
           // 翻译操作，暂时注释，勿删
           yield put({
             type: 'translate',
-            payload: data.data
+            payload: {},
           })
         }
       }
     },
-    *translate({ payload }, { call, put}) {
-      // 方法一：使用免费的谷歌API
-      // console.log('payload', payload)
-      // const {data, statusCode} = yield call(transGoogle, payload)
-      // if (statusCode === 200) {
-      //   const { title, content} = data
-      //   yield put({
-      //     type: 'translateSuccess',
-      //     payload: {
-      //       title,
-      //       'content': content.join('<br /><br />')
-      //     }
-      //   })
-      // }
-      // 方法二：使用免费的金山词霸
-      console.log('payload', payload)
-      const {data, statusCode} = yield call(transJinShan, payload)
+    *translate({ payload }, { call, put, select }) {
+      const { detail } = yield select(_ => _.posts)
+
+      // 默认：使用免费的金山词霸
+      const { data, statusCode } = yield call(transJinShan, detail)
       if (statusCode === 200) {
-        const { title, content} = data
+        const { title, content } = data
         yield put({
           type: 'translateSuccess',
           payload: {
             title,
-            'content': content.join('<br /><br />')
-          }
+            content: content.join('<br /><br />'),
+          },
         })
       }
-
-      // 方法三：使用付费的有道API
-      /*
+    },
+    *translateByYoudao({ payload }, { call, put, select }) {
+      const { detail } = yield select(_ => _.posts)
+      // 使用付费的有道API
       // 标题翻译
-      const titleReq = youdaoTranslate(payload.title);
+      const titleReq = youdaoTranslate(detail.title)
       // 正文翻译，由于正文篇幅过长，分段翻译
-      const contentArr = payload.content.split('\r\n');
-      const contentArrReq = contentArr.filter(item => !!item).map(item => youdaoTranslate(item));
-      const [titleRes, ...contentRes] = yield Promise.all([titleReq, ...contentArrReq])
+      const contentArr = detail.content.split('\r\n')
+      const contentArrReq = contentArr
+        .filter(item => !!item)
+        .map(item => youdaoTranslate(item))
+      const [titleRes, ...contentRes] = yield Promise.all([
+        titleReq,
+        ...contentArrReq,
+      ])
       const results = contentRes.map(item => {
         if (item.errorCode === '0') {
-          return item && item.translation && item.translation[0];
+          return item && item.translation && item.translation[0]
         } else {
-          return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n${item.query}`
+          return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n${
+            item.query
+          }`
         }
       })
       yield put({
         type: 'translateSuccess',
         payload: {
-          'title': titleRes.errorCode === '0' ?
-            titleRes && titleRes.translation && titleRes.translation[0] : `Error: ${YOUDAO_ERROR_CODE[titleRes.errorCode]}`,
-          'content': results.join('<br /><br />')
-        }
+          title:
+            titleRes.errorCode === '0'
+              ? titleRes && titleRes.translation && titleRes.translation[0]
+              : `Error: ${YOUDAO_ERROR_CODE[titleRes.errorCode]}`,
+          content: results.join('<br /><br />'),
+        },
       })
-      */
     },
-    *search({ payload }, { call, put}) {
+    *translateByGoogle({ payload }, { call, put }) {
+      // 使用免费的谷歌API
+      const { data, statusCode } = yield call(transGoogle, payload)
+      if (statusCode === 200) {
+        const { title, content } = data
+        yield put({
+          type: 'translateSuccess',
+          payload: {
+            title,
+            content: content.join('<br /><br />'),
+          },
+        })
+      }
+    },
+    *search({ payload }, { call, put }) {
       const keyword = payload.keyword || ''
       if (keyword) {
         // 前端请求会出现CORS，故采用node代理
         const { data } = yield call(searchKeyWord, payload)
-        const results = Array.isArray(data) ? data : eval('('+ data +')')
+        const results = Array.isArray(data) ? data : eval('(' + data + ')')
         yield put({
           type: 'searchSuccess',
           payload: {
-            search: results
-          }
+            search: results,
+          },
         })
       } else {
         message.warning('关键字不能为空！')
       }
-    }
+    },
   },
   reducers: {
     showModal(state, { payload }) {
@@ -252,8 +270,8 @@ export default {
         ...state,
         searchForm: {
           ...state.searchForm,
-          ...payload
-        }
+          ...payload,
+        },
       }
     },
     formChange(state, { payload }) {
@@ -261,22 +279,22 @@ export default {
         ...state,
         translation: {
           ...state.translation,
-          ...payload
-        }
+          ...payload,
+        },
       }
     },
-    openUpload(state, {payload}) {
+    openUpload(state, { payload }) {
       return {
         ...state,
         ...payload,
-        uploadVisible: true
+        uploadVisible: true,
       }
     },
     closeUpload(state, { payload }) {
       return {
         ...state,
         ...payload,
-        uploadVisible: false
+        uploadVisible: false,
       }
     },
     pagination(state, { payload }) {
@@ -284,8 +302,8 @@ export default {
         ...state,
         pagination: {
           ...state.pagination,
-          ...payload
-        }
+          ...payload,
+        },
       }
     },
     querySuccess(state, { payload }) {
@@ -299,32 +317,32 @@ export default {
         },
       }
     },
-    detailSuccess(state, { payload}) {
+    detailSuccess(state, { payload }) {
       return {
         ...state,
-        ...payload
+        ...payload,
       }
     },
     translateSuccess(state, { payload }) {
       return {
         ...state,
         translation: {
-          ...payload
-        }
+          ...payload,
+        },
       }
     },
     searchSuccess(state, { payload }) {
       return {
         ...state,
-        ...payload
+        ...payload,
       }
     },
     baseSuccess(state, { payload }) {
       return {
         ...state,
         base: {
-          ...payload
-        }
+          ...payload,
+        },
       }
     },
     initSuccess(state, { payload }) {
@@ -332,6 +350,6 @@ export default {
         ...state,
         ...payload,
       }
-    }
-  }
+    },
+  },
 }

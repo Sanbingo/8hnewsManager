@@ -1,7 +1,7 @@
 import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
 import Filter from './components/filter'
 import List from './components/list'
 import Modal from './components/modal'
@@ -9,37 +9,37 @@ import Modal from './components/modal'
 @connect(({ posts, loading, app }) => ({ posts, loading, app }))
 class Posts extends React.PureComponent {
   get filterProps() {
-    const { dispatch, posts, app } = this.props;
-    const { initData={}, siteDomains=[], searchForm={} } = posts;
+    const { dispatch, posts, app } = this.props
+    const { initData = {}, siteDomains = [], searchForm = {} } = posts
     const tags = app.tags || {}
     return {
       initData,
       siteDomains,
       searchForm,
       tags,
-      onChange: (payload) => {
+      onChange: payload => {
         dispatch({
           type: 'posts/changeSearchForm',
-          payload
+          payload,
         })
       },
-      onSearch: (payload) => {
+      onSearch: payload => {
         dispatch({
           type: 'posts/pagination',
           payload: {
-            current: 1
-          }
+            current: 1,
+          },
         })
         dispatch({
           type: 'posts/query',
-          payload
+          payload,
         })
-      }
+      },
     }
   }
   get listProps() {
-    const { dispatch, posts, loading, app} = this.props;
-    const { list=[], initData={}, pagination={}, searchForm={} } = posts;
+    const { dispatch, posts, loading, app } = this.props
+    const { list = [], initData = {}, pagination = {}, searchForm = {} } = posts
     const tags = app.tags || {}
     return {
       tags,
@@ -47,10 +47,10 @@ class Posts extends React.PureComponent {
       list,
       initData,
       pagination,
-      onHandlePagination: (page) => {
+      onHandlePagination: page => {
         dispatch({
           type: 'posts/pagination',
-          payload: page
+          payload: page,
         })
         dispatch({
           type: 'posts/query',
@@ -59,22 +59,22 @@ class Posts extends React.PureComponent {
           pageSize: page.pageSize,
         })
       },
-      onHandleTranslate: (value) => {
+      onHandleTranslate: value => {
         dispatch({
           type: 'posts/showModal',
-          payload: value
+          payload: value,
         })
         dispatch({
           type: 'posts/detail',
           payload: {
-            id: value
-          }
+            id: value,
+          },
         })
-      }
+      },
     }
   }
   get modalProps() {
-    const { dispatch, posts, loading } = this.props;
+    const { dispatch, posts, loading } = this.props
     const { modalVisible, detail, translation, base } = posts
     return {
       ...this.props,
@@ -86,15 +86,18 @@ class Posts extends React.PureComponent {
       width: 1200,
       visible: modalVisible,
       footer: [
-        <Button type="primary" onClick={() => {
-          dispatch({
-            type: 'posts/hideModal',
-          })
-        }}>
+        <Button
+          type="primary"
+          onClick={() => {
+            dispatch({
+              type: 'posts/hideModal',
+            })
+          }}
+        >
           关闭
-        </Button>
+        </Button>,
       ],
-      onOk: (data) => {
+      onOk: data => {
         dispatch({
           type: 'posts/create',
           payload: {},
@@ -105,29 +108,45 @@ class Posts extends React.PureComponent {
           type: 'posts/hideModal',
         })
       },
-      onOpenUpload(){
+      onOpenUpload() {
         dispatch({
-          type: 'posts/openUpload'
+          type: 'posts/openUpload',
         })
       },
       onFormChange(payload) {
         dispatch({
           type: 'posts/formChange',
-          payload
+          payload,
         })
-      }
+      },
+      switchTranslate(type) {
+        if (type === 'jinshan') {
+          // 默认
+          dispatch({
+            type: 'posts/translate',
+            payload: {},
+          })
+        } else if (type === 'youdaopay') {
+          dispatch({
+            type: 'posts/translateByYoudao',
+            payload: {},
+          })
+        } else {
+          message.warning('请选择翻译来源！')
+        }
+      },
     }
   }
 
-  render(){
+  render() {
     return (
       <Page inner>
         <Filter {...this.filterProps} />
         <br />
-        <List {...this.listProps}/>
-        <Modal {...this.modalProps}/>
+        <List {...this.listProps} />
+        <Modal {...this.modalProps} />
       </Page>
-    );
+    )
   }
 }
 
