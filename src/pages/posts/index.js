@@ -2,6 +2,7 @@ import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
 import { Button, message } from 'antd'
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Filter from './components/filter'
 import List from './components/list'
 import Modal from './components/modal'
@@ -73,6 +74,28 @@ class Posts extends React.PureComponent {
       },
     }
   }
+  renderModalHeader(){
+    const { posts: { translation } } = this.props
+      return (
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>翻译</div>
+          <div style={{ marginRight: '50px' }}>
+            <CopyToClipboard text={translation.title} style={{ marginRight: '5px' }}
+              onCopy={() => message.success('复制成功~')}>
+              <Button>
+                标题复制
+              </Button>
+            </CopyToClipboard>
+            <CopyToClipboard text={translation.content}
+              onCopy={() => message.success('复制成功~')}>
+              <Button>
+                内容复制
+              </Button>
+            </CopyToClipboard>
+          </div>
+        </div>
+      );
+  }
   get modalProps() {
     const { dispatch, posts, loading } = this.props
     const { modalVisible, detail, translation, base } = posts
@@ -82,7 +105,7 @@ class Posts extends React.PureComponent {
       detail,
       base,
       translation,
-      title: '翻译',
+      title: this.renderModalHeader(),
       width: 1200,
       visible: modalVisible,
       footer: [
@@ -91,6 +114,9 @@ class Posts extends React.PureComponent {
           onClick={() => {
             dispatch({
               type: 'posts/hideModal',
+            })
+            dispatch({
+              type: 'posts/query',
             })
           }}
         >
@@ -106,6 +132,9 @@ class Posts extends React.PureComponent {
       onCancel() {
         dispatch({
           type: 'posts/hideModal',
+        })
+        dispatch({
+          type: 'posts/query',
         })
       },
       onOpenUpload() {

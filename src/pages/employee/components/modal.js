@@ -18,7 +18,6 @@ class SourcesModal extends Component {
   handleOk = () => {
     const { item = {}, onOk, form } = this.props
     const { validateFields, getFieldsValue } = form
-    console.log('handle ok', this.props)
     validateFields(errors => {
       if (errors) {
         return
@@ -26,7 +25,6 @@ class SourcesModal extends Component {
       const data = {
         ...getFieldsValue(),
       }
-      console.log('formdata', data)
       onOk(data)
     })
   }
@@ -41,6 +39,8 @@ class SourcesModal extends Component {
               initialValue: item.userRealName,
               rules: [
                 {
+                  pattern: /^[\u4E00-\u9FA5A-Za-z\s]+(·[\u4E00-\u9FA5A-Za-z]+)*$/,
+                  message: '只支持中英文名称',
                   required: true,
                 },
               ],
@@ -51,6 +51,7 @@ class SourcesModal extends Component {
               initialValue: item.userPhoneNum,
               rules: [
                 {
+                  message: '请输入员工手机',
                   required: true,
                 },
               ],
@@ -61,6 +62,7 @@ class SourcesModal extends Component {
               initialValue: item.userInfoGander,
               rules: [
                 {
+                  message: '请选择性别',
                   required: true,
                 },
               ],

@@ -162,7 +162,8 @@ export default {
 
       }
     },
-    *expanded({ payload = '', pageNum, pageSize }, { call, put }) {
+    *expanded({ payload = '', pageNum, pageSize }, { call, put, select }) {
+      const { searchForm: { spiderDetailStatus } } = yield select(_ => _.spider)
       const data = yield request({
         url: 'http://139.196.86.217:8088/info/spider/result/detailList',
         method: 'post',
@@ -171,6 +172,7 @@ export default {
           pageNum: pageNum || 1,
           entity: {
             downloadId: payload,
+            spiderDetailStatus
           }
         },
       })

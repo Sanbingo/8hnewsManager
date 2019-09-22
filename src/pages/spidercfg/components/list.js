@@ -22,28 +22,30 @@ class ListComponent extends PureComponent {
     }
   }
   columns = [{
-    key: 'siteSourceId',
-    dataIndex: 'siteSourceId',
-    title: '源站点ID'
+    key: 'categoryId',
+    dataIndex: 'categoryId',
+    title: '栏目ID'
   }, {
-    key: 'linksRegex',
-    dataIndex: 'linksRegex',
-    title: '链接正则',
+    key: 'siteDomain',
+    dataIndex: 'siteDomain',
+    title: '爬虫站点',
     width: 300,
-    render: (text, record) => (
-      <div style={{ wordWrap: 'break-word', wordBreak: 'break-all' }}>
-        {text}
-      </div>
-    ),
   }, {
-    key: 'titleXpath',
-    dataIndex: 'titleXpath',
-    title: '标题Xpath',
-  }, {
-    key: 'contentXpath',
-    dataIndex: 'contentXpath',
-    title: '内容Xpath'
-  }, {
+    key: 'siteUrl',
+    dataIndex: 'siteUrl',
+    title: '爬虫URL',
+  },
+  {
+    key: 'validReqLimitSize',
+    dataIndex: 'validReqLimitSize',
+    title: '有效请求阈值'
+  },
+  {
+    key: 'errorReqLimitSize',
+    dataIndex: 'errorReqLimitSize',
+    title: '错误请求阈值'
+  },
+  {
     key: 'spiderConfigStatus',
     dataIndex: 'spiderConfigStatus',
     title: '爬虫状态',

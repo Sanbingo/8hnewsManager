@@ -12,7 +12,7 @@ const {
   queryBaseData,
   searchKeyWord,
   createPosts,
-  transApi,
+  translatePartial,
   transJinShan,
   transGoogle,
   queryAllSiteList,
@@ -101,10 +101,18 @@ export default {
         },
       })
       if (data) {
+        let listTemp = data.data;
+        const results = yield call(translatePartial, { list: data.data })
+        if (results.success) {
+          listTemp = listTemp.map((item, index) => ({
+            ...item,
+            translate: results.data && results.data[index]
+          }))
+        }
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: listTemp,
             pagination: {
               current,
               pageSize,
@@ -246,7 +254,12 @@ export default {
       if (keyword) {
         // 前端请求会出现CORS，故采用node代理
         const { data } = yield call(searchKeyWord, payload)
-        const results = Array.isArray(data) ? data : eval('(' + data + ')')
+        let results = [];
+        if (Array.isArray(data)) {
+          results = data
+        } else {
+          results = eval('(' + data + ')').data
+        }
         yield put({
           type: 'searchSuccess',
           payload: {

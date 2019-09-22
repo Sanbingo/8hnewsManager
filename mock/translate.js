@@ -27,6 +27,15 @@ module.exports = {
       })
     })
   },
+  [`POST ${ApiPrefix}/translate/partial`](req, res) {
+    const { list=[] } = req.body
+    const listArrReq = list.filter(item => !!item.title).map(item => jinshanApi(item.title))
+    Promise.all(listArrReq).then(results => {
+      res.status(200).json({
+        data: results && results.map(item => item.content && item.content.out)
+      })
+    })
+  },
   [`POST ${ApiPrefix}/translate/google`](req, res) {
     // google 翻译API
     const { title, content } = req.body

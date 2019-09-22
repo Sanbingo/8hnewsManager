@@ -28,6 +28,11 @@ class FilterComponent extends Component {
           )}
         </FormItem>
         <FormItem>
+          {getFieldDecorator('spiderDetailStatus')(
+            createOptions(initData.spiderDetailStatus, '文章状态')
+          )}
+        </FormItem>
+        <FormItem>
           <Button type="primary" onClick={this.handleSubmit}>查询</Button>
         </FormItem>
       </Form>

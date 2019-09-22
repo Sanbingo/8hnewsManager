@@ -24,6 +24,7 @@ export default class PostModal extends React.Component {
     const { dispatch, posts, loading } = this.props
     const { uploadVisible, search } = posts
     return {
+      dispatch,
       loading,
       title: '添加媒体',
       width: 680,
@@ -36,19 +37,20 @@ export default class PostModal extends React.Component {
           type: 'posts/closeUpload',
         })
       },
-      onSearch: value => {
+      onSearch: (value, { pageNum=1 }) => {
         dispatch({
           type: 'posts/search',
           payload: {
             keyword: value,
+            pageNum,
           },
         })
       },
-      onCancel: () => {
-        dispatch({
-          type: 'posts/closeUpload',
-        })
-      },
+      // onCancel: () => {
+      //   dispatch({
+      //     type: 'posts/closeUpload',
+      //   })
+      // },
     }
   }
   renderColumns() {
@@ -116,6 +118,7 @@ export default class PostModal extends React.Component {
             <Spin spinning={loading.effects['posts/translate']}>
               {/* this.renderColumns() 栏目功能先隐藏，后期开放*/}
               <Input
+                id="title"
                 value={translation.title}
                 onChange={e => this.handleChange('title', e.target.value)}
                 style={{ marginBottom: '10px' }}
@@ -123,6 +126,7 @@ export default class PostModal extends React.Component {
               <div style={{ maxHeight: '450px', overflowY: 'scroll' }}>
                 <QuillEdit
                   ref="quillEditRef"
+                  id="content"
                   content={
                     isEmpty(translation.content) ? '' : translation.content
                   }

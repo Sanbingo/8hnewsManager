@@ -33,6 +33,7 @@ export default {
   transApi: 'POST /translate',
   transJinShan: 'POST /translate/jinshan',
   transGoogle: 'POST /translate/google',
+  translatePartial: 'POST /translate/partial',
   queryCooperateList: 'POST /cooperates',
   createCooperate: 'POST /cooperate',
   querySpiderCfgList: 'POST /spiders',
