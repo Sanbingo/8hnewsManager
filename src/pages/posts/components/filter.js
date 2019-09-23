@@ -10,12 +10,16 @@ class FilterComponent extends Component {
   }
   render() {
     const { getFieldDecorator } = this.props.form
-    const { tags, initData } = this.props
+    const { tags, initData, empower={} } = this.props
+    const siteDomains = empower.siteDomains && empower.siteDomains.reduce((a, b) => {
+      a[b] = b;
+      return a;
+    }, {})
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
         <FormItem>{getFieldDecorator('ymd')(<DatePicker />)}</FormItem>
         <FormItem>
-          {getFieldDecorator('siteDomain')(<Input placeholder="文章站点" />)}
+          {getFieldDecorator('siteDomain')(createOptions(siteDomains, '文章站点'))}
         </FormItem>
         <FormItem>
           {getFieldDecorator('categoryId')(createOptions(tags, '文章类型'))}

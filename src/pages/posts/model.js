@@ -65,18 +65,18 @@ export default {
         method: 'post',
         data: { entity: payload },
       })
-      const siteDomains = yield request({
-        url: 'http://139.196.86.217:8088/info/site/queryList',
+      const empower = yield request({
+        url: 'http://139.196.86.217:8088/info/empower/my',
         method: 'post',
-        data: { pageNum: 1, pageSize: 100, entity: {} },
+        data: {},
       })
       // const { data, success} = yield call(queryAllSiteList, {})
-      if (constMap && siteDomains) {
+      if (constMap && empower) {
         yield put({
           type: 'initSuccess',
           payload: {
             initData: constMap.data,
-            siteDomains: siteDomains.data,
+            empower: empower.data,
           },
         })
         yield put({

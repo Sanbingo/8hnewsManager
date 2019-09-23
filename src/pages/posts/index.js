@@ -11,10 +11,11 @@ import Modal from './components/modal'
 class Posts extends React.PureComponent {
   get filterProps() {
     const { dispatch, posts, app } = this.props
-    const { initData = {}, siteDomains = [], searchForm = {} } = posts
+    const { initData = {}, siteDomains = [], searchForm = {}, empower={} } = posts
     const tags = app.tags || {}
     return {
       initData,
+      empower,
       siteDomains,
       searchForm,
       tags,
