@@ -25,6 +25,7 @@ export default class PostModal extends React.Component {
     const { dispatch, posts, loading } = this.props;
     const { uploadVisible, search } = posts;
     return {
+      dispatch,
       loading,
       title: '添加媒体',
       width: 680,
@@ -37,19 +38,20 @@ export default class PostModal extends React.Component {
           type: 'posts/closeUpload'
         })
       },
-      onSearch: (value) => {
+      onSearch: (value, { pageNum=1 }) => {
         dispatch({
           type: 'posts/search',
           payload: {
-            keyword: value
+            keyword: value,
+            pageNum,
           }
         })
       },
-      onCancel: () => {
-        dispatch({
-          type: 'posts/closeUpload'
-        })
-      }
+      // onCancel: () => {
+      //   dispatch({
+      //     type: 'posts/closeUpload'
+      //   })
+      // }
     }
   }
   render() {

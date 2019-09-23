@@ -14,7 +14,12 @@ export default class ListComponent extends PureComponent {
     title: '标题',
     render: (text, record) => {
       return (
-        <a href={record.downloadUrl} target="__blank">{text}</a>
+        <div>
+          <div>{record.translate}</div>
+          <div>
+            <a href={record.downloadUrl} target="__blank">{text}</a>
+          </div>
+        </div>
       );
     }
   }, {

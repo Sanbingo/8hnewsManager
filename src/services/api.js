@@ -27,4 +27,5 @@ export default {
   getWPToken: 'POST /token',
   transApi: 'POST /translate',
   transJinShan: 'POST /translate/jinshan',
+  translatePartial: 'POST /translate/partial',
 }

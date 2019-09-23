@@ -98,6 +98,9 @@ class Posts extends React.PureComponent {
           dispatch({
             type: 'posts/hideModal',
           })
+          dispatch({
+            type: 'posts/query',
+          })
         }}>
           取消
         </Button>,
@@ -119,6 +122,9 @@ class Posts extends React.PureComponent {
       onCancel() {
         dispatch({
           type: 'posts/hideModal',
+        })
+        dispatch({
+          type: 'posts/query',
         })
       },
       onOpenUpload(){

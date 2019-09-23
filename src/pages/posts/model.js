@@ -7,7 +7,7 @@ import moment from 'moment'
 // import { youdaoTranslate } from '../common/youdao';
 // import { YOUDAO_ERROR_CODE } from '../common/consts'
 
-const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan } = api
+const { queryBaseData, searchKeyWord, createPosts, transApi, transJinShan, translatePartial } = api
 
 export default {
   namespace: 'posts',
@@ -85,10 +85,18 @@ export default {
         },
       })
       if (data) {
+        let listTemp = data.data;
+        const results = yield call(translatePartial, { list: data.data })
+        if (results.success) {
+          listTemp = listTemp.map((item, index) => ({
+            ...item,
+            translate: results.data && results.data[index]
+          }))
+        }
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: listTemp,
             pagination: {
               current,
               pageSize,
