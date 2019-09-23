@@ -11,7 +11,21 @@ module.exports = {
     const { title, content } = req.body
     const titleReq = jinshanApi(title)
     const contentArr = content.split('\r\n');
-    const contentArrReq = contentArr.filter(item => !!item).map(item => jinshanApi(item))
+
+    const contentArrTemp = []
+    const MAX_LIMIT_LENGTH = 4900;
+    contentArr.filter(item => !!item).forEach(item => {
+      // 针对单个段落超过5000个字符长度的处理
+      if(item.length < MAX_LIMIT_LENGTH) {
+        contentArrTemp.push(item)
+      } else {
+        for (let i = 0, l = item.length; i < l/MAX_LIMIT_LENGTH; i++) {
+          let a = item.slice(MAX_LIMIT_LENGTH*i, MAX_LIMIT_LENGTH*(i+1));
+          contentArrTemp.push(a);
+        }
+      }
+    })
+    const contentArrReq = contentArrTemp.map(item => jinshanApi(item))
     Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
       res.status(200).json({
         data: {
