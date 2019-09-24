@@ -5,6 +5,8 @@ import { googleApi } from '../src/pages/common/trans';
 import { jinshanApi } from '../src/pages/common/jinshan'
 
 const { ApiPrefix } = Constant
+const SITE_DOMAIN = 'www.8hnews.com';
+const BAIDU_SPIDER_PUSH_TOKEN = 'IhZTmyTPGMq0Nm18';
 
 let postId = 0
 const database = Mock.mock({
@@ -40,6 +42,21 @@ const database = Mock.mock({
     },
   ],
 }).data
+
+const pushBaiduSpider = (url) => {
+  rp({
+    uri: `http://data.zz.baidu.com/urls?site=${SITE_DOMAIN}&token=${BAIDU_SPIDER_PUSH_TOKEN}`,
+    method: 'POST',
+    headers: {
+      'Content-type': 'text/plain'
+    },
+    body: url,
+    }).then((data) => {
+      console.log('百度推送成功~')
+    }).catch((err) => {
+      console.log('百度推送失败', err)
+    })
+}
 
 module.exports = {
   [`POST ${ApiPrefix}/translate/partial`](req, res) {
@@ -106,6 +123,8 @@ module.exports = {
       },
       json: true
     }).then((data) => {
+      // 添加百度推送
+      pushBaiduSpider(data && data.guid && data.guid.raw)
       res.status(200).end()
     }).catch((err) => {
       res.status(400).end()
