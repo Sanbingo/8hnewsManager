@@ -14,8 +14,13 @@ const { SubMenu } = Menu
 @withI18n()
 class Header extends PureComponent {
   handleClickMenu = e => {
-    e.key === 'SignOut' && this.props.onSignOut()
+    if (e.key === 'SignOut') {
+      this.props.onSignOut()
+    } else if (e.key === 'Personal') {
+      this.props.onPersonal()
+    }
   }
+
   render() {
     const {
       i18n,
@@ -41,6 +46,9 @@ class Header extends PureComponent {
             </Fragment>
           }
         >
+          <Menu.Item key="Personal">
+            <Trans>个人中心</Trans>
+          </Menu.Item>
           <Menu.Item key="SignOut">
             <Trans>Sign out</Trans>
           </Menu.Item>

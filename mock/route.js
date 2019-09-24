@@ -148,6 +148,17 @@ const database = [
     route: '/administrator',
   },
   {
+    id: '106',
+    // breadcrumbParentId: '10',
+    // menuParentId: '10',
+    name: 'personal',
+    zh: {
+      name: '个人中心'
+    },
+    icon: 'user',
+    route: '/personal',
+  },
+  {
     id: '21',
     menuParentId: '-1',
     breadcrumbParentId: '2',

@@ -80,7 +80,7 @@ class PrimaryLayout extends PureComponent {
 
     // MenuParentId is equal to -1 is not a available menu.
     const menus = newRouteList.filter(_ => _.menuParentId !== '-1')
-
+    const that = this;
     const headerProps = {
       menus,
       collapsed,
@@ -95,6 +95,9 @@ class PrimaryLayout extends PureComponent {
       onSignOut() {
         dispatch({ type: 'app/signOut' })
       },
+      onPersonal() {
+        window.location.href = '/zh/personal'
+      }
     }
 
     const siderProps = {
