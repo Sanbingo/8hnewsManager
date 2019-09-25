@@ -14,6 +14,7 @@ const {
   createPosts,
   translatePartial,
   transJinShan,
+  transSo,
   transGoogle,
   queryAllSiteList,
 } = api
@@ -190,6 +191,22 @@ export default {
 
       // 默认：使用免费的金山词霸
       const { data, statusCode } = yield call(transJinShan, detail)
+      if (statusCode === 200) {
+        const { title, content } = data
+        yield put({
+          type: 'translateSuccess',
+          payload: {
+            title,
+            content: content.join('<br /><br />'),
+          },
+        })
+      }
+    },
+    *translateBySo({ payload }, { call, put, select }) {
+      const { detail } = yield select(_ => _.posts)
+
+      // 默认：使用免费的金山词霸
+      const { data, statusCode } = yield call(transSo, detail)
       if (statusCode === 200) {
         const { title, content } = data
         yield put({

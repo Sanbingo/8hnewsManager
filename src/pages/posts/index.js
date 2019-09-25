@@ -161,6 +161,11 @@ class Posts extends React.PureComponent {
             type: 'posts/translateByYoudao',
             payload: {},
           })
+        } else if (type === 'so') {
+          dispatch({
+            type: 'posts/translateBySo',
+            payload: {},
+          })
         } else {
           message.warning('请选择翻译来源！')
         }

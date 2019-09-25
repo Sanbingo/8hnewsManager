@@ -95,6 +95,9 @@ export default class PostModal extends React.Component {
           <Radio key="2" value="youdaopay">
             有道云
           </Radio>
+          <Radio key="3" value="so">
+            360翻译
+          </Radio>
         </Radio.Group>
       </div>
     )

@@ -32,6 +32,7 @@ export default {
   getWPToken: 'POST /token',
   transApi: 'POST /translate',
   transJinShan: 'POST /translate/jinshan',
+  transSo: 'POST /translate/so',
   transGoogle: 'POST /translate/google',
   translatePartial: 'POST /translate/partial',
   queryCooperateList: 'POST /cooperates',

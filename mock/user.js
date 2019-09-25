@@ -46,7 +46,7 @@ const userPermission = {
     role: ROLE_TYPE.SUPERADMIN,
   },
   [ROLE_TYPE.ADMINISTRATOR]: {
-    visit: ['6', '8', '106', '9', '91', '92' ],
+    visit: ['6', '8', '9', '91', '92' ],
     role: ROLE_TYPE.ADMINISTRATOR,
   },
   [ROLE_TYPE.EMPLOYEE]: {
