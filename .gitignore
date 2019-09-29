@@ -3,6 +3,7 @@ dist
 node_modules
 npm-debug.log
 yarn-error.log
+baidu_push.log
 yarn.lock
 package-lock.json
 

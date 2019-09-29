@@ -61,9 +61,10 @@ const pushBaiduSpider = (url) => {
     },
     body: url,
     }).then((data) => {
-      logger.info('百度推送成功~')
+      logger.info('百度推送:成功')
       console.log('百度推送成功~')
     }).catch((err) => {
+      logger.info('百度推送:失败')
       console.log('百度推送失败', err)
     })
 }
