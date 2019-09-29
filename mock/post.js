@@ -3,10 +3,19 @@ import rp from 'request-promise';
 import { isNil } from 'lodash';
 import { googleApi } from '../src/pages/common/trans';
 import { jinshanApi } from '../src/pages/common/jinshan'
+import log4js from 'log4js';
+log4js.configure({
+  appenders: { cheese: { type: 'file', filename: 'baidu_push.log' } },
+  categories: { default: { appenders: ['cheese'], level: 'error' } }
+});
+
+const logger = log4js.getLogger('cheese');
+logger.level = 'INFO';
 
 const { ApiPrefix } = Constant
 const SITE_DOMAIN = 'www.8hnews.com';
 const BAIDU_SPIDER_PUSH_TOKEN = 'IhZTmyTPGMq0Nm18';
+
 
 let postId = 0
 const database = Mock.mock({
@@ -52,6 +61,7 @@ const pushBaiduSpider = (url) => {
     },
     body: url,
     }).then((data) => {
+      logger.info('百度推送成功~')
       console.log('百度推送成功~')
     }).catch((err) => {
       console.log('百度推送失败', err)
