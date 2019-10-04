@@ -85,6 +85,17 @@ const database = [
     route: '/tool'
   },
   {
+    id: '94',
+    breadcrumbParentId: '9',
+    menuParentId: '9',
+    name: 'sensitive',
+    zh: {
+      name: '敏感词设置'
+    },
+    icon: 'alert',
+    route: '/sensitive'
+  },
+  {
     id: '10',
     name: 'platform',
     zh: {

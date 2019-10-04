@@ -27,7 +27,7 @@ export default class PostModal extends React.Component {
       dispatch,
       loading,
       title: '添加媒体',
-      width: 680,
+      width: 1280,
       search,
       visible: uploadVisible,
       footer: null,
