@@ -14,11 +14,6 @@ export default class SubList extends PureComponent {
     key: 'userAcc',
     dataIndex: 'userAcc',
     title: '员工账号',
-  }, {
-    key: 'operation',
-    dataIndex: 'operation',
-    title: '操作',
-    render: () => "-"
   }]
   render() {
     const { data=[] } = this.props;

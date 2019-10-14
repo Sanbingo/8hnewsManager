@@ -23,10 +23,8 @@ export const baiduApi = (value) => {
 export const googleApi = (value) => {
   return new Promise((resolve, reject) => {
     google.translate(value).then(result => {
-      console.log('result', result)
       resolve(result)
     }).catch(err => {
-      console.log('err', err)
       reject(err)
     })
   })

@@ -47,7 +47,7 @@ class PrimaryLayout extends PureComponent {
 
   render() {
     const { app, location, dispatch, children } = this.props
-    const { theme, collapsed, notifications } = app
+    const { theme, collapsed, notifications, dstDomains } = app
     const user = store.get('user') || {}
     const permissions = store.get('permissions') || {}
     const routeList = store.get('routeList') || []
@@ -85,6 +85,7 @@ class PrimaryLayout extends PureComponent {
       menus,
       collapsed,
       notifications,
+      dstDomains,
       onCollapseChange,
       avatar: user.avatar,
       username: user.username,
@@ -97,6 +98,15 @@ class PrimaryLayout extends PureComponent {
       },
       onPersonal() {
         window.location.href = '/zh/personal'
+      },
+      onChooseDstDomain(value, opt) {
+        dispatch({
+          type: 'app/chooseDstDomain',
+          payload: {
+            value,
+            opt
+          }
+        })
       }
     }
 

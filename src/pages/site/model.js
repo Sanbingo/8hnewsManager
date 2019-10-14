@@ -1,6 +1,7 @@
 import { pathMatchRegexp } from 'utils'
 import api from 'api'
-const  { querySiteList, createSite, updateSite, queryEmployeeList } = api
+import { message } from 'antd'
+const  { querySiteList, createSite, updateSite, deleteSite, queryEmployeeList, verifyConnect } = api
 
 export default {
   namespace: 'site',
@@ -77,7 +78,17 @@ export default {
         throw data
       }
     },
-    *update({ payload }, { call, put, select}) {
+    *verify({ payload }, { call, put }) {
+      const {success} = yield call(verifyConnect, {
+        entity: { id: payload }
+      })
+      if (success) {
+        message.success('连接成功~')
+      } else {
+        message.success('连接失败~')
+      }
+    },
+    *bindUpdate({ payload }, { call, put, select}) {
       const { bindCurrentItem } = yield select(_ => _.site);
       const {
         id,
@@ -85,7 +96,13 @@ export default {
         dstSiteName,
         dstSiteRootAcc,
         dstSiteRootPwd,
-        users,
+        dstSiteAccPrefix,
+        dbUser,
+        dbPwd,
+        dbAddress,
+        dbPort,
+        dbName,
+        dbPrefix,
       } = bindCurrentItem
       const { success, message } = yield call(updateSite, {
         entity: {
@@ -94,7 +111,14 @@ export default {
           dstSiteName,
           dstSiteRootAcc,
           dstSiteRootPwd,
-          users: payload ? (users ? [...users, ...payload] : payload) : users
+          dstSiteAccPrefix,
+          dbUser,
+          dbPwd,
+          dbAddress,
+          dbPort,
+          dbName,
+          dbPrefix,
+          users: payload
         }
       })
       if (success) {
@@ -104,8 +128,42 @@ export default {
         throw message
       }
     },
+    *update({ payload }, { call, put, select}) {
+      const { currentItem } = yield select(_ => _.site);
+      const {
+        id,
+        users,
+      } = currentItem
+
+      const { success, message } = yield call(updateSite, {
+        entity: {
+          id,
+          users,
+          ...payload
+        }
+      })
+      if (success) {
+        yield put({ type: 'query' })
+        yield put({ type: 'hideModal' })
+      } else {
+        throw message
+      }
+    },
+    *delete({ payload }, { call, put}) {
+      const { success, message } = yield call(deleteSite, {
+        entity: {
+          id: payload
+        }
+      })
+      if (success) {
+        yield put({ type: 'query' })
+        message.success('删除成功~')
+      } else {
+        message.warning('删除失败~')
+      }
+    },
     *employees({payload}, { call, put, select}) {
-      const { employPagination } = yield select(_ => _.site);
+      const { employPagination, bindCurrentItem } = yield select(_ => _.site);
       const { current, pageSize } = employPagination
       const { data, success } = yield call(queryEmployeeList, {
         pageSize: 10,
@@ -123,6 +181,19 @@ export default {
             },
           },
         })
+        // 映射站点与用户关系
+        const employees = data.data;
+        const usersArr = (bindCurrentItem && bindCurrentItem.users) || []
+        const selectKeys = []
+        employees.forEach((item, index) => {
+          if (usersArr.some(user => user.userId === item.id)) {
+            selectKeys.push(index)
+          }
+        })
+        yield put({
+          type: 'site/selectKeys',
+          payload: selectKeys
+        })
       }
     }
   },
@@ -137,7 +208,11 @@ export default {
       return { ...state, ...payload, bindModalVisible: true }
     },
     bindHideModal(state) {
-      return { ...state, bindModalVisible: false }
+      return {
+        ...state,
+        bindModalVisible: false,
+        selectKeys: []
+      }
     },
     changeSearchForm(state, { payload }) {
       return {
@@ -179,5 +254,11 @@ export default {
         }
       }
     },
+    selectKeys(state, { payload }) {
+      return {
+        ...state,
+        selectKeys: payload
+      }
+    }
   }
 }

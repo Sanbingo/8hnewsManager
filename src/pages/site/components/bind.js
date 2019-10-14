@@ -2,10 +2,15 @@ import React, { Component } from 'react'
 import { Table, message, Modal } from 'antd'
 
 class SiteModal extends Component {
+
   state = {
     selectedRowKeys: [], // Check here to configure the default column
   }
   columns = [{
+    key: "id",
+    dataIndex: "id",
+    title: "ID"
+  }, {
     key: 'userRealName',
     dataIndex: 'userRealName',
     title: '姓名'
@@ -23,24 +28,22 @@ class SiteModal extends Component {
     title: '手机'
   }]
   handleOk = () => {
-    const { onOk, employees } = this.props;
-    const { selectedRowKeys=[] } = this.state;
-    if (selectedRowKeys.length === 0) {
-      message.warning('请选择员工~')
-    } else {
-      const data = selectedRowKeys.map(item => ({ userId: employees[item] && employees[item].id}))
-      onOk(data)
-    }
+    const { onOk, employees, selectKeys=[] } = this.props;
+    // const { selectedRowKeys=[] } = this.state;
+    const data = selectKeys.map(item => ({ userId: employees[item] && employees[item].id}))
+    console.log('data', data)
+    onOk(data)
   }
-  onSelectChange = selectedRowKeys => {
-    this.setState({ selectedRowKeys });
+  onSelectChange = selectKeys => {
+    // this.setState({ selectedRowKeys });
+    this.props.onSelectKeys(selectKeys)
   };
 
   render() {
-    const { onOk, employees=[], ...modalProps } = this.props
-    const { selectedRowKeys } = this.state;
+    const { onOk, employees=[], selectKeys=[], ...modalProps } = this.props
+    // const { selectedRowKeys } = this.state;
     const rowSelection = {
-      selectedRowKeys,
+      selectedRowKeys: selectKeys,
       onChange: this.onSelectChange,
     };
     return (

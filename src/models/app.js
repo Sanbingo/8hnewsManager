@@ -11,7 +11,7 @@ import config from 'config'
 import request from 'utils/request'
 import { arrayToMapObject } from '../pages/common'
 
-const { queryRouteList, logoutUser, queryUserInfo, getAllTags } = api
+const { queryRouteList, logoutUser, queryUserInfo, getAllTags, mySiteList, getDstCategory } = api
 
 export default {
   namespace: 'app',
@@ -46,6 +46,7 @@ export default {
       dispatch({ type: 'query' })
       dispatch({ type: 'base' })
       dispatch({ type: 'alltags' })
+      dispatch({ type: 'allDstDomains' })
     },
     setupHistory({ dispatch, history }) {
       history.listen(location => {
@@ -148,6 +149,36 @@ export default {
         })
       }
     },
+    *allDstDomains({payload}, { call, put}) {
+      const { data, success } = yield call(mySiteList, {
+        entity: {},
+        pageSize: 10,
+        pageNum: 1
+      });
+      if (success) {
+        yield put({
+          type: 'dstDomainsSuccess',
+          payload: data.data || [],
+        })
+      }
+    },
+    *chooseDstDomain({ payload }, { call, put}) {
+      const { data, success } = yield call(getDstCategory, {
+        entity: {
+          id: payload.value
+        },
+      });
+      if (success) {
+        yield put({
+          type: 'dstCategorySuccess',
+          payload: data.data || [],
+        })
+        yield put({
+          type: 'dstInfo',
+          payload: payload.opt
+        })
+      }
+    },
     *signOut({ payload }, { call, put, select }) {
       const data = yield call(logoutUser)
       if (data.success) {
@@ -203,6 +234,24 @@ export default {
         tags: {
           ...payload
         }
+      }
+    },
+    dstDomainsSuccess(state, { payload }) {
+      return {
+        ...state,
+        dstDomains: payload
+      }
+    },
+    dstCategorySuccess(state, { payload }) {
+      return {
+        ...state,
+        dstCategory: payload
+      }
+    },
+    dstInfo(state, { payload}) {
+      return {
+        ...state,
+        dstInfo: payload.props
       }
     }
   },

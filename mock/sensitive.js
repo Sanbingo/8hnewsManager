@@ -12,4 +12,7 @@ module.exports = {
   [`POST ${ApiPrefix}/updateSensitive`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/sensitive/update');
   },
+  [`POST ${ApiPrefix}/sensitiveVerify`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/sensitive/verify');
+  },
 }

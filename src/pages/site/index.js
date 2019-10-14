@@ -34,7 +34,9 @@ class SiteComponent extends PureComponent {
       onAddItem: (payload) => {
         dispatch({
           type: 'site/showModal',
-          payload
+          payload: {
+            modalType: 'create',
+          }
         })
       }
     }
@@ -62,7 +64,7 @@ class SiteComponent extends PureComponent {
         dispatch({
           type: 'site/bindShowModal',
           payload: {
-            bindModalType: 'update',
+            bindModalType: 'bindUpdate',
             bindCurrentItem: item
           }
         })
@@ -85,7 +87,14 @@ class SiteComponent extends PureComponent {
           type: 'site/delete',
           payload
         })
-      }
+      },
+      onVerifyConnect: (payload) => {
+        dispatch({
+          type: 'site/verify',
+          payload
+        })
+      },
+
     }
   }
   get modalProps() {
@@ -97,11 +106,11 @@ class SiteComponent extends PureComponent {
       visible: modalVisible,
       destroyOnClose: true,
       maskClosable: false,
+      width: 800,
       confirmLoading: loading.effects[`site/${modalType}`],
       title: `${modalType === 'create' ? '新建' : '编辑'}`,
       centered: true,
       onOk: data => {
-        console.log('disptach ok', data);
         dispatch({
           type: `site/${modalType}`,
           payload: data,
@@ -116,7 +125,7 @@ class SiteComponent extends PureComponent {
   }
   get bindProps() {
     const { dispatch, site, loading } = this.props
-    const { bindCurrentItem, bindModalVisible, bindModalType, employees } = site
+    const { bindCurrentItem, bindModalVisible, bindModalType, employees, selectKeys } = site
 
     return {
       item: bindModalType === 'create' ? {} : bindCurrentItem,
@@ -124,9 +133,10 @@ class SiteComponent extends PureComponent {
       destroyOnClose: true,
       maskClosable: false,
       confirmLoading: loading.effects[`site/${bindModalType}`],
-      title: `${bindModalType === 'create' ? '新建' : '绑定员工'}`,
+      title: `${bindModalType === 'create' ? '新建' : '用户管理'}`,
       centered: true,
       employees,
+      selectKeys,
       onOk: data => {
         dispatch({
           type: `site/${bindModalType}`,
@@ -138,6 +148,12 @@ class SiteComponent extends PureComponent {
           type: 'site/bindHideModal',
         })
       },
+      onSelectKeys: (data) => {
+        dispatch({
+          type: 'site/selectKeys',
+          payload: data
+        })
+      }
     }
   }
 

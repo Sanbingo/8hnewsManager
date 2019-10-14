@@ -17,7 +17,7 @@ export const TipBtn = props => {
   )
 }
 
-export const createOptions = (obj, msg) => {
+export const createOptions = (obj, msg, callback=() =>{}) => {
   if (!obj) {
     return <Input />
   }
@@ -30,7 +30,7 @@ export const createOptions = (obj, msg) => {
     )
   )
   return (
-    <Select style={{ width: '200px' }} placeholder={msg} allowClear={true} showSearch={true} optionFilterProp="children" dropdownMatchSelectWidth={false}>
+    <Select style={{ width: '200px' }} onChange={callback} placeholder={msg} allowClear={true} showSearch={true} optionFilterProp="children" dropdownMatchSelectWidth={false}>
       {ret}
     </Select>
   )

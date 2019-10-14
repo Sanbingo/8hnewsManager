@@ -1,6 +1,6 @@
 import React, { PureComponent, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon, Layout, Avatar, Popover, Badge, List } from 'antd'
+import { Menu, Icon, Layout, Avatar, Popover, Badge, List, Select } from 'antd'
 import { Ellipsis } from 'ant-design-pro'
 import { Trans, withI18n } from '@lingui/react'
 import { setLocale } from 'utils'
@@ -8,8 +8,10 @@ import moment from 'moment'
 import classnames from 'classnames'
 import config from 'config'
 import styles from './Header.less'
+import { createOptions, arrayToMapObject } from '../../pages/common';
 
 const { SubMenu } = Menu
+const { Option } = Select
 
 @withI18n()
 class Header extends PureComponent {
@@ -17,7 +19,7 @@ class Header extends PureComponent {
     if (e.key === 'SignOut') {
       this.props.onSignOut()
     } else if (e.key === 'Personal') {
-      this.props.onPersonal()
+      // this.props.onPersonal()
     }
   }
 
@@ -29,7 +31,9 @@ class Header extends PureComponent {
       username,
       collapsed,
       notifications,
+      dstDomains,
       onCollapseChange,
+      onChooseDstDomain,
       onAllNotificationsRead,
     } = this.props
 
@@ -46,9 +50,6 @@ class Header extends PureComponent {
             </Fragment>
           }
         >
-          <Menu.Item key="Personal">
-            <Trans>个人中心</Trans>
-          </Menu.Item>
           <Menu.Item key="SignOut">
             <Trans>Sign out</Trans>
           </Menu.Item>
@@ -150,16 +151,10 @@ class Header extends PureComponent {
         })}
         id="layoutHeader"
       >
-        <div
-          className={styles.button}
-          onClick={onCollapseChange.bind(this, !collapsed)}
-        >
-          <Icon
-            type={classnames({
-              'menu-unfold': collapsed,
-              'menu-fold': !collapsed,
-            })}
-          />
+        <div style={{ marginLeft: '20px'}}>
+          {createOptions(arrayToMapObject(dstDomains, 'id', 'dstSiteName'), '目标站点', (v, opt) => {
+            onChooseDstDomain(v, opt)
+          })}
         </div>
 
         <div className={styles.rightContainer}>{rightContent}</div>

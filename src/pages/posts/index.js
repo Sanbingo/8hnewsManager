@@ -98,32 +98,35 @@ class Posts extends React.PureComponent {
       );
   }
   get modalProps() {
-    const { dispatch, posts, loading } = this.props
+    const { dispatch, posts, loading, app } = this.props
     const { modalVisible, detail, translation, base } = posts
+    const { dstCategory } = app
     return {
       ...this.props,
       loading,
       detail,
       base,
       translation,
+      dstCategory,
+      okText: '发布',
       title: this.renderModalHeader(),
       width: 1200,
       visible: modalVisible,
-      footer: [
-        <Button
-          type="primary"
-          onClick={() => {
-            dispatch({
-              type: 'posts/hideModal',
-            })
-            dispatch({
-              type: 'posts/query',
-            })
-          }}
-        >
-          关闭
-        </Button>,
-      ],
+      // footer: [
+      //   <Button
+      //     type="primary"
+      //     onClick={() => {
+      //       dispatch({
+      //         type: 'posts/hideModal',
+      //       })
+      //       dispatch({
+      //         type: 'posts/query',
+      //       })
+      //     }}
+      //   >
+      //     关闭
+      //   </Button>,
+      // ],
       onOk: data => {
         dispatch({
           type: 'posts/create',
@@ -176,8 +179,9 @@ class Posts extends React.PureComponent {
   render() {
     return (
       <Page inner>
-        <Filter {...this.filterProps} />
-        <br />
+        <div style={{ marginBottom: '10px'}}>
+          <Filter {...this.filterProps} />
+        </div>
         <List {...this.listProps} />
         <Modal {...this.modalProps} />
       </Page>

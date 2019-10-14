@@ -10,7 +10,7 @@ const { confirm } = Modal
 @withI18n()
 class ListComponent extends PureComponent {
   handleMenuClick = (record, e) => {
-    const { onBindEmployee, onDeleteItem, onEditItem, i18n } = this.props
+    const { onBindEmployee, onDeleteItem, onEditItem, i18n, onVerifyConnect } = this.props
 
     if (e.key === '1') {
       onBindEmployee(record)
@@ -21,6 +21,13 @@ class ListComponent extends PureComponent {
         title: i18n.t`Are you sure delete this record?`,
         onOk() {
           onDeleteItem(record.id)
+        },
+      })
+    } else if (e.key === '4') {
+      confirm({
+        title: '确定执行连接测试？',
+        onOk() {
+          onVerifyConnect(record.id)
         },
       })
     }
@@ -62,9 +69,10 @@ class ListComponent extends PureComponent {
         <DropOption
           onMenuClick={e => this.handleMenuClick(record, e)}
           menuOptions={[
-            { key: '1', name: '添加员工' },
+            { key: '1', name: '用户管理' },
             { key: '2', name: '编辑' },
             { key: '3', name: '删除' },
+            { key: '4', name: '测试连接' },
           ]}
         />
       )

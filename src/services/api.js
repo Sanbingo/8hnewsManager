@@ -45,10 +45,14 @@ export default {
   queryEmployeeList: 'POST /employees',
   createEmployee: 'POST /employee',
   querySiteList: 'POST /sites',
-  queryAllSiteList: 'POST /allSites',
+  mySiteList: 'POST /mySites',
   createSite: 'POST /site',
   updateSite: 'POST /siteUpdate',
+  deleteSite: 'POST /siteDelete',
+  verifyConnect: 'POST /verify',
   queryTagsList: 'POST /tags',
   getAllTags: 'POST /all-tags',
-  createTags: 'POST /tag'
+  createTags: 'POST /tag',
+  getDstCategory: 'POST /dstCategory',
+  sensitiveVerify: 'POST /sensitiveVerify',
 }

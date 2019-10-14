@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Select, Radio, Button, Input, Modal } from 'antd'
+import { Form, Row, Col, Button, Input, Modal } from 'antd'
 import { createOptions, createRadios } from '../../common'
 
 const FormItem = Form.Item
@@ -34,6 +34,8 @@ class SiteModal extends Component {
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
         <Form layout="horizontal" {...formItemLayout}>
+        <Row>
+          <Col span="12">
           <FormItem label="站点名称">
             {getFieldDecorator('dstSiteName', {
               initialValue: item.dstSiteName,
@@ -84,6 +86,67 @@ class SiteModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
+          </Col>
+          <Col span={12}>
+          <FormItem label="数据库用户名">
+            {getFieldDecorator('dbUser', {
+              initialValue: item.dbUser,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="数据库密码">
+            {getFieldDecorator('dbPwd', {
+              initialValue: item.dbPwd,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="数据库地址">
+            {getFieldDecorator('dbAddress', {
+              initialValue: item.dbAddress,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="数据库端口">
+            {getFieldDecorator('dbPort', {
+              initialValue: item.dbPort,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="数据库名称">
+            {getFieldDecorator('dbName', {
+              initialValue: item.dbName,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input />)}
+          </FormItem>
+          <FormItem label="数据库前缀">
+            {getFieldDecorator('dbPrefix', {
+              initialValue: item.dbPrefix,
+            })(<Input />)}
+          </FormItem>
+          </Col>
+        </Row>
+
+
         </Form>
       </Modal>
     )

@@ -14,7 +14,6 @@ export const jinshanApi = (content) => {
     }).then(data => {
       resolve(JSON.parse(data))
     }).catch(err => {
-      console.log('err', err)
       reject(err)
     })
   })

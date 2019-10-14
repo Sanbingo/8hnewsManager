@@ -16,7 +16,7 @@ const {
   transJinShan,
   transSo,
   transGoogle,
-  queryAllSiteList,
+  sensitiveVerify
 } = api
 
 export default {
@@ -71,7 +71,6 @@ export default {
         method: 'post',
         data: {},
       })
-      // const { data, success} = yield call(queryAllSiteList, {})
       if (constMap && empower) {
         yield put({
           type: 'initSuccess',
@@ -136,29 +135,55 @@ export default {
     },
     *create({ payload = {} }, { call, put, select }) {
       const { translation = {} } = yield select(_ => _.posts)
-      const { title, content, categories } = translation
+      const { dstInfo={} } = yield select(_ => _.app)
+      const { title, content, categories, keywords, description } = translation
       if (isNil(title)) {
         message.warning('标题不能为空')
         return
       } else if (isNil(content)) {
         message.warning('内容不能为空')
         return
+      } else if (isEmpty(dstInfo)) {
+        message.warning('请先选择发布的目标站点~')
+        return
       } else if (isEmpty(categories)) {
         message.warning('请选择栏目~')
         return
       }
-      const data = yield call(createPosts, translation)
-      if (data.statusCode === 200) {
-        message.success('创建成功')
-        yield put({
-          type: 'posts/hideModal',
-        })
-        yield put({
-          type: 'posts/query',
-        })
-      } else {
-        message.warning('登录信息已过期，请重新登录')
+      const postData = {
+        entity: {
+          dstSiteId: dstInfo.value,
+          dstCategoryId: categories,
+          dstCategoryName: dstInfo.children,
+          keywords,
+          title,
+          content,
+          description
+        }
       }
+      const verifyResult = yield call(sensitiveVerify, postData)
+      if (verifyResult.success && !verifyResult.data.data.verify) {
+        const sensitiveWords = verifyResult.data.data.sensitiveWordhits.join(',')
+        const confirm = window.confirm(`存在敏感词：${sensitiveWords}, 是否继续发布？`)
+        if (confirm) {
+          const { data, success } = yield call(createPosts, postData)
+          if (success) {
+            message.success('发布成功')
+            yield put({
+              type: 'posts/hideModal',
+            })
+            yield put({
+              type: 'posts/query',
+            })
+          } else {
+            message.warning('发布失败')
+          }
+        } else {
+            return;
+        }
+
+      }
+
     },
     *detail({ payload }, { call, put }) {
       if (payload) {
@@ -197,7 +222,7 @@ export default {
           type: 'translateSuccess',
           payload: {
             title,
-            content: content.join('<br /><br />'),
+            content: content.join('<br />'),
           },
         })
       }
@@ -205,7 +230,7 @@ export default {
     *translateBySo({ payload }, { call, put, select }) {
       const { detail } = yield select(_ => _.posts)
 
-      // 默认：使用免费的金山词霸
+      // 默认：使用免费的360翻译
       const { data, statusCode } = yield call(transSo, detail)
       if (statusCode === 200) {
         const { title, content } = data
@@ -213,7 +238,7 @@ export default {
           type: 'translateSuccess',
           payload: {
             title,
-            content: content.join('<br /><br />'),
+            content: content.join('<br />'),
           },
         })
       }
@@ -248,7 +273,7 @@ export default {
             titleRes.errorCode === '0'
               ? titleRes && titleRes.translation && titleRes.translation[0]
               : `Error: ${YOUDAO_ERROR_CODE[titleRes.errorCode]}`,
-          content: results.join('<br /><br />'),
+          content: results.content.join('<br />'),
         },
       })
     },
@@ -261,7 +286,7 @@ export default {
           type: 'translateSuccess',
           payload: {
             title,
-            content: content.join('<br /><br />'),
+            content: content.content.join('<br />'),
           },
         })
       }

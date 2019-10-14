@@ -92,14 +92,11 @@ class Login extends PureComponent {
                 onClick={this.handleOk}
                 loading={loading.effects.login}
               >
-                <Trans>Sign in</Trans>
+                <Trans>登录</Trans>
               </Button>
 
             </Row>
           </form>
-        </div>
-        <div className={styles.footer}>
-          <GlobalFooter links={footerLinks} copyright={config.copyright} />
         </div>
       </Fragment>
     )
