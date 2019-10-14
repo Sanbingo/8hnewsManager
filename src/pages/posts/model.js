@@ -178,10 +178,22 @@ export default {
           } else {
             message.warning('发布失败')
           }
-        } else {
-            return;
         }
-
+      } else if (verifyResult.success && verifyResult.data.data.verify) {
+        const { data, success } = yield call(createPosts, postData)
+        if (success) {
+          message.success('发布成功')
+          yield put({
+            type: 'posts/hideModal',
+          })
+          yield put({
+            type: 'posts/query',
+          })
+        } else {
+          message.warning('发布失败')
+        }
+      } else {
+        return;
       }
 
     },
