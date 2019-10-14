@@ -96,7 +96,6 @@ export default {
         dstSiteName,
         dstSiteRootAcc,
         dstSiteRootPwd,
-        dstSiteAccPrefix,
         dbUser,
         dbPwd,
         dbAddress,
@@ -111,7 +110,6 @@ export default {
           dstSiteName,
           dstSiteRootAcc,
           dstSiteRootPwd,
-          dstSiteAccPrefix,
           dbUser,
           dbPwd,
           dbAddress,
@@ -134,12 +132,33 @@ export default {
         id,
         users,
       } = currentItem
+      const {
+        dstSiteUrl,
+        dstSiteName,
+        dstSiteRootAcc,
+        dstSiteRootPwd,
+        dbUser,
+        dbPwd,
+        dbAddress,
+        dbPort,
+        dbName,
+        dbPrefix,
+      } = payload
 
       const { success, message } = yield call(updateSite, {
         entity: {
           id,
-          users,
-          ...payload
+          users: users ? users : [],
+          dstSiteUrl,
+          dstSiteName,
+          dstSiteRootAcc,
+          dstSiteRootPwd,
+          dbUser,
+          dbPwd,
+          dbAddress,
+          dbPort,
+          dbName,
+          dbPrefix
         }
       })
       if (success) {

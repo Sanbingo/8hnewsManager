@@ -76,16 +76,6 @@ class SiteModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label="站点前缀">
-            {getFieldDecorator('dstSiteAccPrefix', {
-              initialValue: item.dstSiteAccPrefix,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
           </Col>
           <Col span={12}>
           <FormItem label="数据库用户名">
