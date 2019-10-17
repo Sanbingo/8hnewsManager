@@ -257,14 +257,20 @@ export default {
     },
     *translateByYoudao({ payload }, { call, put, select }) {
       const { detail } = yield select(_ => _.posts)
+      const { keysecret={} } = yield select(_ => _.app)
+      const { appId, encrypt, id } = keysecret
+      if (isNil(appId) || isNil(encrypt)) {
+        message.warning('有道云没有配置，请联系网站管理员')
+        return;
+      }
       // 使用付费的有道API
       // 标题翻译
-      const titleReq = youdaoTranslate(detail.title)
+      const titleReq = youdaoTranslate(detail.title, appId, encrypt )
       // 正文翻译，由于正文篇幅过长，分段翻译
       const contentArr = detail.content.split('\r\n')
       const contentArrReq = contentArr
         .filter(item => !!item)
-        .map(item => youdaoTranslate(item))
+        .map(item => youdaoTranslate(item, appId, encrypt))
       const [titleRes, ...contentRes] = yield Promise.all([
         titleReq,
         ...contentArrReq,
@@ -272,12 +278,25 @@ export default {
       const results = contentRes.map(item => {
         if (item.errorCode === '0') {
           return item && item.translation && item.translation[0]
+        } else if (item.errorCode === '401') {
+          return 'Service Unavailable'
         } else {
-          return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n${
-            item.query
-          }`
+          return 'Service Unavailable'
+          // return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n`
         }
       })
+      if (results.some(item => item === 'Service Unavailable')) {
+        message.warning('有道云翻译已欠费，为了不影响使用请提醒管理员注意续费~')
+        yield put({
+          type: 'app/latestkeysecret',
+          payload: {
+            entity: {
+              id,
+              encryptType : 0
+            }
+          }
+        })
+      }
       yield put({
         type: 'translateSuccess',
         payload: {
@@ -285,7 +304,7 @@ export default {
             titleRes.errorCode === '0'
               ? titleRes && titleRes.translation && titleRes.translation[0]
               : `Error: ${YOUDAO_ERROR_CODE[titleRes.errorCode]}`,
-          content: results.content.join('<br />'),
+          content: results.join('<br />'),
         },
       })
     },

@@ -23,6 +23,13 @@ export default {
             roles: data.data.roles
           }
         })
+        // 获取用户的目标站点
+        yield put({ type: 'app/allDstDomains' })
+        // 获取翻译密钥
+        yield put({
+          type: 'app/latestkeysecret',
+          payload: { entity: { encryptType : 0 } }
+        })
         // 获取wp的token
         // yield call(getWPToken, payload)
         if (!pathMatchRegexp('/login', from)) {

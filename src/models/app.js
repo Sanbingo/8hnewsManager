@@ -11,7 +11,7 @@ import config from 'config'
 import request from 'utils/request'
 import { arrayToMapObject } from '../pages/common'
 
-const { queryRouteList, logoutUser, queryUserInfo, getAllTags, mySiteList, getDstCategory } = api
+const { queryRouteList, logoutUser, queryUserInfo, getAllTags, mySiteList, getDstCategory, latestkeySecret } = api
 
 export default {
   namespace: 'app',
@@ -46,7 +46,13 @@ export default {
       dispatch({ type: 'query' })
       dispatch({ type: 'base' })
       dispatch({ type: 'alltags' })
-      dispatch({ type: 'allDstDomains' })
+      // 获取用户的目标站点
+      dispatch({ type: 'app/allDstDomains' })
+      // 获取翻译密钥
+      dispatch({
+        type: 'app/latestkeysecret',
+        payload: { entity: { encryptType : 0 } }
+      })
     },
     setupHistory({ dispatch, history }) {
       history.listen(location => {
@@ -132,8 +138,6 @@ export default {
         data: payload || { entity: {}}
       })
       if (constMap) {
-        store.set('appkey', '52af186d5198e43e')
-        store.set('appSecret', 'e1ZS2jAOEegKln2yxzWRGXFCGU2gPxZX')
           yield put({
             type: 'baseSuccess',
             payload: constMap.data
@@ -158,6 +162,15 @@ export default {
       if (success) {
         yield put({
           type: 'dstDomainsSuccess',
+          payload: data.data || [],
+        })
+      }
+    },
+    *latestkeysecret({ payload }, { call, put}) {
+      const { data, success } = yield call(latestkeySecret, payload);
+      if (success) {
+        yield put({
+          type: 'keySecretSuccess',
           payload: data.data || [],
         })
       }
@@ -252,6 +265,12 @@ export default {
       return {
         ...state,
         dstInfo: payload.props
+      }
+    },
+    keySecretSuccess(state, { payload }) {
+      return {
+        ...state,
+        keysecret: payload
       }
     }
   },

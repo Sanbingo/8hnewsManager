@@ -96,6 +96,17 @@ const database = [
     route: '/sensitive'
   },
   {
+    id: '95',
+    breadcrumbParentId: '9',
+    menuParentId: '9',
+    name: 'keysecret',
+    zh: {
+      name: '密钥设置'
+    },
+    icon: 'key',
+    route: '/keysecret'
+  },
+  {
     id: '10',
     name: 'platform',
     zh: {

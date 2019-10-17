@@ -55,4 +55,8 @@ export default {
   createTags: 'POST /tag',
   getDstCategory: 'POST /dstCategory',
   sensitiveVerify: 'POST /sensitiveVerify',
+  queryKeySecret: 'POST /keysecrets',
+  createKeySecret: 'POST /keysecret',
+  removeKeySecret: 'POST /removekeysecret',
+  latestkeySecret: 'POST /keysecretlatest',
 }
