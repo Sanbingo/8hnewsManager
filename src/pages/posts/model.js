@@ -281,8 +281,7 @@ export default {
         } else if (item.errorCode === '401') {
           return 'Service Unavailable'
         } else {
-          return 'Service Unavailable'
-          // return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n`
+          return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n`
         }
       })
       if (results.some(item => item === 'Service Unavailable')) {
