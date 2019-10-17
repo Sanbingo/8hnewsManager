@@ -9,7 +9,7 @@ class QuillEdit extends PureComponent {
       container:[
         [{ 'header': [1, 2, false] }],
         ['bold', 'italic', 'underline','strike', 'blockquote'],
-        [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}, { 'align': [] }],
+        [{'list': 'ordered'}, {'list': 'bullet'}, { 'align': ['center', '', 'right', 'justify' ] }, {'indent': '-1'}, {'indent': '+1'}, ],
         ['link', 'image'],
         ['clean']
       ],

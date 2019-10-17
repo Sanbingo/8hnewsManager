@@ -15,6 +15,7 @@ class FilterComponent extends Component {
       a[b] = b;
       return a;
     }, {})
+    const categorymap = arrayToMapObject(empower.categories, 'categoryId', 'categoryName');
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
         <FormItem>{getFieldDecorator('ymd')(<DatePicker />)}</FormItem>
@@ -22,7 +23,7 @@ class FilterComponent extends Component {
           {getFieldDecorator('siteDomain')(createOptions(siteDomains, '文章站点'))}
         </FormItem>
         <FormItem>
-          {getFieldDecorator('categoryId')(createOptions(tags, '文章类型'))}
+          {getFieldDecorator('categoryId')(createOptions(categorymap, '文章类型'))}
         </FormItem>
         <FormItem>
           {getFieldDecorator('spiderDetailBizStatus')(
