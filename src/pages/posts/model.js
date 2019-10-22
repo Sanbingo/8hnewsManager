@@ -34,6 +34,7 @@ export default {
       current: 1,
       pageSize: 10,
     },
+    translateType: 'jinshan'
   },
 
   subscriptions: {
@@ -150,6 +151,8 @@ export default {
         message.warning('请选择栏目~')
         return
       }
+      // 排版：图片居中对齐
+      const formatContent = content.replace(/<img.*?(?:>|\/>)/gi, (match) => `<p align='center'>${match}</p>`)
       const postData = {
         entity: {
           dstSiteId: dstInfo.value,
@@ -157,7 +160,7 @@ export default {
           dstCategoryName: dstInfo.children,
           keywords,
           title,
-          content,
+          content: formatContent,
           description
         }
       }
@@ -389,6 +392,12 @@ export default {
           ...state.pagination,
           ...payload,
         },
+      }
+    },
+    translateType(state, {payload}) {
+      return {
+        ...state,
+        translateType: payload
       }
     },
     querySuccess(state, { payload }) {

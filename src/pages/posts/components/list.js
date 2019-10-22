@@ -12,11 +12,11 @@ export default class ListComponent extends PureComponent {
     key: 'title',
     dataIndex: 'title',
     title: '标题',
-    width: 400,
+    width: '400px',
     render: (text, record) => {
       return (
         <div>
-          <div>{record.translate}</div>
+          <div style={{ maxWidth: '400px', wordBreak: 'break-all'}}>{record.translate}</div>
           <div>
             <a href={record.downloadUrl} target="__blank">{text}</a>
           </div>

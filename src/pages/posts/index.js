@@ -99,7 +99,7 @@ class Posts extends React.PureComponent {
   }
   get modalProps() {
     const { dispatch, posts, loading, app } = this.props
-    const { modalVisible, detail, translation, base } = posts
+    const { modalVisible, detail, translation, base, translateType } = posts
     const { dstCategory } = app
     return {
       ...this.props,
@@ -108,6 +108,7 @@ class Posts extends React.PureComponent {
       base,
       translation,
       dstCategory,
+      translateType,
       okText: '发布',
       title: this.renderModalHeader(),
       width: 1200,
@@ -132,6 +133,10 @@ class Posts extends React.PureComponent {
           type: 'posts/create',
           payload: {},
         })
+        dispatch({
+          type: 'posts/translateType',
+          payload: 'jinshan'
+        })
       },
       onCancel() {
         dispatch({
@@ -139,6 +144,10 @@ class Posts extends React.PureComponent {
         })
         dispatch({
           type: 'posts/query',
+        })
+        dispatch({
+          type: 'posts/translateType',
+          payload: 'jinshan'
         })
       },
       onOpenUpload() {
@@ -153,6 +162,10 @@ class Posts extends React.PureComponent {
         })
       },
       switchTranslate(type) {
+        dispatch({
+          type: 'posts/translateType',
+          payload: type
+        })
         if (type === 'jinshan') {
           // 默认
           dispatch({

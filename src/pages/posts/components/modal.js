@@ -111,10 +111,11 @@ export default class PostModal extends React.Component {
       borderRadius: '3px',
       padding: '10px',
     }
+    const { translateType } = this.props
     return (
       <div style={categorieStyle}>
         <span>翻译来源：</span>
-        <Radio.Group onChange={this.translateApiChange} defaultValue="jinshan">
+        <Radio.Group onChange={this.translateApiChange} value={translateType}>
           <Radio key="1" value="jinshan">
             金山词霸
           </Radio>
