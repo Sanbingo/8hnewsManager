@@ -173,18 +173,18 @@ class Posts extends React.PureComponent {
       //     payload: 'jinshan'
       //   })
       // },
-      // onCancel() {
-      //   dispatch({
-      //     type: 'posts/hideModal',
-      //   })
-      //   dispatch({
-      //     type: 'posts/query',
-      //   })
-      //   dispatch({
-      //     type: 'posts/translateType',
-      //     payload: 'jinshan'
-      //   })
-      // },
+      onCancel() {
+        dispatch({
+          type: 'posts/hideModal',
+        })
+        dispatch({
+          type: 'posts/query',
+        })
+        dispatch({
+          type: 'posts/translateType',
+          payload: 'jinshan'
+        })
+      },
       onOpenUpload() {
         dispatch({
           type: 'posts/openUpload',
