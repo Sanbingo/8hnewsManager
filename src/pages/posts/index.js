@@ -113,43 +113,78 @@ class Posts extends React.PureComponent {
       title: this.renderModalHeader(),
       width: 1200,
       visible: modalVisible,
-      // footer: [
-      //   <Button
-      //     type="primary"
-      //     onClick={() => {
-      //       dispatch({
-      //         type: 'posts/hideModal',
-      //       })
-      //       dispatch({
-      //         type: 'posts/query',
-      //       })
-      //     }}
-      //   >
-      //     关闭
-      //   </Button>,
-      // ],
-      onOk: data => {
-        dispatch({
-          type: 'posts/create',
-          payload: {},
-        })
-        dispatch({
-          type: 'posts/translateType',
-          payload: 'jinshan'
-        })
-      },
-      onCancel() {
-        dispatch({
-          type: 'posts/hideModal',
-        })
-        dispatch({
-          type: 'posts/query',
-        })
-        dispatch({
-          type: 'posts/translateType',
-          payload: 'jinshan'
-        })
-      },
+      footer: [
+        <Button
+          onClick={() => {
+            dispatch({
+              type: 'posts/hideModal',
+            })
+            dispatch({
+              type: 'posts/query',
+            })
+            dispatch({
+              type: 'posts/translateType',
+              payload: 'jinshan'
+            })
+          }}
+        >
+          取消
+        </Button>,
+        <Button
+          type="primary"
+          onClick={() => {
+            dispatch({
+              type: 'posts/create',
+              payload: {},
+            })
+            dispatch({
+              type: 'posts/translateType',
+              payload: 'jinshan'
+            })
+          }}
+        >
+          发布
+        </Button>,
+        <Button
+          type="primary"
+          onClick={() => {
+            dispatch({
+              type: 'posts/create',
+              payload: {
+                publishType: 1
+              },
+            })
+            dispatch({
+              type: 'posts/translateType',
+              payload: 'jinshan'
+            })
+          }}
+        >
+          草稿
+        </Button>,
+      ],
+      // onOk: data => {
+      //   dispatch({
+      //     type: 'posts/create',
+      //     payload: {},
+      //   })
+      //   dispatch({
+      //     type: 'posts/translateType',
+      //     payload: 'jinshan'
+      //   })
+      // },
+      // onCancel() {
+      //   dispatch({
+      //     type: 'posts/hideModal',
+      //   })
+      //   dispatch({
+      //     type: 'posts/query',
+      //   })
+      //   dispatch({
+      //     type: 'posts/translateType',
+      //     payload: 'jinshan'
+      //   })
+      // },
       onOpenUpload() {
         dispatch({
           type: 'posts/openUpload',

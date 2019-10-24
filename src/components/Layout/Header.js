@@ -46,7 +46,6 @@ class Header extends PureComponent {
                 <Trans>Hi,</Trans>
               </span>
               <span>{username}</span>
-              <Avatar style={{ marginLeft: 8 }} src={avatar} />
             </Fragment>
           }
         >

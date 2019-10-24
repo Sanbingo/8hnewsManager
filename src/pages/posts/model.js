@@ -161,7 +161,8 @@ export default {
           keywords,
           title,
           content: formatContent,
-          description
+          description,
+          ...payload
         }
       }
       const verifyResult = yield call(sensitiveVerify, postData)
