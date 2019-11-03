@@ -97,6 +97,10 @@ class Posts extends React.PureComponent {
         </div>
       );
   }
+  setQuillEditortDefaultStatus = () => {
+    let quill = this.refs.postmodal.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
+    quill.setSelection(0) //关闭发布对话框把光标置为0
+  }
   get modalProps() {
     const { dispatch, posts, loading, app } = this.props
     const { modalVisible, detail, translation, base, translateType } = posts
@@ -116,6 +120,7 @@ class Posts extends React.PureComponent {
       footer: [
         <Button
           onClick={() => {
+            this.setQuillEditortDefaultStatus()
             dispatch({
               type: 'posts/hideModal',
             })
@@ -133,6 +138,7 @@ class Posts extends React.PureComponent {
         <Button
           type="primary"
           onClick={() => {
+            this.setQuillEditortDefaultStatus()
             dispatch({
               type: 'posts/create',
               payload: {},
@@ -148,6 +154,7 @@ class Posts extends React.PureComponent {
         <Button
           type="primary"
           onClick={() => {
+            this.setQuillEditortDefaultStatus()
             dispatch({
               type: 'posts/create',
               payload: {
@@ -185,9 +192,13 @@ class Posts extends React.PureComponent {
           payload: 'jinshan'
         })
       },
-      onOpenUpload() {
+      onOpenUpload(position) {
+        console.log('position', position)
         dispatch({
           type: 'posts/openUpload',
+          payload: {
+            position
+          }
         })
       },
       onFormChange(payload) {
@@ -231,7 +242,7 @@ class Posts extends React.PureComponent {
           <Filter {...this.filterProps} />
         </div>
         <List {...this.listProps} />
-        <Modal {...this.modalProps} />
+        <Modal {...this.modalProps} ref="postmodal" />
       </Page>
     )
   }

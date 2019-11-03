@@ -18,8 +18,14 @@ class QuillEdit extends PureComponent {
       }
     }
   }
-  showUploadBox() {
-    this.props.onOpenUpload()
+  showUploadBox(e){
+    let quill = this.refs.reactQuillRef.getEditor() //获取到编辑器本身
+    let lastRange = 0;
+    if (quill.hasFocus()) {
+      lastRange = quill.selection.lastRange && quill.selection.lastRange.index
+    }
+    this.props.onOpenUpload(lastRange)
+    quill.blur()
   }
   render() {
     const { content, handleChange } = this.props;

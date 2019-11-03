@@ -13,7 +13,10 @@ export default class PostModal extends React.Component {
   handleChange = (field, value) => {
     this.props.onFormChange({ [field]: value })
   }
-
+  setPointDefaultStatus = (index) => {
+    let quill = this.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
+    quill.setSelection(index)
+  }
   imageHandler = url => {
     let quill = this.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
     const lastRange = quill.selection.lastRange
@@ -24,7 +27,7 @@ export default class PostModal extends React.Component {
 
   get uploadProps() {
     const { dispatch, posts, loading } = this.props
-    const { uploadVisible, search } = posts
+    const { uploadVisible, search, position=0 } = posts
     return {
       dispatch,
       loading,
@@ -34,6 +37,7 @@ export default class PostModal extends React.Component {
       visible: uploadVisible,
       footer: null,
       onOk: val => {
+        this.setPointDefaultStatus(position)
         this.imageHandler(val)
         dispatch({
           type: 'posts/closeUpload',
@@ -48,11 +52,15 @@ export default class PostModal extends React.Component {
           },
         })
       },
-      // onCancel: () => {
-      //   dispatch({
-      //     type: 'posts/closeUpload',
-      //   })
-      // },
+      onCancel: () => {
+        this.setPointDefaultStatus(position)
+        dispatch({
+          type: 'posts/closeUpload',
+          payload: {
+            position: 0
+          }
+        })
+      },
     }
   }
   // WordPress网站

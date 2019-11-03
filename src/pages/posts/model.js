@@ -352,7 +352,7 @@ export default {
       return { ...state, modalVisible: true }
     },
     hideModal(state) {
-      return { ...state, modalVisible: false }
+      return { ...state, position: 0, modalVisible: false }
     },
     changeSearchForm(state, { payload }) {
       return {
@@ -383,6 +383,7 @@ export default {
       return {
         ...state,
         ...payload,
+        position: 0,
         uploadVisible: false,
       }
     },
