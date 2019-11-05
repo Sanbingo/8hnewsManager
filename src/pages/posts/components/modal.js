@@ -4,6 +4,7 @@ import { Quill } from 'react-quill'
 import { isEmpty } from 'lodash'
 import QuillEdit from './common/quilledit'
 import Upload from './common/upload'
+import { getTranslateType } from '../consts';
 import Reference from '../../spider/components/common/reference'
 import 'react-quill/dist/quill.snow.css'
 
@@ -124,11 +125,11 @@ export default class PostModal extends React.Component {
       <div style={categorieStyle}>
         <span>翻译来源：</span>
         <Radio.Group onChange={this.translateApiChange} value={translateType}>
+        <Radio key="2" value="youdaopay">
+            有道云
+          </Radio>
           <Radio key="1" value="jinshan">
             金山词霸
-          </Radio>
-          <Radio key="2" value="youdaopay">
-            有道云
           </Radio>
           <Radio key="3" value="so">
             360翻译
@@ -147,13 +148,15 @@ export default class PostModal extends React.Component {
   </Spin>
   */
   render() {
-    const { detail = {}, translation = {}, loading } = this.props
+    const { detail = {}, translation = {}, loading, translateType } = this.props
+    let loadingType = getTranslateType(translateType);
+    const loadingStatus = loading.effects[`posts/${loadingType}`]
     return (
       <Modal {...this.props}>
         <Row gutter={24}>
           <Col span={12}>
             {this.renderTranslate()}
-            <Spin spinning={loading.effects['posts/translate']}>
+            <Spin spinning={loadingStatus}>
               {this.renderColumns()}
               <Input
                 id="title"
@@ -178,7 +181,7 @@ export default class PostModal extends React.Component {
             </Spin>
           </Col>
           <Col span={12}>
-            <Spin spinning={loading.effects['posts/translate']}>
+            <Spin spinning={loadingStatus}>
               <div style={{ maxHeight: '400px', overflowY: 'scroll' }}>
                 <QuillEdit
                   ref="quillEditRef"

@@ -7,6 +7,7 @@ import moment from 'moment'
 import { searchToObject } from '../common'
 import { youdaoTranslate } from '../common/youdao'
 import { YOUDAO_ERROR_CODE } from '../common/consts'
+import { getTranslateType } from './consts';
 
 const {
   queryBaseData,
@@ -34,7 +35,7 @@ export default {
       current: 1,
       pageSize: 10,
     },
-    translateType: 'jinshan'
+    translateType: 'youdaopay'
   },
 
   subscriptions: {
@@ -201,7 +202,8 @@ export default {
       }
 
     },
-    *detail({ payload }, { call, put }) {
+    *detail({ payload }, { call, put, select }) {
+      const { translateType } = yield select(_ => _.posts);
       if (payload) {
         const data = yield request({
           url: 'http://139.196.86.217:8088/info/document/detail',
@@ -219,9 +221,8 @@ export default {
               detail: data.data,
             },
           })
-          // 翻译操作，暂时注释，勿删
           yield put({
-            type: 'translate',
+            type: getTranslateType(translateType),
             payload: {},
           })
         }
