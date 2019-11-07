@@ -137,7 +137,7 @@ export default {
     },
     *create({ payload = {} }, { call, put, select }) {
       const { translation = {}, detailId } = yield select(_ => _.posts)
-      const { dstInfo={} } = yield select(_ => _.app)
+      const { dstInfo={}, dstCategory=[] } = yield select(_ => _.app)
       const { title, content, categories, keywords, description } = translation
       const { abstractDefaultContent, publishType } = payload
       if (isNil(title)) {
@@ -159,7 +159,7 @@ export default {
         entity: {
           dstSiteId: dstInfo.value,
           dstCategoryId: categories,
-          dstCategoryName: dstInfo.children,
+          dstCategoryName: dstCategory.find(item => item.dstCategoryId === categories) && dstCategory.find(item => item.dstCategoryId === categories).dstCategoryName,
           keywords,
           title,
           content: formatContent,
