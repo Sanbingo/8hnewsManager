@@ -2,13 +2,15 @@ import api from 'api'
 import { pathMatchRegexp } from 'utils'
 import request from 'utils/request'
 import { message } from 'antd'
-import { isNil, isEmpty } from 'lodash'
+import { isNil, isEmpty, get } from 'lodash'
 import moment from 'moment'
 import { searchToObject } from '../common'
 import { youdaoTranslate } from '../common/youdao'
 import { YOUDAO_ERROR_CODE } from '../common/consts'
 import { getTranslateType } from './consts';
 
+const TITLE_MAX_LENGTH = 80
+const KEYWORD_MAX_LENGTH = 40
 const {
   queryBaseData,
   searchKeyWord,
@@ -185,6 +187,12 @@ export default {
       } else if (isEmpty(categories)) {
         message.warning('请选择栏目~')
         return
+      } else if (title && title.length > TITLE_MAX_LENGTH) {
+        message.warning(`标题长度不能超过${TITLE_MAX_LENGTH}个字符`)
+        return
+      } else if (keywords && keywords.length > KEYWORD_MAX_LENGTH) {
+        message.warning(`关键字不能超过${KEYWORD_MAX_LENGTH}个字符`)
+        return
       }
       // 排版：图片居中对齐
       const formatContent = content.replace(/<img.*?(?:>|\/>)/gi, (match) => `<p align='center'>${match}</p>`)
@@ -202,8 +210,10 @@ export default {
         }
       }
       const verifyResult = yield call(sensitiveVerify, postData)
-      if (verifyResult.success && !verifyResult.data.data.verify) {
-        const sensitiveWords = verifyResult.data.data.sensitiveWordhits.join(',')
+      const verify = get(verifyResult, 'data.data.verify');
+      if (verifyResult.success && !verify) {
+        const sensitiveWordhits = get(verifyResult, 'data.data.sensitiveWordhits', [])
+        const sensitiveWords = sensitiveWordhits.join(',')
         const confirm = window.confirm(`存在敏感词：${sensitiveWords}, 是否继续发布？`)
         if (confirm) {
           const { data, success } = yield call(createPosts, postData)
@@ -219,7 +229,7 @@ export default {
             message.warning('发布失败')
           }
         }
-      } else if (verifyResult.success && verifyResult.data.data.verify) {
+      } else if (verifyResult.success && verify) {
         const { data, success } = yield call(createPosts, postData)
         if (success) {
           message.success('发布成功')
