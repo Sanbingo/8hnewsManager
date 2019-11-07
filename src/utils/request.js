@@ -36,6 +36,7 @@ export default function request(options) {
   options.url = url
   options.data = cloneData
   options.method = method
+  options.timeout = 3000
   options.headers = { 'content-type': 'application/json' }
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
@@ -43,6 +44,18 @@ export default function request(options) {
       cancel,
     })
   })
+  axios.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response;
+  }, function (error) {
+    // 如果超时就直接返回，其他错误走报警
+    if (/3000/.test(error)) {
+      return error;
+    }
+    // Do something with response error
+    return Promise.reject(error);
+});
+
   return axios(options)
     .then(response => {
       const { statusText, status, data } = response
