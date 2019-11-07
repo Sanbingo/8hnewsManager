@@ -13,8 +13,8 @@ const serialize = (obj) => {
   }, []).join('&')
 }
 export const youdaoTranslate = (value, appkey, appSecret) => {
-  const APP_KEY = appkey
-  const APP_SECRET = appSecret
+  const APP_KEY = appkey || store.get('appId')
+  const APP_SECRET = appSecret || store.get('secret')
   const salt = (new Date).getTime();
   const query = value.length > MAX_CONTENT_LENGTH ? value.slice(0, MAX_CONTENT_LENGTH): value
   const str = APP_KEY+query+salt+APP_SECRET

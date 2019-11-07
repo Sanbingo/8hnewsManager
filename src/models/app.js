@@ -168,11 +168,17 @@ export default {
     },
     *latestkeysecret({ payload }, { call, put}) {
       const { data, success } = yield call(latestkeySecret, payload);
+
       if (success) {
+        const { appId, id, encrypt } = data.data
         yield put({
           type: 'keySecretSuccess',
           payload: data.data || [],
         })
+        // 把秘钥保存到localstorage中
+        store.set('appId', appId)
+        store.set('secret', encrypt)
+        store.set('keyId', id)
       }
     },
     *chooseDstDomain({ payload }, { call, put}) {

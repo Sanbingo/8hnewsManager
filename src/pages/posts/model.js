@@ -20,6 +20,19 @@ const {
   sensitiveVerify
 } = api
 
+const processResultsByYoudaopay = (res=[]) => {
+  const results = res.map(item => {
+    if (item.errorCode === '0') {
+      return item && item.translation && item.translation[0]
+    } else if (item.errorCode === '401') {
+      return 'Service Unavailable'
+    } else {
+      return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n`
+    }
+  })
+  return results
+}
+
 export default {
   namespace: 'posts',
 
@@ -104,11 +117,31 @@ export default {
       })
       if (data) {
         let listTemp = data.data;
-        const results = yield call(translatePartial, { list: data.data })
-        if (results.success) {
+        // 使用金山词霸翻译
+        // const results = yield call(translatePartial, { list: data.data })
+        // 使用有道云翻译
+        const listArrReq = listTemp.filter(item => !!item.title).map(item => youdaoTranslate(item.title))
+        const [...listArrRes] = yield Promise.all([...listArrReq])
+
+        // 有道云返回结果通用逻辑        
+        const results = processResultsByYoudaopay(listArrRes)
+        // 如果翻译出错，或有道云有问题，则提示
+        if (results.some(item => item === 'Service Unavailable')) {
+          message.warning('有道云翻译已欠费，为了不影响使用请提醒管理员注意续费~')
+          yield put({
+            type: 'app/latestkeysecret',
+            payload: {
+              entity: {
+                id,
+                encryptType : 0
+              }
+            }
+          })
+        } else {
+        // 否则把翻译结果拼接会列表
           listTemp = listTemp.map((item, index) => ({
             ...item,
-            translate: results.data && results.data[index]
+            translate: results[index]
           }))
         }
         yield put({
@@ -270,27 +303,16 @@ export default {
         message.warning('有道云没有配置，请联系网站管理员')
         return;
       }
-      // 使用付费的有道API
-      // 标题翻译
+
+      // 标题翻译，使用付费的有道API
       const titleReq = youdaoTranslate(detail.title, appId, encrypt )
-      // 正文翻译，由于正文篇幅过长，分段翻译
-      const contentArr = detail.content.split('\r\n')
-      const contentArrReq = contentArr
-        .filter(item => !!item)
-        .map(item => youdaoTranslate(item, appId, encrypt))
-      const [titleRes, ...contentRes] = yield Promise.all([
-        titleReq,
-        ...contentArrReq,
-      ])
-      const results = contentRes.map(item => {
-        if (item.errorCode === '0') {
-          return item && item.translation && item.translation[0]
-        } else if (item.errorCode === '401') {
-          return 'Service Unavailable'
-        } else {
-          return `#####Error: ${YOUDAO_ERROR_CODE[item.errorCode]}#####\r\n`
-        }
-      })
+      const [titleRes] = yield Promise.all([titleReq])
+
+      // 正文内容默认：先使用免费的金山词霸，翻译出错则使用有道云
+      const { data, statusCode } = yield call(transJinShan, detail)
+
+      // 针对标题：有道云返回结果通用逻辑   
+      const results = processResultsByYoudaopay([titleRes])
       if (results.some(item => item === 'Service Unavailable')) {
         message.warning('有道云翻译已欠费，为了不影响使用请提醒管理员注意续费~')
         yield put({
@@ -303,14 +325,47 @@ export default {
           }
         })
       }
+      let title = ''
+      if (titleRes.errorCode === '0') {
+        title = titleRes && titleRes.translation && titleRes.translation[0]
+      } else if (statusCode === 200) {
+        title = data.title
+      } else {
+        title = `Error: ${YOUDAO_ERROR_CODE[titleRes.errorCode]}`
+      }
+
+      let content = []
+      if (statusCode === 200) {
+        content = data.content
+      } else {
+        // 正文翻译，由于正文篇幅过长，分段翻译
+        const contentArr = detail.content.split('\r\n')
+        const contentArrReq = contentArr
+          .filter(item => !!item)
+          .map(item => youdaoTranslate(item, appId, encrypt))
+        const [...contentRes] = yield Promise.all([...contentArrReq])
+        // 针对正文内容：有道云返回结果通用逻辑   
+        const results = processResultsByYoudaopay(contentRes)
+        if (results.some(item => item === 'Service Unavailable')) {
+          message.warning('有道云翻译已欠费，为了不影响使用请提醒管理员注意续费~')
+          yield put({
+            type: 'app/latestkeysecret',
+            payload: {
+              entity: {
+                id,
+                encryptType : 0
+              }
+            }
+          })
+        }
+        content = results;
+      }
+      
       yield put({
         type: 'translateSuccess',
         payload: {
-          title:
-            titleRes.errorCode === '0'
-              ? titleRes && titleRes.translation && titleRes.translation[0]
-              : `Error: ${YOUDAO_ERROR_CODE[titleRes.errorCode]}`,
-          content: results.join('<br />'),
+          title,
+          content: content.join('<br />'),
         },
       })
     },
