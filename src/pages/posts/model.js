@@ -136,9 +136,10 @@ export default {
       }
     },
     *create({ payload = {} }, { call, put, select }) {
-      const { translation = {} } = yield select(_ => _.posts)
+      const { translation = {}, detailId } = yield select(_ => _.posts)
       const { dstInfo={} } = yield select(_ => _.app)
       const { title, content, categories, keywords, description } = translation
+      const { abstractDefaultContent, publishType } = payload
       if (isNil(title)) {
         message.warning('标题不能为空')
         return
@@ -162,8 +163,9 @@ export default {
           keywords,
           title,
           content: formatContent,
-          description,
-          ...payload
+          description: description || abstractDefaultContent,
+          detailId,
+          publishType
         }
       }
       const verifyResult = yield call(sensitiveVerify, postData)
@@ -350,7 +352,7 @@ export default {
   },
   reducers: {
     showModal(state, { payload }) {
-      return { ...state, modalVisible: true }
+      return { ...state, ...payload, modalVisible: true }
     },
     hideModal(state) {
       return { ...state, position: 0, modalVisible: false }

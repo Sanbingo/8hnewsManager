@@ -64,7 +64,9 @@ class Posts extends React.PureComponent {
       onHandleTranslate: value => {
         dispatch({
           type: 'posts/showModal',
-          payload: value,
+          payload: {
+            detailId: value
+          },
         })
         dispatch({
           type: 'posts/detail',
@@ -101,6 +103,10 @@ class Posts extends React.PureComponent {
     let quill = this.refs.postmodal.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
     quill.setSelection(0) //关闭发布对话框把光标置为0
   }
+  getQuillContentByText = () => {
+    let quill = this.refs.postmodal.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
+    return quill.getText(0, 200); // 默认取正文前200个字符当做摘要
+  }
   get modalProps() {
     const { dispatch, posts, loading, app } = this.props
     const { modalVisible, detail, translation, base, translateType } = posts
@@ -129,7 +135,7 @@ class Posts extends React.PureComponent {
             })
             dispatch({
               type: 'posts/translateType',
-              payload: 'jinshan'
+              payload: 'youdaopay'
             })
           }}
         >
@@ -141,11 +147,13 @@ class Posts extends React.PureComponent {
             this.setQuillEditortDefaultStatus()
             dispatch({
               type: 'posts/create',
-              payload: {},
+              payload: {
+                abstractDefaultContent: this.getQuillContentByText()
+              },
             })
             dispatch({
               type: 'posts/translateType',
-              payload: 'jinshan'
+              payload: 'youdaopay'
             })
           }}
         >
@@ -158,12 +166,13 @@ class Posts extends React.PureComponent {
             dispatch({
               type: 'posts/create',
               payload: {
+                abstractDefaultContent: this.getQuillContentByText(),
                 publishType: 1
               },
             })
             dispatch({
               type: 'posts/translateType',
-              payload: 'jinshan'
+              payload: 'youdaopay'
             })
           }}
         >
@@ -189,7 +198,7 @@ class Posts extends React.PureComponent {
         })
         dispatch({
           type: 'posts/translateType',
-          payload: 'jinshan'
+          payload: 'youdaopay'
         })
       },
       onOpenUpload(position) {
