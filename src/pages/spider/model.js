@@ -61,6 +61,9 @@ export default {
   state: {
     currentItem: {},
     modalVisible: false,
+    searchForm: {
+      spiderDetailStatus: '0'
+    }
     // translation: {},
   },
 

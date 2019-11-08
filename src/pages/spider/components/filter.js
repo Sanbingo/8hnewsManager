@@ -43,5 +43,21 @@ class FilterComponent extends Component {
 export default Form.create({
   onValuesChange: (props, changedValues) => {
     props.onChange(changedValues)
-  }
+  },
+  mapPropsToFields: props => {
+    return {
+      siteDomain: Form.createFormField({
+        value: props.searchForm.siteDomain,
+      }),
+      ymd: Form.createFormField({
+        value: props.searchForm.ymd,
+      }),
+      spiderInfoStatus: Form.createFormField({
+        value: props.searchForm.spiderInfoStatus,
+      }),
+      spiderDetailStatus: Form.createFormField({
+        value: props.searchForm.spiderDetailStatus,
+      }),
+    }
+  },
 })(FilterComponent);

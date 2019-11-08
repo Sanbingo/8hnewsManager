@@ -144,6 +144,16 @@ class SourcesModal extends Component {
             })(createRadios({0: '正式', 1: '测试'}))}
           </FormItem>
           {this.renderSpiderCron()}
+          <FormItem label="爬虫">
+            {getFieldDecorator('spiderConfigStatus', {
+              initialValue: item.spiderConfigStatus,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(createRadios({0: '启用', 1: '停用'}))}
+          </FormItem>
         </Form>
       </Modal>
     )

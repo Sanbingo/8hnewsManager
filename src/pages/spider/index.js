@@ -10,13 +10,13 @@ import Modal from './components/modal'
 
 @connect(({ spider, loading }) => ({ spider, loading }))
 class Spider extends PureComponent {
-
   get filterProps() {
     const { dispatch, spider } = this.props
-    const { initData={}, searchForm, allSources } = spider
+    const { initData={}, allSources, searchForm } = spider
     return {
       allSources,
       initData,
+      searchForm,
       onChange: (value) => {
         dispatch({
           type: 'spider/searchChange',

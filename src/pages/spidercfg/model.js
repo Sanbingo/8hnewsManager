@@ -46,7 +46,6 @@ export default {
           ...searchForm,
         }
       })
-      console.log('query.....', data, success)
       if (success) {
         yield put({
           type: 'querySuccess',
