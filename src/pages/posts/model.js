@@ -166,10 +166,10 @@ export default {
             }
           })
           // 翻译操作，暂时注释，勿删
-          yield put({
-            type: 'translate',
-            payload: data.data
-          })
+          // yield put({
+          //   type: 'translate',
+          //   payload: data.data
+          // })
         }
       }
     },

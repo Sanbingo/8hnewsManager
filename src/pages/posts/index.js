@@ -1,7 +1,8 @@
 import React from 'react'
 import { Page } from 'components'
 import { connect } from 'dva'
-import { Button } from 'antd'
+import { Button, message } from 'antd'
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Filter from './components/filter'
 import List from './components/list'
 import Modal from './components/modal'
@@ -71,6 +72,29 @@ class Posts extends React.PureComponent {
       }
     }
   }
+  renderModalHeader(){
+    const { posts } = this.props
+    const { detail={} } = posts;
+      return (
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>查看</div>
+          <div style={{ marginRight: '50px' }}>
+            <CopyToClipboard text={detail.title} style={{ marginRight: '5px' }}
+              onCopy={() => message.success('复制成功~')}>
+              <Button>
+                标题复制
+              </Button>
+            </CopyToClipboard>
+            <CopyToClipboard text={detail.content}
+              onCopy={() => message.success('复制成功~')}>
+              <Button>
+                内容复制
+              </Button>
+            </CopyToClipboard>
+          </div>
+        </div>
+      );
+  }
   get modalProps() {
     const { dispatch, posts, loading } = this.props;
     const { modalVisible, detail, translation, base } = posts
@@ -80,39 +104,40 @@ class Posts extends React.PureComponent {
       detail,
       base,
       translation,
-      title: '翻译',
-      width: 1200,
+      title: this.renderModalHeader(),
+      width: 600,
       visible: modalVisible,
-      footer: [
-        <Button key="draft" loading={loading.effects['posts/create']} onClick={() => {
-          dispatch({
-            type: 'posts/create',
-            payload: {
-              status: 'draft'
-            }
-          })
-        }}>
-          保存草稿
-        </Button>,
-        <Button key="cancel" onClick={() => {
-          dispatch({
-            type: 'posts/hideModal',
-          })
-          dispatch({
-            type: 'posts/query',
-          })
-        }}>
-          取消
-        </Button>,
-        <Button key="submit" type="primary" loading={loading.effects['posts/create']} onClick={() => {
-          dispatch({
-            type: 'posts/create',
-            payload: {},
-          })
-        }}>
-          发布
-        </Button>,
-      ],
+      footer: null,
+      // footer: [
+      //   <Button key="draft" loading={loading.effects['posts/create']} onClick={() => {
+      //     dispatch({
+      //       type: 'posts/create',
+      //       payload: {
+      //         status: 'draft'
+      //       }
+      //     })
+      //   }}>
+      //     保存草稿
+      //   </Button>,
+      //   <Button key="cancel" onClick={() => {
+      //     dispatch({
+      //       type: 'posts/hideModal',
+      //     })
+      //     dispatch({
+      //       type: 'posts/query',
+      //     })
+      //   }}>
+      //     取消
+      //   </Button>,
+      //   <Button key="submit" type="primary" loading={loading.effects['posts/create']} onClick={() => {
+      //     dispatch({
+      //       type: 'posts/create',
+      //       payload: {},
+      //     })
+      //   }}>
+      //     发布
+      //   </Button>,
+      // ],
       onOk: (data) => {
         dispatch({
           type: 'posts/create',

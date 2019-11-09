@@ -56,12 +56,11 @@ export default class ListComponent extends PureComponent {
     title: '操作',
     width: 100,
     render: (text, {id}) => {
-      return '-'
-      // return (
-      //   <a onClick={() => {
-      //     this.props.onHandleTranslate(id)
-      //   }}>翻译</a>
-      // );
+      return (
+        <a onClick={() => {
+          this.props.onHandleTranslate(id)
+        }}>查看</a>
+      );
     }
   }]
   render() {

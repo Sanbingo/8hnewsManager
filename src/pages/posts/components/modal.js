@@ -73,12 +73,13 @@ export default class PostModal extends React.Component {
         {...this.props}
       >
         <Row gutter={24}>
-          <Col span={12}>
+          <Col span={24}>
             <Spin spinning={loading.effects['posts/detail']}>
               <Reference title={detail.title} content={detail.content} url={detail.downloadUrl} />
             </Spin>
           </Col>
-          <Col span={12}>
+          
+          {/*<Col span={12}>
             <Spin spinning={loading.effects['posts/translate']}>
               <div style={categorieStyle}>
                 <Checkbox.Group options={CATEGORY_TEST_DATA} value={translation.categories || []} onChange={(val) => this.handleChange('categories', val)}/>
@@ -93,7 +94,7 @@ export default class PostModal extends React.Component {
                 />
               </div>
             </Spin>
-          </Col>
+          </Col>*/}
         </Row>
         <Upload {...this.uploadProps} />
       </Modal>
