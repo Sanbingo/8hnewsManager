@@ -143,6 +143,7 @@ class Posts extends React.PureComponent {
         </Button>,
         <Button
           type="primary"
+          loading={loading.effects['posts/create']}
           onClick={() => {
             this.setQuillEditortDefaultStatus()
             dispatch({
@@ -161,6 +162,7 @@ class Posts extends React.PureComponent {
         </Button>,
         <Button
           type="primary"
+          loading={loading.effects['posts/create']}
           onClick={() => {
             this.setQuillEditortDefaultStatus()
             dispatch({

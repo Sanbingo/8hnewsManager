@@ -3,7 +3,7 @@ import { cloneDeep, isEmpty } from 'lodash'
 import pathToRegexp from 'path-to-regexp'
 import { message } from 'antd'
 import { CANCEL_REQUEST_MESSAGE } from 'utils/constant'
-import qs from 'qs'
+
 
 const { CancelToken } = axios
 window.cancelRequest = new Map()
@@ -44,21 +44,13 @@ export default function request(options) {
       cancel,
     })
   })
-  axios.interceptors.response.use(function (response) {
-    // Do something with response data
-    return response;
-  }, function (error) {
-    // 如果超时就直接返回，其他错误走报警
-    if (/3000/.test(error)) {
-      return {
-        status: 200,
-        data: null,
-        message: '连接超时'
-      };
-    }
-    // Do something with response error
-    return Promise.reject(error);
-});
+
+  // axios.interceptors.response.use(function (response) {
+  //   // Do something with response data
+  //   return response;
+  // }, function (error) {
+  //   return Promise.reject(error);
+  // });
 
   return axios(options)
     .then(response => {
@@ -87,6 +79,13 @@ export default function request(options) {
       if (String(message) === CANCEL_REQUEST_MESSAGE) {
         return {
           success: false,
+        }
+      }
+
+      if (/timeout of/.test(String(message))) {
+        return {
+          success: false,
+          message: '请求超时，请稍后重试~'
         }
       }
 

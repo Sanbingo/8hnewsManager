@@ -9,7 +9,7 @@ import { youdaoTranslate } from '../common/youdao'
 import { YOUDAO_ERROR_CODE } from '../common/consts'
 import { getTranslateType } from './consts';
 
-const TITLE_MAX_LENGTH = 80
+const TITLE_MAX_LENGTH = 150
 const KEYWORD_MAX_LENGTH = 40
 const {
   queryBaseData,
@@ -18,7 +18,6 @@ const {
   translatePartial,
   transJinShan,
   transSo,
-  transGoogle,
   sensitiveVerify
 } = api
 
@@ -275,9 +274,9 @@ export default {
     },
     *translate({ payload }, { call, put, select }) {
       const { detail } = yield select(_ => _.posts)
-
       // 默认：使用免费的金山词霸
-      const { data, statusCode } = yield call(transJinShan, detail)
+      const result = yield call(transJinShan, detail)
+      const { data, statusCode } = result
       if (statusCode === 200) {
         const { title, content } = data
         yield put({
@@ -287,13 +286,16 @@ export default {
             content: content.join('<br />'),
           },
         })
+      } else {
+        message.warning(result.message)
       }
     },
     *translateBySo({ payload }, { call, put, select }) {
       const { detail } = yield select(_ => _.posts)
 
       // 默认：使用免费的360翻译
-      const { data, statusCode } = yield call(transSo, detail)
+      const result = yield call(transSo, detail)
+      const { data, statusCode } = result
       if (statusCode === 200) {
         const { title, content } = data
         yield put({
@@ -303,6 +305,8 @@ export default {
             content: content.join('<br />'),
           },
         })
+      } else {
+        message.warning(result.message)
       }
     },
     *translateByYoudao({ payload }, { call, put, select }) {
@@ -310,7 +314,7 @@ export default {
       const { keysecret={} } = yield select(_ => _.app)
       const { appId, encrypt, id } = keysecret
       if (isNil(appId) || isNil(encrypt)) {
-        message.warning('有道云没有配置，请联系网站管理员')
+        message.warning('有道云秘钥没有配置，请联系网站管理员~')
         return;
       }
 
@@ -319,8 +323,9 @@ export default {
       const [titleRes] = yield Promise.all([titleReq])
 
       // 正文内容默认：先使用免费的金山词霸，翻译出错则使用有道云
-      const { data, statusCode } = yield call(transJinShan, detail)
-
+      const response = yield call(transJinShan, detail)
+      const { data, statusCode } = response
+      
       // 针对标题：有道云返回结果通用逻辑   
       const results = processResultsByYoudaopay([titleRes])
       if (results.some(item => item === 'Service Unavailable')) {
@@ -379,20 +384,6 @@ export default {
         },
       })
     },
-    *translateByGoogle({ payload }, { call, put }) {
-      // 使用免费的谷歌API
-      const { data, statusCode } = yield call(transGoogle, payload)
-      if (statusCode === 200) {
-        const { title, content } = data
-        yield put({
-          type: 'translateSuccess',
-          payload: {
-            title,
-            content: content.content.join('<br />'),
-          },
-        })
-      }
-    },
     *search({ payload }, { call, put }) {
       const keyword = payload.keyword || ''
       if (keyword) {
@@ -419,8 +410,14 @@ export default {
     showModal(state, { payload }) {
       return { ...state, ...payload, modalVisible: true }
     },
+    // 关闭发布对话框
     hideModal(state) {
-      return { ...state, position: 0, modalVisible: false }
+      return {
+        ...state,
+        position: 0, // 重置编辑器光标位置
+        translation: {}, // 重置翻译内容为空
+        modalVisible: false,
+      }
     },
     changeSearchForm(state, { payload }) {
       return {

@@ -58,11 +58,11 @@ export default {
         dll: {
           include: ['dva', 'dva/router', 'dva/saga', 'dva/fetch', 'antd/es'],
         },
-        pwa: {
-          manifestOptions: {
-            srcPath: 'manifest.json'
-          },
-        }
+        // pwa: {
+        //   manifestOptions: {
+        //     srcPath: 'manifest.json'
+        //   },
+        // }
       },
     ],
   ],

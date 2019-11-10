@@ -84,7 +84,7 @@ export default {
       })
       const { success, status } = ret;
 
-      if (success && status === 0) {
+      if (success) {
         message.success('连接成功~')
       } else {
         message.warning('连接失败~')
