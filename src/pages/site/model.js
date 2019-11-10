@@ -79,13 +79,15 @@ export default {
       }
     },
     *verify({ payload }, { call, put }) {
-      const {success} = yield call(verifyConnect, {
+      const ret = yield call(verifyConnect, {
         entity: { id: payload }
       })
-      if (success) {
+      const { success, status } = ret;
+
+      if (success && status === 0) {
         message.success('连接成功~')
       } else {
-        message.success('连接失败~')
+        message.warning('连接失败~')
       }
     },
     *bindUpdate({ payload }, { call, put, select}) {

@@ -50,7 +50,11 @@ export default function request(options) {
   }, function (error) {
     // 如果超时就直接返回，其他错误走报警
     if (/3000/.test(error)) {
-      return error;
+      return {
+        status: 200,
+        data: null,
+        message: '连接超时'
+      };
     }
     // Do something with response error
     return Promise.reject(error);
