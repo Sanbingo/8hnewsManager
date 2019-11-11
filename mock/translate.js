@@ -5,7 +5,7 @@ import log4js from 'log4js'
 
 const logger = log4js.getLogger('jinshan')
 
-const { ApiPrefix, CutOffLine } = Constant
+const { ApiPrefix } = Constant
 
 const contentPreSplit = (content) => {
   const contentArr = content.split('\r\n');
@@ -36,7 +36,6 @@ module.exports = {
     const startTime = new Date().getTime();
     Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
       const totalTime = new Date().getTime() - startTime;
-      logger.info(CutOffLine)
       logger.info(`Success: [${username}] [${totalTime}] ms`)
       res.status(200).json({
         data: {
@@ -46,7 +45,6 @@ module.exports = {
       })
     }).catch((err) => {
       const totalTime = new Date().getTime() - startTime;
-      logger.info(CutOffLine)
       logger.error(`Failure: [${username}] [${totalTime}] ms`)
       logger.error(`Message: ${err && err.message}`)
       res.status(400).json({

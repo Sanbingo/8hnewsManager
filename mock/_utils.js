@@ -79,7 +79,6 @@ export const Constant = {
     grass: '#d6fbb5',
     sky: '#c1e0fc',
   },
-  CutOffLine: '----------------------'
 }
 
 export Mock from 'mockjs'
@@ -164,7 +163,6 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
   }).then((data) => {
     const totalTime = new Date().getTime() - startTime;
     if (data && data.meta && data.meta.success) {
-      logger.info(Constant.CutOffLine)
       logger.info(`Success: [${username}] [${totalTime}ms] URL: ${uri}`)
       res.status(200).json({
         status: 0,
@@ -174,7 +172,6 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
       })
     } else {
       const message = data && data.meta && data.meta.message;
-      logger.info(Constant.CutOffLine)
       logger.error(`Failure: [${username}] [${totalTime}ms] URL: ${uri}`)
       logger.error(`Message: ${message}`)
       res.status(200).json({
@@ -187,7 +184,6 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
   }).catch((err) => {
     const totalTime = new Date().getTime() - startTime;
     const message = err && err.message;
-    logger.info(Constant.CutOffLine)
     logger.error(`Failure: [${username}] [${totalTime}ms] URL: ${uri}`)
     logger.error(`Message: ${message}`)
     res.status(200).json({
