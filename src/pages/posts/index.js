@@ -123,6 +123,7 @@ class Posts extends React.PureComponent {
       title: this.renderModalHeader(),
       width: 1200,
       visible: modalVisible,
+      maskClosable: false,
       footer: [
         <Button
           onClick={() => {
