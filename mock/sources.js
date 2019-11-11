@@ -1,5 +1,5 @@
 import request from 'request';
-import { Mock, Constant, ReqWithAuth, randomAvatar } from './_utils'
+import { Mock, Constant, ReqWithAuth } from './_utils'
 
 const { ApiPrefix } = Constant
 
@@ -39,26 +39,6 @@ const bdPicFetch = (keyword, pageNum=1) => {
   })
 }
 
-let usersListData = Mock.mock({
-  'data|80-100': [
-    {
-      id: '@id',
-      name: '@name',
-      nickName: '@last',
-      phone: /^1[34578]\d{9}$/,
-      'age|11-99': 1,
-      address: '@county(true)',
-      isMale: '@boolean',
-      email: '@email',
-      createTime: '@datetime',
-      avatar() {
-        return randomAvatar()
-      },
-    },
-  ],
-})
-
-let database = usersListData.data
 
 module.exports = {
   // 查询

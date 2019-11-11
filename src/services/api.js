@@ -59,4 +59,8 @@ export default {
   createKeySecret: 'POST /keysecret',
   removeKeySecret: 'POST /removekeysecret',
   latestkeySecret: 'POST /keysecretlatest',
+  infoConstantMap: 'POST /infoConstantMap',
+  infoEmpowerMy: 'POST /infoEmpowerMy',
+  infoDocumentQueryList: 'POST /infoDocumentQueryList',
+  infoDocumentDetail: 'POST /infoDocumentDetail',
 }

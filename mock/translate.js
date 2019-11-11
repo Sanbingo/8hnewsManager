@@ -1,10 +1,11 @@
-import { Constant } from './_utils'
-
-import { googleApi } from '../src/pages/common/trans';
+import { Constant, getCookieByName } from './_utils'
 import { jinshanApi } from '../src/pages/common/jinshan';
 import { soApi } from '../src/pages/common/so';
+import log4js from 'log4js'
 
-const { ApiPrefix } = Constant
+const logger = log4js.getLogger('jinshan')
+
+const { ApiPrefix, CutOffLine } = Constant
 
 const contentPreSplit = (content) => {
   const contentArr = content.split('\r\n');
@@ -26,12 +27,17 @@ const contentPreSplit = (content) => {
 
 module.exports = {
   [`POST ${ApiPrefix}/translate/jinshan`](req, res) {
+    const username = getCookieByName(req.headers.cookie, 'username')
     // 金山翻译
     const { title, content } = req.body
     const contentArrTemp = contentPreSplit(content);
     const titleReq = jinshanApi(title)
     const contentArrReq = contentArrTemp.map(item => jinshanApi(item))
+    const startTime = new Date().getTime();
     Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
+      const totalTime = new Date().getTime() - startTime;
+      logger.info(CutOffLine)
+      logger.info(`Success: [${username}] [${totalTime}] ms`)
       res.status(200).json({
         data: {
           title: titleRes && titleRes.content && titleRes.content.out,
@@ -39,6 +45,10 @@ module.exports = {
         }
       })
     }).catch((err) => {
+      const totalTime = new Date().getTime() - startTime;
+      logger.info(CutOffLine)
+      logger.error(`Failure: [${username}] [${totalTime}] ms`)
+      logger.error(`Message: ${err && err.message}`)
       res.status(400).json({
         data: {
           error: err
@@ -76,25 +86,4 @@ module.exports = {
       })
     })
   },
-  [`POST ${ApiPrefix}/translate/google`](req, res) {
-    // google 翻译API
-    const { title, content } = req.body
-    const titleReq = googleApi(title)
-    const contentArr = content.split('\r\n');
-    const contentArrReq = contentArr.filter(item => !!item).map(item => googleApi(item))
-    Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
-      res.status(200).json({
-        data: {
-          title: titleRes && titleRes.result && titleRes.result[0],
-          content: contentRes && contentRes.map(item => item.result && item.result.join(''))
-        }
-      })
-    }).catch((err) => {
-      res.status(400).json({
-        data: {
-          error: err
-        }
-      })
-    })
-  }
 }

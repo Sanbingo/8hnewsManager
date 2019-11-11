@@ -1,6 +1,5 @@
 import api from 'api'
 import { pathMatchRegexp } from 'utils'
-import request from 'utils/request'
 import { message } from 'antd'
 import { isNil, isEmpty, get } from 'lodash'
 import moment from 'moment'
@@ -15,10 +14,13 @@ const {
   queryBaseData,
   searchKeyWord,
   createPosts,
-  translatePartial,
   transJinShan,
   transSo,
-  sensitiveVerify
+  sensitiveVerify,
+  infoConstantMap,
+  infoEmpowerMy,
+  infoDocumentQueryList,
+  infoDocumentDetail
 } = api
 
 const processResultsByYoudaopay = (res=[]) => {
@@ -77,22 +79,14 @@ export default {
 
   effects: {
     *init({ payload = {} }, { call, put }) {
-      const constMap = yield request({
-        url: 'http://139.196.86.217:8088/info/constant/map',
-        method: 'post',
-        data: { entity: payload },
-      })
-      const empower = yield request({
-        url: 'http://139.196.86.217:8088/info/empower/my',
-        method: 'post',
-        data: {},
-      })
-      if (constMap && empower) {
+      const constMap = yield call(infoConstantMap, { entity: payload })
+      const empower = yield call(infoEmpowerMy, {})
+      if (constMap.success && empower.success) {
         yield put({
           type: 'initSuccess',
           payload: {
-            initData: constMap.data,
-            empower: empower.data,
+            initData: constMap.data && constMap.data.data,
+            empower: empower.data && empower.data.data,
           },
         })
         yield put({
@@ -104,22 +98,16 @@ export default {
     *query(payload, { call, put, select }) {
       const { searchForm, pagination } = yield select(_ => _.posts)
       const { current, pageSize } = pagination
-      const data = yield request({
-        url: 'http://139.196.86.217:8088/info/document/queryList',
-        method: 'post',
-        data: {
-          pageSize,
+      const { success, data} = yield call(infoDocumentQueryList, {
+        pageSize,
           pageNum: current,
           entity: {
             ...searchForm,
             ymd: searchForm.ymd && moment(searchForm.ymd).format('YYYY-MM-DD'),
           },
-        },
       })
-      if (data) {
+      if (success) {
         let listTemp = data.data;
-        // 使用金山词霸翻译
-        // const results = yield call(translatePartial, { list: data.data })
         // 使用有道云翻译
         const listArrReq = listTemp.filter(item => !!item.title).map(item => youdaoTranslate(item.title))
         const [...listArrRes] = yield Promise.all([...listArrReq])
@@ -249,16 +237,12 @@ export default {
     *detail({ payload }, { call, put, select }) {
       const { translateType } = yield select(_ => _.posts);
       if (payload) {
-        const data = yield request({
-          url: 'http://139.196.86.217:8088/info/document/detail',
-          method: 'post',
-          data: {
-            entity: {
-              ...payload,
-            },
+        const { success, data } = yield call(infoDocumentDetail, {
+          entity: {
+            ...payload,
           },
         })
-        if (data) {
+        if (success) {
           yield put({
             type: 'detailSuccess',
             payload: {

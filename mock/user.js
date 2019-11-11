@@ -191,6 +191,7 @@ module.exports = {
             httpOnly: true,
           }
         )
+        res.cookie('username', username) 
       res.json({ success: true, message: 'Ok', data: body.data })
     }).catch((err) => {
       console.log('err...', err)

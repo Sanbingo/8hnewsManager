@@ -1,6 +1,28 @@
 import request from 'request';
 import rp from 'request-promise'
 import { trim, isNil } from 'lodash';
+import log4js from 'log4js';
+
+log4js.configure({
+  appenders: {
+    cheese: {
+      type: 'dateFile',
+      filename: './logs/access.log',
+      pattern: '.yyyy-MM-dd-hh',
+      maxLogSize: 10*1024*1024,
+      compress: true,
+      backups: 25
+    }
+  },
+  categories: {
+    default: {
+      appenders: ['cheese'],
+      level: 'debug'
+    }
+  }
+})
+
+const logger = log4js.getLogger('http');
 
 /**
  * Query objects that specify keys and values in an array where all values are objects.
@@ -57,6 +79,7 @@ export const Constant = {
     grass: '#d6fbb5',
     sky: '#c1e0fc',
   },
+  CutOffLine: '----------------------'
 }
 
 export Mock from 'mockjs'
@@ -106,6 +129,7 @@ const Apis = {
 
 export const ReqWithAuth = (req, res, url, method='POST') => {
   const token = getCookieByName(req.headers.cookie, 'token')
+  const username = getCookieByName(req.headers.cookie, 'username')
   const MakeApifix = Apis[env]
   const uri = MakeApifix(url)
   let authorization = ''
@@ -128,7 +152,7 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
       authorization = tokenInfo && tokenInfo.key
     }
   }
-  console.info('[API Request]=>', uri, method)
+  const startTime = new Date().getTime();
   rp({
     uri,
     method,
@@ -138,8 +162,10 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
       'Authorization': authorization
     }
   }).then((data) => {
-    console.info('[API Done]=>', uri)
+    const totalTime = new Date().getTime() - startTime;
     if (data && data.meta && data.meta.success) {
+      logger.info(Constant.CutOffLine)
+      logger.info(`Success: [${username}] [${totalTime}ms] URL: ${uri}`)
       res.status(200).json({
         status: 0,
         data: data,
@@ -147,17 +173,26 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
         success: true
       })
     } else {
+      const message = data && data.meta && data.meta.message;
+      logger.info(Constant.CutOffLine)
+      logger.error(`Failure: [${username}] [${totalTime}ms] URL: ${uri}`)
+      logger.error(`Message: ${message}`)
       res.status(200).json({
         status: 1002,
         data: null,
-        message: data && data.meta && data.meta.message,
+        message,
         success: false
       })
     }
   }).catch((err) => {
+    const totalTime = new Date().getTime() - startTime;
+    const message = err && err.message;
+    logger.info(Constant.CutOffLine)
+    logger.error(`Failure: [${username}] [${totalTime}ms] URL: ${uri}`)
+    logger.error(`Message: ${message}`)
     res.status(200).json({
       status: 1002,
-      message: err && err.message
+      message
     })
   })
 }
