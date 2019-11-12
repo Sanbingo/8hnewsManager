@@ -44,7 +44,7 @@ class SourcesModal extends Component {
                 required: true,
               },
             ],
-          })(<Input />)}
+          })(<Input placeholder="不用带http协议" />)}
         </FormItem>
         <FormItem label="网站地址">
           {getFieldDecorator('siteUrl', {
@@ -54,7 +54,7 @@ class SourcesModal extends Component {
                 required: true,
               },
             ],
-          })(<Input />)}
+          })(<Input placeholder="不用带http协议" />)}
         </FormItem>
         <FormItem label="网站备注">
           {getFieldDecorator('siteRemark', {

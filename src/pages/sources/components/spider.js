@@ -80,21 +80,11 @@ class SourcesModal extends Component {
                   required: true,
                 },
               ],
-            })(<Input />)}
+            })(<Input placeholder="带http协议开头" />)}
           </FormItem>
           <FormItem label="标题XPath">
             {getFieldDecorator('titleXpath', {
               initialValue: item.titleXpath,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
-          </FormItem>
-          <FormItem label="标题过滤">
-            {getFieldDecorator('titleReplaceRegex', {
-              initialValue: item.titleReplaceRegex,
               rules: [
                 {
                   required: true,
@@ -112,15 +102,15 @@ class SourcesModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
+          <FormItem label="标题过滤">
+            {getFieldDecorator('titleReplaceRegex', {
+              initialValue: item.titleReplaceRegex,
+            })(<Input placeholder="<.+?>" />)}
+          </FormItem>
           <FormItem label="内容过滤">
             {getFieldDecorator('contentReplaceRegex', {
               initialValue: item.contentReplaceRegex,
-              rules: [
-                {
-                  required: true,
-                },
-              ],
-            })(<Input />)}
+            })(<Input placeholder="<.+?>" />)}
           </FormItem>
           <FormItem label="验证">
             {getFieldDecorator('spiderConfigVerify', {

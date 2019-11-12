@@ -99,7 +99,7 @@ class ColumnsModal extends Component {
               message: "Please input passenger's name or delete this field.",
             },
           ],
-        })(<Input placeholder="栏目地址" style={{ width: '60%', marginRight: 8 }} />)}
+        })(<Input placeholder="栏目地址，用http协议开头" style={{ width: '60%', marginRight: 8 }} />)}
         {getFieldDecorator(`category[${k}]`, {
           validateTrigger: ['onChange', 'onBlur'],
           rules: [
