@@ -108,35 +108,64 @@ export default {
       })
       if (success) {
         let listTemp = data.data;
-        // 使用有道云翻译
-        const listArrReq = listTemp.filter(item => !!item.title).map(item => youdaoTranslate(item.title))
-        const [...listArrRes] = yield Promise.all([...listArrReq])
-
-        // 有道云返回结果通用逻辑        
-        const results = processResultsByYoudaopay(listArrRes)
-        // 如果翻译出错，或有道云有问题，则提示
-        if (results.some(item => item === 'Service Unavailable')) {
-          message.warning('有道云翻译已欠费，为了不影响使用请提醒管理员注意续费~')
-          yield put({
-            type: 'app/latestkeysecret',
-            payload: {
-              entity: {
-                id,
-                encryptType : 0
-              }
+        let newIndex = [];
+        // 判断是否有缓存
+        const checkListCache = listTemp.map(item => {
+            if (sessionStorage.getItem(item.id)) {
+              return ({
+                ...item,
+                translate: sessionStorage.getItem(item.id)
+              })
             }
+            return item
           })
-        } else {
-        // 否则把翻译结果拼接会列表
-          listTemp = listTemp.map((item, index) => ({
-            ...item,
-            translate: results[index]
-          }))
+        // 如果有新值，即在sessionStorage中没有找到缓存的
+        if (checkListCache.some(item => !item.translate)) {
+          const unTranslateList = checkListCache.filter((item, index) => {
+            if (!item.translate) {
+              newIndex.push(index);
+              return true
+            }
+            return false
+          })
+          // 使用有道云翻译
+          const listArrReq = unTranslateList.filter(item => !!item.title).map(item => youdaoTranslate(item.title))
+          const [...listArrRes] = yield Promise.all([...listArrReq])
+
+          // 有道云返回结果通用逻辑        
+          const results = processResultsByYoudaopay(listArrRes)
+          // 如果翻译出错，或有道云有问题，则提示
+          if (results.some(item => item === 'Service Unavailable')) {
+            message.warning('有道云翻译已欠费，为了不影响使用请提醒管理员注意续费~')
+            yield put({
+              type: 'app/latestkeysecret',
+              payload: {
+                entity: {
+                  id,
+                  encryptType : 0
+                }
+              }
+            })
+          } else {
+          // 否则把翻译结果拼接会列表
+          if (newIndex && newIndex.length) {
+            newIndex.forEach((cur, idx) => {
+              checkListCache[cur].translate = results[idx]
+              // 把结果同时缓存到sessionStorage中
+              sessionStorage.setItem(checkListCache[cur].id, results[idx]);
+            }) 
+          } 
+            // listTemp = listTemp.map((item, index) => ({
+            //   ...item,
+            //   translate: results[index]
+            // }))
+          }
         }
+        
         yield put({
           type: 'querySuccess',
           payload: {
-            list: listTemp,
+            list: checkListCache,
             pagination: {
               current,
               pageSize,
