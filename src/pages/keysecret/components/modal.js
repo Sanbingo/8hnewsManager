@@ -68,6 +68,11 @@ class SourcesModal extends Component {
               ],
             })(createRadios(keysecret_STATUS))}
           </FormItem>
+          <FormItem label="备注">
+            {getFieldDecorator('remark', {
+              initialValue: item.remark,
+            })(<TextArea placeholder="长度不能超过300个字符" />)}
+          </FormItem>
         </Form>
       </Modal>
     )

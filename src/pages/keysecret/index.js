@@ -96,7 +96,7 @@ class SiteComponent extends PureComponent {
       destroyOnClose: true,
       maskClosable: false,
       confirmLoading: loading.effects[`keysecret/${modalType}`],
-      title: `${modalType === 'create' ? '新建' : '编辑'}`,
+      title: `${modalType === 'create' ? '新建（新建后使用测试校验确认密钥是否可用~）' : '编辑'}`,
       centered: true,
       onOk: data => {
         dispatch({

@@ -18,6 +18,7 @@ export const youdaoTranslate = (value, appkey, appSecret) => {
   const salt = (new Date).getTime();
   const query = value.length > MAX_CONTENT_LENGTH ? value.slice(0, MAX_CONTENT_LENGTH): value
   const str = APP_KEY+query+salt+APP_SECRET
+  const curTime = Math.round(new Date().getTime()/1000);
   const params = {
     q: query,
     appKey: APP_KEY,
@@ -25,6 +26,7 @@ export const youdaoTranslate = (value, appkey, appSecret) => {
     to: 'zh-CHS',
     sign: md5(str),
     salt,
+    curTime,
   }
   const url = `${YOUDAO_URL}?${serialize(params)}`;
   return new Promise((resolve, reject) => {

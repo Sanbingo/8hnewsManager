@@ -73,6 +73,7 @@ export default {
         }
       })
       if (data.success) {
+        message.success("新建成功~")
         yield put({ type: 'query' })
         yield put({ type: 'hideModal' })
       } else {
@@ -82,6 +83,7 @@ export default {
     *remove({ payload }, { call, put, select }) {
       const data = yield call(removeKeySecret, payload)
       if (data.success) {
+        message.success('删除成功~')
         yield put({ type: 'query' })
       } else {
         throw data

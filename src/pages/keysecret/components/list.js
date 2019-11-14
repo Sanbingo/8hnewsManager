@@ -40,6 +40,13 @@ class ListComponent extends PureComponent {
       return <Tag color="#9e9e9e">禁用</Tag>
     }
   }, {
+    key: 'remark',
+    dataIndex: 'remark',
+    title: '备注',
+    render: (text) => {
+      return text || '-'
+    }
+  }, {
     key: 'updateTime',
     dataIndex: 'updateTime',
     title: '时间'

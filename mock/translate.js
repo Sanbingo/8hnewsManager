@@ -9,6 +9,7 @@ import log4js from 'log4js'
 const YOUDAO_URL = 'http://openapi.youdao.com/api'
 const YOUDAO_ERROR_CODE = {
   103: '翻译文本过长，不能超过5000个字符',
+  105: '不支持的签名类型',
   108: 'appKey无效，请注册账号',
   110: '无相关服务的有效实例',
   111: '开发者账号无效',
@@ -111,8 +112,10 @@ module.exports = {
     const APP_KEY = appId
     const APP_SECRET = encrypt 
     const salt = (new Date).getTime();
+    const curTime = Math.round(new Date().getTime()/1000);
     const query = 'hello'
     const str = APP_KEY+query+salt+APP_SECRET
+    
     const params = {
       q: query,
       appKey: APP_KEY,
@@ -120,26 +123,21 @@ module.exports = {
       to: 'zh-CHS',
       sign: md5(str),
       salt,
+      curTime,
     }
     const url = `${YOUDAO_URL}?${qs.stringify(params)}`;
-    const promise = new Promise((resolve, reject) => {
-      nodeJsonp(url, null, (err, data) => err ? reject(err) : resolve(data))
-    })
-    promise.then((data) => {
-      res.status(200).json({
-        message: '密钥可用~',
-        success: true
-      })
-    }, (rej) => {
-      res.status(200).json({
-        message: YOUDAO_ERROR_CODE[rej.errorCode] || '密钥不可用',
-        success: false
-      })
-    }).catch((err) => {
-      res.status(200).json({
-        message: YOUDAO_ERROR_CODE[err.errorCode]|| err.message || '密钥不可用',
-        success: false
-      })
+    nodeJsonp(url, null, (data) => {
+      if (data.errorCode === '0') {
+        res.status(200).json({
+          message: '密钥可用~',
+          success: true
+        })
+      } else {
+        res.status(200).json({
+          message: YOUDAO_ERROR_CODE[data.errorCode] || '密钥不可用',
+          success: false
+        })
+      }
     })
   }
 }
