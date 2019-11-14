@@ -55,13 +55,8 @@ class SourcesModal extends Component {
       return (
         <FormItem label="Cron计划">
           {getFieldDecorator('cron', {
-            initialValue: item.cron,
-            rules: [
-              {
-                required: true,
-              },
-            ],
-          })(<Input />)}
+            initialValue: item.cron
+          })(<Input placeholder="自动分配，eg：0 20 0/10 * * ? *" />)}
         </FormItem>
       );
     }
