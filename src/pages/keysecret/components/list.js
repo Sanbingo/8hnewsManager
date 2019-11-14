@@ -8,7 +8,7 @@ const { confirm } = Modal
 @withI18n()
 class ListComponent extends PureComponent {
   handleMenuClick = (record, e) => {
-    const { onDeleteItem, i18n } = this.props
+    const { onDeleteItem, onCheckKeysecret, i18n } = this.props
 
     if (e.key === '1') {
       confirm({
@@ -17,6 +17,8 @@ class ListComponent extends PureComponent {
           onDeleteItem(record.id)
         },
       })
+    } else if (e.key === '2') {
+      onCheckKeysecret(record)
     }
   }
   columns = [{
@@ -51,6 +53,7 @@ class ListComponent extends PureComponent {
           onMenuClick={e => this.handleMenuClick(record, e)}
           menuOptions={[
             { key: '1', name: '删除' },
+            { key: '2', name: '密钥校验'}
           ]}
         />
       )

@@ -77,6 +77,12 @@ class SiteComponent extends PureComponent {
             }
           }
         })
+      },
+      onCheckKeysecret: (payload) => {
+        dispatch({
+          type: 'keysecret/checkKeysecret',
+          payload
+        })
       }
     }
   }

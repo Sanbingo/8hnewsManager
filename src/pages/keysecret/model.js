@@ -1,11 +1,13 @@
 import { pathMatchRegexp } from 'utils'
 import api from 'api'
+import { message } from 'antd'
 const  {
   querykeysecretList, createkeysecret, updatekeysecret,
   queryKeySecret,
   createKeySecret,
   removeKeySecret,
   latestkeySecret,
+  youdaopayTest,
 } = api
 
 export default {
@@ -85,6 +87,14 @@ export default {
         throw data
       }
     },
+    *checkKeysecret({ payload }, { call }) {
+      const data = yield call(youdaopayTest, payload)
+      if (data.success) {
+        message.success('密钥可用~')
+      } else {
+        message.warning( data.message || '密钥不可用，请检查有道云是否配置准确')
+      }
+    }
   },
   reducers: {
     showModal(state, { payload }) {

@@ -245,7 +245,7 @@ export default {
             message.warning('发布失败')
           }
         }
-      } else if (verifyResult.success && verify) {
+      } else {
         const { data, success } = yield call(createPosts, postData)
         if (success) {
           message.success('发布成功')
@@ -258,10 +258,7 @@ export default {
         } else {
           message.warning('发布失败')
         }
-      } else {
-        return;
       }
-
     },
     *detail({ payload }, { call, put, select }) {
       const { translateType } = yield select(_ => _.posts);
@@ -363,7 +360,8 @@ export default {
       }
 
       let content = []
-      if (statusCode === 200) {
+      // 如果翻译成功，且翻译返回内容不为空，则使用金山
+      if (statusCode === 200 && data.content && data.content.filter(item => item).length !== 0) {
         content = data.content
       } else {
         // 正文翻译，由于正文篇幅过长，分段翻译

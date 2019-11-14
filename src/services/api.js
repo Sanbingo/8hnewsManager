@@ -35,6 +35,7 @@ export default {
   transSo: 'POST /translate/so',
   transGoogle: 'POST /translate/google',
   translatePartial: 'POST /translate/partial',
+  youdaopayTest: 'POST /youdaopay/test',
   queryCooperateList: 'POST /cooperates',
   createCooperate: 'POST /cooperate',
   querySensitiveList: 'POST /sensitives',
