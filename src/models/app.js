@@ -66,18 +66,17 @@ export default {
       })
     },
 
-    setupRequestCancel({ history }) {
-      history.listen(() => {
-        const { cancelRequest = new Map() } = window
-
-        cancelRequest.forEach((value, key) => {
-          if (value.pathname !== window.location.pathname) {
-            value.cancel(CANCEL_REQUEST_MESSAGE)
-            cancelRequest.delete(key)
-          }
-        })
-      })
-    },
+    // setupRequestCancel({ history }) {
+    //   history.listen(() => {
+    //     const { cancelRequest = new Map() } = window
+    //     cancelRequest.forEach((value, key) => {
+    //       if (value.pathname !== window.location.pathname) {
+    //         value.cancel(CANCEL_REQUEST_MESSAGE)
+    //         cancelRequest.delete(key)
+    //       }
+    //     })
+    //   })
+    // },
   },
   effects: {
     *query({ payload }, { call, put, select }) {

@@ -76,11 +76,11 @@ export default function request(options) {
     .catch(error => {
       const { response, message } = error
 
-      if (String(message) === CANCEL_REQUEST_MESSAGE) {
-        return {
-          success: false,
-        }
-      }
+      // if (String(message) === CANCEL_REQUEST_MESSAGE) {
+      //   return {
+      //     success: false,
+      //   }
+      // }
 
       if (/timeout of/.test(String(message))) {
         return {
