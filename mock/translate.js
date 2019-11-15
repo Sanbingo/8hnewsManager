@@ -70,9 +70,11 @@ module.exports = {
       const totalTime = new Date().getTime() - startTime;
       logger.error(`Failure: [${username}] [${totalTime}] ms`)
       logger.error(`Message: ${err && err.message}`)
-      res.status(400).json({
+      // 金山API异常情况，返回空值，激活兜底策略。
+      res.status(200).json({
         data: {
-          error: err
+          title: '',
+          content: []
         }
       })
     })
