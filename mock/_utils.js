@@ -152,6 +152,7 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
     }
   }
   const startTime = new Date().getTime();
+  logger.info(`Request: [${username}] URL: ${uri}`)
   rp({
     uri,
     method,
