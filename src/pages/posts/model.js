@@ -269,10 +269,14 @@ export default {
           },
         })
         if (success) {
+          const { title='', content= '' } = data.data; 
           yield put({
             type: 'detailSuccess',
             payload: {
-              detail: data.data,
+              detail: {
+                title,
+                content: content.replace(/&nbsp;/g, ''),
+              },
             },
           })
           yield put({
