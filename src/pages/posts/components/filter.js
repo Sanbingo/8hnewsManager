@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Button, DatePicker, Input } from 'antd'
+import moment from 'moment';
 import { createOptions, arrayToMapObject } from '../../common/index'
 
 const FormItem = Form.Item
@@ -18,7 +19,9 @@ class FilterComponent extends Component {
     const categorymap = arrayToMapObject(empower.categories, 'categoryId', 'categoryName');
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
-        <FormItem>{getFieldDecorator('ymd')(<DatePicker />)}</FormItem>
+        <FormItem>{getFieldDecorator('ymd')(<DatePicker disabledDate={(date) => {
+          return date < moment().subtract(30, "days")
+        }} />)}</FormItem>
         <FormItem>
           {getFieldDecorator('siteDomain')(createOptions(siteDomains, '文章站点'))}
         </FormItem>
