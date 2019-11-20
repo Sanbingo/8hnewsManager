@@ -6,6 +6,7 @@ import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Filter from './components/filter'
 import List from './components/list'
 import Modal from './components/modal'
+import store from 'store'
 
 @connect(({ posts, loading, app }) => ({ posts, loading, app }))
 class Posts extends React.PureComponent {
@@ -78,18 +79,21 @@ class Posts extends React.PureComponent {
     }
   }
   renderModalHeader(){
-    const { posts: { translation } } = this.props
+    const { posts: { translation, detail={} } } = this.props
+    const isViewMode = store.get('userconfig').cooperateId === '10002'
+    const titleCopy = isViewMode ? detail.title : translation.title;
+    const contentCopy = isViewMode ? detail.content : translation.content;
       return (
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>翻译</div>
+          <div>{isViewMode ? '查看': '翻译'}</div>
           <div style={{ marginRight: '50px' }}>
-            <CopyToClipboard text={translation.title} style={{ marginRight: '5px' }}
+            <CopyToClipboard text={titleCopy} style={{ marginRight: '5px' }}
               onCopy={() => message.success('复制成功~')}>
               <Button>
                 标题复制
               </Button>
             </CopyToClipboard>
-            <CopyToClipboard text={translation.content}
+            <CopyToClipboard text={contentCopy}
               onCopy={() => message.success('复制成功~')}>
               <Button>
                 内容复制
@@ -111,6 +115,7 @@ class Posts extends React.PureComponent {
     const { dispatch, posts, loading, app } = this.props
     const { modalVisible, detail, translation, base, translateType } = posts
     const { dstCategory } = app
+    const isViewMode = store.get('userconfig').cooperateId === '10002'
     return {
       ...this.props,
       loading,
@@ -119,12 +124,13 @@ class Posts extends React.PureComponent {
       translation,
       dstCategory,
       translateType,
+      isViewMode,
       okText: '发布',
       title: this.renderModalHeader(),
       width: 1200,
       visible: modalVisible,
       maskClosable: false,
-      footer: [
+      footer: isViewMode ? null : [
         <Button
           onClick={() => {
             this.setQuillEditortDefaultStatus()

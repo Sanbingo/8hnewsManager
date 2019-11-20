@@ -148,9 +148,22 @@ export default class PostModal extends React.Component {
   </Spin>
   */
   render() {
-    const { detail = {}, translation = {}, loading, translateType } = this.props
+    const { detail = {}, translation = {}, loading, translateType, isViewMode } = this.props
     let loadingType = getTranslateType(translateType);
     const loadingStatus = loading.effects[`posts/${loadingType}`]
+    if (isViewMode) {
+      return (
+        <Modal {...this.props}>
+          <Spin spinning={loading.effects['posts/detail']}>
+            <Reference
+              title={detail.title}
+              content={detail.content}
+              url={detail.downloadUrl}
+            />
+          </Spin>
+        </Modal>
+      );
+    }
     return (
       <Modal {...this.props}>
         <Row gutter={24}>

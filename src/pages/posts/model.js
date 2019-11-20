@@ -3,6 +3,7 @@ import { pathMatchRegexp } from 'utils'
 import { message } from 'antd'
 import { isNil, isEmpty, get } from 'lodash'
 import moment from 'moment'
+import store from 'store';
 import { searchToObject } from '../common'
 import { youdaoTranslate } from '../common/youdao'
 import { YOUDAO_ERROR_CODE } from '../common/consts'
@@ -51,7 +52,7 @@ export default {
       current: 1,
       pageSize: 10,
     },
-    translateType: 'youdaopay'
+    translateType: 'youdaopay',
   },
 
   subscriptions: {
@@ -162,7 +163,7 @@ export default {
             // }))
           }
         }
-        
+
         yield put({
           type: 'querySuccess',
           payload: {
@@ -265,6 +266,7 @@ export default {
     },
     *detail({ payload }, { call, put, select }) {
       const { translateType } = yield select(_ => _.posts);
+      const isViewMode = store.get('userconfig').cooperateId === '10002'
       if (payload) {
         const { success, data } = yield call(infoDocumentDetail, {
           entity: {
@@ -272,20 +274,24 @@ export default {
           },
         })
         if (success) {
-          const { title='', content= '' } = data.data; 
+          const { title='', content= '', downloadUrl } = data.data; 
           yield put({
             type: 'detailSuccess',
             payload: {
               detail: {
                 title,
                 content: content.replace(/&nbsp;/g, ''),
+                downloadUrl
               },
             },
           })
-          yield put({
-            type: getTranslateType(translateType),
-            payload: {},
-          })
+          // 查看模式不执行翻译
+          if (!isViewMode) {
+            yield put({
+              type: getTranslateType(translateType),
+              payload: {},
+            })
+          }
         }
       }
     },

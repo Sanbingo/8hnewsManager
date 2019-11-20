@@ -204,7 +204,8 @@ export default {
         store.set('permissions', { visit: [] })
         store.set('user', {})
         store.set('isInit', false)
-        // yield put({ type: 'query' })
+        // 清除当前账户配置数据
+        store.set('userconfig', {})
         const { locationPathname } = yield select(_ => _.app)
         router.push({
           pathname: '/login',

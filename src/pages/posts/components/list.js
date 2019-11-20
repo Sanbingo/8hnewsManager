@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Table, Tag } from 'antd'
 import { isNil } from 'lodash'
+import store from 'store'
 
 export default class ListComponent extends PureComponent {
   columns = [{
@@ -55,10 +56,11 @@ export default class ListComponent extends PureComponent {
     title: '操作',
     width: 100,
     render: (text, {id}) => {
+      const isViewMode = store.get('userconfig').cooperateId === '10002'
       return (
         <a onClick={() => {
           this.props.onHandleTranslate(id)
-        }}>翻译</a>
+        }}>{isViewMode ? '查看' : '翻译'}</a>
       );
     }
   }]
@@ -66,7 +68,6 @@ export default class ListComponent extends PureComponent {
     const { list, pagination, onHandlePagination, loading } = this.props;
     return (
       <Table
-        rowKey="id"
         loading={loading.effects['posts/query']}
         onChange={onHandlePagination}
         pagination={pagination}

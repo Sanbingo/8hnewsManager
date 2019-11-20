@@ -20,9 +20,6 @@ export default React.memo(({ title, content, url }) => {
         <p>标题：{title}</p>
         <p>内容：</p>
         <p style={{ overflowY: 'scroll', maxHeight: '400px' }}>{renderOriginContent(content || '')}</p>
-      </TabPane>
-      <TabPane tab="原文" key="2">
-        <iframe title="原文地址" src={url} width="100%" height="500" />
         <a target="__blank" href={url}>查看原文</a>
       </TabPane>
     </Tabs>
