@@ -20,7 +20,9 @@ const reqFetch = (url, method="get", data) => {
 }
 
 const bdPicFetch = (keyword, pageNum=1) => {
-  const url = 'https://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&is=&fp=result&queryWord=' + keyword + '&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=0&word=' + keyword + '&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&pn='+pageNum+'&rn=48';
+  const PAGE_SIZE = 48;
+  const newPageIndex = (pageNum -1)*PAGE_SIZE; // 图片索引位置
+  const url = 'https://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&is=&fp=result&queryWord=' + keyword + '&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=0&word=' + keyword + '&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&pn='+newPageIndex+'&rn='+PAGE_SIZE;
   const obj = {
     url,
     method: 'get',
