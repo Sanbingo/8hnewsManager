@@ -1,7 +1,7 @@
 import { message } from 'antd'
 import { pathMatchRegexp } from 'utils'
 import api from 'api'
-const  { queryTagsList, createTags } = api
+const  { queryTagsList, createTags, removeTags } = api
 
 export default {
   namespace: 'tags',
@@ -64,22 +64,22 @@ export default {
     },
     *create({ payload }, { call, put }) {
       const { success, message } = yield call(createTags, { entity: { ...payload }})
-      // const data = yield axios({
-      //   url: 'http://139.196.86.217:8088/info/cooperate/add',
-      //   method: 'post',
-      //   headers: { 'content-type': 'application/json' },
-      //   data: JSON.stringify({
-      //     entity: {
-      //       ...payload,
-      //     },
-      //   }),
-      // })
       if (success) {
         yield put({ type: 'query' })
         yield put({ type: 'hideModal' })
       } else {
-        message.error(message)
-        // throw data
+        message.warning(message)
+      }
+    },
+    *delete({ payload }, { call, put}) {
+      console.log('pd', payload)
+      const { success, message } = yield call(removeTags, { entity: {
+        categoryId: payload
+      }})
+      if (success) {
+        yield put({ type: 'query' })
+      } else {
+        message.warning('message')
       }
     }
   },

@@ -15,4 +15,13 @@ module.exports = {
   [`POST ${ApiPrefix}/infoDocumentDetail`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/document/detail');
   },
+  [`POST ${ApiPrefix}/infoSpiderResultGroupList`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/spider/result/groupList');
+  },
+  [`POST ${ApiPrefix}/infoSpiderResultDetailList`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/spider/result/detailList');
+  },
+  [`POST ${ApiPrefix}/infoSpiderResultDetail`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/spider/result/detail');
+  },
 }

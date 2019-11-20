@@ -12,4 +12,7 @@ module.exports = {
   [`POST ${ApiPrefix}/all-tags`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/category/all');
   },
+  [`POST ${ApiPrefix}/tagremove`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/category/delete');
+  },
 }

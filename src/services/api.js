@@ -54,6 +54,7 @@ export default {
   queryTagsList: 'POST /tags',
   getAllTags: 'POST /all-tags',
   createTags: 'POST /tag',
+  removeTags: 'POST /tagremove',
   getDstCategory: 'POST /dstCategory',
   sensitiveVerify: 'POST /sensitiveVerify',
   queryKeySecret: 'POST /keysecrets',
@@ -64,4 +65,7 @@ export default {
   infoEmpowerMy: 'POST /infoEmpowerMy',
   infoDocumentQueryList: 'POST /infoDocumentQueryList',
   infoDocumentDetail: 'POST /infoDocumentDetail',
+  infoSpiderResultGroupList: 'POST /infoSpiderResultGroupList',
+  infoSpiderResultDetailList: 'POST /infoSpiderResultDetailList',
+  infoSpiderResultDetail: 'POST /infoSpiderResultDetail',
 }

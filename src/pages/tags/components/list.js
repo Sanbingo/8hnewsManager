@@ -16,7 +16,7 @@ class ListComponent extends PureComponent {
       confirm({
         title: i18n.t`Are you sure delete this record?`,
         onOk() {
-          onDeleteItem(record.id)
+          onDeleteItem(record.categoryId)
         },
       })
     }

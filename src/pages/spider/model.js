@@ -12,7 +12,11 @@ import {
   YOUDAO_ERROR_CODE
 } from './consts'
 
-const { queryBaseData, searchKeyWord, createWordPressPosts, allSourcesList } = api
+const { queryBaseData, searchKeyWord, createWordPressPosts, allSourcesList, infoConstantMap,
+  infoSpiderResultGroupList,
+  infoSpiderResultDetailList,
+  infoSpiderResultDetail,
+} = api
 
 const serialize = (obj) => {
   return Object.keys(obj).reduce((a, k) => {
@@ -38,23 +42,6 @@ const jsonpFetch = (value, options=null) => {
   })
 }
 
-// const bdPicFetch = (keyword, config={}) => {
-//   const url = 'https://image.baidu.com/search/acjson?tn=resultjson_com&ipn=rj&ct=201326592&is=&fp=result&queryWord=' + keyword + '&cl=2&lm=-1&ie=utf-8&oe=utf-8&adpicid=&st=-1&z=&ic=0&word=' + keyword + '&s=&se=&tab=&width=&height=&face=0&istype=2&qc=&nc=1&fr=&pn=30&rn=30';
-//   const obj = {
-//     url,
-//     method: 'get'
-//   }
-//   return new Promise((resolve, reject) => {
-//     request(obj, (err, res, body) => {
-//       if (err) {
-//         reject(err)
-//       } else {
-//         resolve(JSON.parse(body))
-//       }
-//     })
-//   })
-// }
-
 export default {
   namespace: 'spider',
 
@@ -64,7 +51,6 @@ export default {
     searchForm: {
       spiderDetailStatus: '0'
     }
-    // translation: {},
   },
 
   subscriptions: {
@@ -86,12 +72,8 @@ export default {
 
   effects: {
     *init({ payload = {}}, { call, put}) {
-      const data = yield request({
-        url: 'http://139.196.86.217:8088/info/constant/map',
-        method: 'post',
-        data: { entity: payload}
-      })
-      if (data) {
+      const { success, data } = yield call(infoConstantMap, { entity: payload})
+      if (success) {
         yield put({
           type: 'initSuccess',
           payload: {
@@ -119,27 +101,23 @@ export default {
       }
     },
     *query({ payload = {}, pageNum, pageSize }, { call, put }) {
-      const data = yield request({
-        url: 'http://139.196.86.217:8088/info/spider/result/groupList',
-        method: 'post',
-        data: {
-          pageSize: pageSize || 10,
-          pageNum: pageNum || 1,
-          entity: {
-            ...payload,
-            ymd: payload.ymd && moment(payload.ymd).format('YYYY-MM-DD')
-          }
-        },
+      const result = yield call(infoSpiderResultGroupList, {
+        pageSize: pageSize || 10,
+        pageNum: pageNum || 1,
+        entity: {
+          ...payload,
+          ymd: payload.ymd && moment(payload.ymd).format('YYYY-MM-DD')
+        }
       })
-      if (data) {
+      if (result.success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: result.data.data,
             pagination: {
               current: pageNum || 1,
               pageSize: pageSize || 10,
-              total: data.pageInfo.total,
+              total: result.data.pageInfo.total,
             },
           },
         })
@@ -167,26 +145,22 @@ export default {
     },
     *expanded({ payload = '', pageNum, pageSize }, { call, put, select }) {
       const { searchForm: { spiderDetailStatus } } = yield select(_ => _.spider)
-      const data = yield request({
-        url: 'http://139.196.86.217:8088/info/spider/result/detailList',
-        method: 'post',
-        data: {
-          pageSize: pageSize || 10,
-          pageNum: pageNum || 1,
-          entity: {
-            downloadId: payload,
-            spiderDetailStatus
-          }
-        },
+      const result = yield call(infoSpiderResultDetailList, {
+        pageSize: pageSize || 10,
+        pageNum: pageNum || 1,
+        entity: {
+          downloadId: payload,
+          spiderDetailStatus
+        }
       })
-      if (data) {
+      if (result.success) {
         yield put({
           type: 'expandedSuccess',
           payload: {
             [payload]: {
-              list: data.data,
+              list: result.data.data,
               pagination: {
-                total: data.pageInfo.total,
+                total: result.data.pageInfo.total,
               },
             }
           },
@@ -195,20 +169,16 @@ export default {
     },
     *detail({payload}, { call, put }){
       if (payload) {
-        const data = yield request({
-          url: 'http://139.196.86.217:8088/info/spider/result/detail',
-          method: 'post',
-          data: {
-            entity: {
-              ...payload,
-            }
-          },
+        const result = yield call(infoSpiderResultDetail, {
+          entity: {
+            ...payload,
+          }
         });
-        if (data) {
+        if (result.success) {
           yield put({
             type: 'detailSuccess',
             payload: {
-              detail: data.data
+              detail: result.data
             }
           })
           // 翻译操作，暂时注释，勿删

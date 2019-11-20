@@ -11,7 +11,16 @@ import config from 'config'
 import request from 'utils/request'
 import { arrayToMapObject } from '../pages/common'
 
-const { queryRouteList, logoutUser, queryUserInfo, getAllTags, mySiteList, getDstCategory, latestkeySecret } = api
+const {
+  queryRouteList,
+  logoutUser,
+  queryUserInfo,
+  getAllTags,
+  mySiteList,
+  getDstCategory,
+  latestkeySecret,
+  infoConstantMap
+} = api
 
 export default {
   namespace: 'app',
@@ -131,15 +140,12 @@ export default {
       }
     },
     *base({ payload }, { call, put}) {
-      const constMap = yield request({
-        url: 'http://139.196.86.217:8088/info/constant/map',
-        method: 'post',
-        data: payload || { entity: {}}
-      })
-      if (constMap) {
+      const postData = payload || { entity: {}}
+      const constMap = yield call(infoConstantMap, postData)
+      if (constMap.success) {
           yield put({
             type: 'baseSuccess',
-            payload: constMap.data
+            payload: constMap.data.data
           })
       }
     },

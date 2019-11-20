@@ -97,22 +97,18 @@ export default modelExtend(pageModel, {
     },
 
     *update({ payload }, { select, call, put }) {
-      const id = yield select(({ sources }) => sources.currentItem.id)
-      const newUser = { ...payload, id }
-      // const data = yield call(updateUser, newUser)
-      const data = yield axios({
-        url: 'http://139.196.86.217:8088/info/site/update',
-        method: 'post',
-        headers: { 'content-type': 'application/json' },
-        data: JSON.stringify({
-          entity: newUser,
-        }),
+      const id = yield select(({ sources }) => sources.currentItem)
+      const postData = { ...payload, ...id }
+      console.log('postData', postData)
+      const data = yield call(sourceUpdate, {
+        entity: postData
       })
-      if (data.status === 200) {
+      // const data = yield call(updateUser, newUser)
+      if (data.success) {
         yield put({ type: 'query' })
         yield put({ type: 'hideModal' })
       } else {
-        throw data
+        throw data.message
       }
     },
     *delete({ payload }, { call, put, select }) {

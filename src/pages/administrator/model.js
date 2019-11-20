@@ -39,40 +39,29 @@ export default {
     *query({ payload = {} }, { call, put, select }) {
       const { searchForm, pagination } = yield select(_ => _.administrator);
       const { current, pageSize } = pagination
-      const data = yield call(queryCooperateList, {
+      const result = yield call(queryCooperateList, {
         pageSize: 10,
         pageNum: current,
         entity: {
           ...searchForm,
         }
       })
-      if (data) {
+      if (result.success) {
         yield put({
           type: 'querySuccess',
           payload: {
-            list: data.data,
+            list: result.data.data,
             pagination: {
               current,
               pageSize,
-              total: data.pageInfo.total,
+              total: result.data.pageInfo.total,
             },
           },
         })
       }
     },
     *create({ payload }, { call, put }) {
-      console.log('pd', payload)
       const data = yield call(createCooperate, payload)
-      // const data = yield axios({
-      //   url: 'http://139.196.86.217:8088/info/cooperate/add',
-      //   method: 'post',
-      //   headers: { 'content-type': 'application/json' },
-      //   data: JSON.stringify({
-      //     entity: {
-      //       ...payload,
-      //     },
-      //   }),
-      // })
       if (data.success) {
         yield put({ type: 'query' })
         yield put({ type: 'hideModal' })
