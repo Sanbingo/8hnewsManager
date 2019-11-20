@@ -10,7 +10,7 @@ module.exports = {
     await ReqWithAuth(req, res, '/info/empower/my');
   },
   [`POST ${ApiPrefix}/infoDocumentQueryList`]: async (req, res) => {
-    await ReqWithAuth(req, res, '/info/document/queryList', 'POST', { timeout: 60000 });
+    await ReqWithAuth(req, res, '/info/document/queryList', 'POST', { timeout: 10000 });
   },
   [`POST ${ApiPrefix}/infoDocumentDetail`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/document/detail');
