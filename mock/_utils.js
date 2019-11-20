@@ -126,7 +126,7 @@ const Apis = {
   test: url => `http://139.196.86.217:${TEST_PORT}${url}`
 }
 
-export const ReqWithAuth = (req, res, url, method='POST') => {
+export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
   const token = getCookieByName(req.headers.cookie, 'token')
   const username = getCookieByName(req.headers.cookie, 'username')
   const MakeApifix = Apis[env]
@@ -158,6 +158,7 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
     method,
     body: req.body,
     json: true,
+    timeout: options.timeout,
     headers: {
       'Authorization': authorization
     }
@@ -189,7 +190,9 @@ export const ReqWithAuth = (req, res, url, method='POST') => {
     logger.error(`Message: ${message}`)
     res.status(200).json({
       status: 1002,
-      message
+      message,
+      data: null,
+      success: false
     })
   })
 }

@@ -98,7 +98,7 @@ export default {
     *query(payload, { call, put, select }) {
       const { searchForm, pagination } = yield select(_ => _.posts)
       const { current, pageSize } = pagination
-      const { success, data} = yield call(infoDocumentQueryList, {
+      const result = yield call(infoDocumentQueryList, {
         pageSize,
           pageNum: current,
           entity: {
@@ -106,6 +106,7 @@ export default {
             ymd: searchForm.ymd && moment(searchForm.ymd).format('YYYY-MM-DD'),
           },
       })
+      const { success, data }  = result
       if (success) {
         let listTemp = data.data;
         let newIndex = [];
@@ -173,6 +174,8 @@ export default {
             },
           },
         })
+      } else {
+        message.warning(result.message)
       }
     },
     *base({ payload = {} }, { call, put }) {

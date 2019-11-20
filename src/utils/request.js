@@ -36,7 +36,7 @@ export default function request(options) {
   options.url = url
   options.data = cloneData
   options.method = method
-  options.timeout = 3000
+  // options.timeout = 3000
   options.headers = { 'content-type': 'application/json' }
   options.cancelToken = new CancelToken(cancel => {
     window.cancelRequest.set(Symbol(Date.now()), {
@@ -82,12 +82,12 @@ export default function request(options) {
       //   }
       // }
 
-      if (/timeout of/.test(String(message))) {
-        return {
-          success: false,
-          message: '请求超时，请稍后重试~'
-        }
-      }
+      // if (/timeout of/.test(String(message))) {
+      //   return {
+      //     success: false,
+      //     message: '请求超时，请稍后重试~'
+      //   }
+      // }
 
       let msg
       let statusCode

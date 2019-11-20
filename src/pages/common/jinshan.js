@@ -10,10 +10,11 @@ export const jinshanApi = (content) => {
         f: 'en',
         t: 'zh',
         w: content
-      }
+      },
+      timeout: 3000,
     }).then(data => {
       resolve(JSON.parse(data))
-    }).catch(err => {
+    }).catch(err => { 
       reject(err)
     })
   })

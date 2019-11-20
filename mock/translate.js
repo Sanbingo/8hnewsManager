@@ -89,7 +89,7 @@ module.exports = {
     })
   },
   [`POST ${ApiPrefix}/translate/so`](req, res) {
-    // 金山翻译
+    // 360翻译
     const { title, content } = req.body
     const contentArrTemp = contentPreSplit(content);
     const titleReq = soApi(title)
