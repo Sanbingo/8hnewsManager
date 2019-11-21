@@ -266,7 +266,7 @@ export default {
     },
     *detail({ payload }, { call, put, select }) {
       const { translateType } = yield select(_ => _.posts);
-      const isViewMode = store.get('userconfig').cooperateId === '10002'
+      const isViewMode = get(store.get('userconfig'), 'cooperateId') === '10002'
       if (payload) {
         const { success, data } = yield call(infoDocumentDetail, {
           entity: {

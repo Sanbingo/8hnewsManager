@@ -3,6 +3,7 @@ import { Page } from 'components'
 import { connect } from 'dva'
 import { Button, message } from 'antd'
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import { get } from 'lodash';
 import Filter from './components/filter'
 import List from './components/list'
 import Modal from './components/modal'
@@ -80,7 +81,7 @@ class Posts extends React.PureComponent {
   }
   renderModalHeader(){
     const { posts: { translation, detail={} } } = this.props
-    const isViewMode = store.get('userconfig').cooperateId === '10002'
+    const isViewMode = get(store.get('userconfig'), 'cooperateId') === '10002'
     const titleCopy = isViewMode ? detail.title : translation.title;
     const contentCopy = isViewMode ? detail.content : translation.content;
       return (

@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react'
 import { Table, Tag } from 'antd'
-import { isNil } from 'lodash'
+import { isNil, get } from 'lodash'
 import store from 'store'
 
 export default class ListComponent extends PureComponent {
@@ -56,7 +56,7 @@ export default class ListComponent extends PureComponent {
     title: '操作',
     width: 100,
     render: (text, {id}) => {
-      const isViewMode = store.get('userconfig').cooperateId === '10002'
+      const isViewMode = get(store.get('userconfig'), 'cooperateId') === '10002'
       return (
         <a onClick={() => {
           this.props.onHandleTranslate(id)
