@@ -215,7 +215,7 @@ export default {
         return
       }
       // 排版：图片居中对齐
-      const formatContent = content.replace(/<img.*?(?:>|\/>)/gi, (match) => `<p align='center'>${match}</p>`)
+      const formatContent = content.replace(/<img.*?(?:>|\/>)/gi, (match) => `<p align='center' style="display: 'flex'; justify-content: 'center'">${match}</p>`)
       const postData = {
         entity: {
           dstSiteId: dstInfo.value,

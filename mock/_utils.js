@@ -8,10 +8,10 @@ log4js.configure({
     cheese: {
       type: 'dateFile',
       filename: './logs/access.log',
-      pattern: '.yyyy-MM-dd-hh',
+      pattern: '.yyyy-MM-dd',
       maxLogSize: 10*1024*1024,
       compress: true,
-      backups: 25
+      backups: 5
     }
   },
   categories: {
@@ -129,6 +129,8 @@ const Apis = {
 export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
   const token = getCookieByName(req.headers.cookie, 'token')
   const username = getCookieByName(req.headers.cookie, 'username')
+  const userId = getCookieByName(req.headers.cookie, 'userId')
+  const cooperateId = getCookieByName(req.headers.cookie, 'cooperateId')
   const MakeApifix = Apis[env]
   const uri = MakeApifix(url)
   let authorization = ''
@@ -152,7 +154,7 @@ export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
     }
   }
   const startTime = new Date().getTime();
-  logger.info(`Request: [${username}] URL: ${uri}`)
+  logger.info(`Request: [${username}(${cooperateId}-${userId})] URL: ${uri}`)
   rp({
     uri,
     method,
@@ -165,7 +167,7 @@ export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
   }).then((data) => {
     const totalTime = new Date().getTime() - startTime;
     if (data && data.meta && data.meta.success) {
-      logger.info(`Success: [${username}] [${totalTime}ms] URL: ${uri}`)
+      logger.info(`Success: [${username}(${cooperateId}-${userId})] [${totalTime}ms] URL: ${uri}`)
       res.status(200).json({
         status: 0,
         data: data,
@@ -174,7 +176,7 @@ export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
       })
     } else {
       const message = data && data.meta && data.meta.message;
-      logger.error(`Failure: [${username}] [${totalTime}ms] URL: ${uri}`)
+      logger.error(`Failure: [${username}(${cooperateId}-${userId})] [${totalTime}ms] URL: ${uri}`)
       logger.error(`Message: ${message}`)
       res.status(200).json({
         status: 1002,
@@ -186,7 +188,7 @@ export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
   }).catch((err) => {
     const totalTime = new Date().getTime() - startTime;
     const message = err && err.message;
-    logger.error(`Failure: [${username}] [${totalTime}ms] URL: ${uri}`)
+    logger.error(`Failure: [${username}(${cooperateId}-${userId})] [${totalTime}ms] URL: ${uri}`)
     logger.error(`Message: ${message}`)
     res.status(200).json({
       status: 1002,

@@ -51,6 +51,8 @@ const contentPreSplit = (content) => {
 module.exports = {
   [`POST ${ApiPrefix}/translate/jinshan`](req, res) {
     const username = getCookieByName(req.headers.cookie, 'username')
+    const userId = getCookieByName(req.headers.cookie, 'userId')
+    const cooperateId = getCookieByName(req.headers.cookie, 'cooperateId')
     // 金山翻译
     const { title, content } = req.body
     const contentArrTemp = contentPreSplit(content);
@@ -59,7 +61,7 @@ module.exports = {
     const startTime = new Date().getTime();
     Promise.all([titleReq, ...contentArrReq]).then(([titleRes, ...contentRes]) => {
       const totalTime = new Date().getTime() - startTime;
-      logger.info(`Success: [${username}] [${totalTime}] ms`)
+      logger.info(`Success: [${username}(${cooperateId}-${userId})] [${totalTime}] ms`)
       res.status(200).json({
         data: {
           title: titleRes && titleRes.content && titleRes.content.out,
@@ -68,7 +70,7 @@ module.exports = {
       })
     }).catch((err) => {
       const totalTime = new Date().getTime() - startTime;
-      logger.error(`Failure: [${username}] [${totalTime}] ms`)
+      logger.error(`Failure: [${username}(${cooperateId}-${userId})] [${totalTime}] ms`)
       logger.error(`Message: ${err && err.message}`)
       // 金山API异常情况，返回空值，激活兜底策略。
       res.status(200).json({
