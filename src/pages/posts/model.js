@@ -169,6 +169,8 @@ export default {
           payload: {
             list: checkListCache,
             pagination: {
+              showTotal: total => `共 ${total} 条`,
+              showQuickJumper: true,
               current,
               pageSize,
               total: data.pageInfo.total,
