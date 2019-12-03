@@ -18,7 +18,7 @@ export const youdaoTranslate = (value, appkey, appSecret) => {
   const salt = (new Date).getTime();
   const query = value.length > MAX_CONTENT_LENGTH ? value.slice(0, MAX_CONTENT_LENGTH): value
   const str = APP_KEY+query+salt+APP_SECRET
-  const curTime = Math.round(new Date().getTime()/1000);
+  const curTime = Math.round(new Date().getTime());  // 接口salt+curtime来防重放（即一个请求不可以被请求2次）
   const params = {
     q: query,
     appKey: APP_KEY,

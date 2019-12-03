@@ -98,6 +98,11 @@ export default {
     },
     *query(payload, { call, put, select }) {
       const { searchForm, pagination } = yield select(_ => _.posts)
+      const { ymd } = searchForm;
+      if (isNil(ymd)) {
+        message.warning('请先选择日期再查询~');
+        return;
+      }
       const { current, pageSize } = pagination
       const result = yield call(infoDocumentQueryList, {
         pageSize,

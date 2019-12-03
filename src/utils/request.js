@@ -30,6 +30,7 @@ export default function request(options) {
     }
     url = domain + url
   } catch (e) {
+    console.log('src utils request', e.message)
     message.error(e.message)
   }
 
