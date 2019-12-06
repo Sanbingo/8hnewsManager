@@ -178,7 +178,7 @@ export default {
           yield put({
             type: 'detailSuccess',
             payload: {
-              detail: result.data
+              detail: result.data.data
             }
           })
           // 翻译操作，暂时注释，勿删
