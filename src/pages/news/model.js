@@ -17,7 +17,7 @@ export default modelExtend(pageModel, {
     filter: {},
     pagination: {
       current: 1,
-      pageSize: 20
+      pageSize: 200
     }
   },
 

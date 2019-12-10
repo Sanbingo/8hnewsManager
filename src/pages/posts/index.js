@@ -77,6 +77,12 @@ class Posts extends React.PureComponent {
           },
         })
       },
+      onHandleIgnore: (value) => {
+        dispatch({
+          type: 'posts/ignore',
+          payload: value || []
+        })
+      }
     }
   }
   renderModalHeader(){

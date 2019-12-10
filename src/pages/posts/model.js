@@ -21,7 +21,8 @@ const {
   infoConstantMap,
   infoEmpowerMy,
   infoDocumentQueryList,
-  infoDocumentDetail
+  infoDocumentDetail,
+  infoDocumentBatchMark
 } = api
 
 const processResultsByYoudaopay = (res=[]) => {
@@ -436,6 +437,18 @@ export default {
         message.warning('关键字不能为空！')
       }
     },
+    *ignore({ payload }, {call, put}) {
+      console.log('pd', payload)
+      const { data, success } = yield call(infoDocumentBatchMark, {
+        entities: payload
+      })
+      if (success) {
+        message.success('操作成功~')
+        yield put({
+          type: 'posts/query',
+        })
+      }
+    }
   },
   reducers: {
     showModal(state, { payload }) {

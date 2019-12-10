@@ -1,9 +1,12 @@
 import React, { PureComponent } from 'react'
-import { Table, Tag } from 'antd'
+import { Table, Tag, Button } from 'antd'
 import { isNil, get } from 'lodash'
 import store from 'store'
 
 export default class ListComponent extends PureComponent {
+  state={
+    selectedRowKeys: []
+  }
   columns = [{
     key: 'ymd',
     dataIndex: 'ymd',
@@ -64,16 +67,47 @@ export default class ListComponent extends PureComponent {
       );
     }
   }]
+  onSelectChange = selectedRowKeys => {
+    this.setState({ selectedRowKeys });
+  }
+  handleIgnore = () => {
+    const { selectedRowKeys } = this.state;
+    const { list, onHandleIgnore } = this.props;
+    
+    const postData = selectedRowKeys.map(item => ({
+      id: list[item].id,
+      spiderDetailBizStatus: 3,
+    }))
+    onHandleIgnore(postData || [])
+    this.setState({
+      selectedRowKeys:[]
+    })
+  }
   render() {
     const { list, pagination, onHandlePagination, loading } = this.props;
+    const { selectedRowKeys } = this.state;
+    const rowSelection = {
+      selectedRowKeys,
+      onChange: this.onSelectChange,
+    };
+    const hasSelected = selectedRowKeys.length > 0;
     return (
-      <Table
-        loading={loading.effects['posts/query']}
-        onChange={onHandlePagination}
-        pagination={pagination}
-        columns={this.columns}
-        dataSource={list}
-      />
+      <div>
+        {
+          hasSelected && <Button type="primary" style={{ marginBottom: '5px' }} onClick={this.handleIgnore} disabled={!hasSelected}>
+          忽略
+        </Button>
+        }
+        
+        <Table
+          loading={loading.effects['posts/query']}
+          onChange={onHandlePagination}
+          pagination={pagination}
+          columns={this.columns}
+          dataSource={list}
+          rowSelection={rowSelection}
+        />
+      </div>
     );
   }
 }

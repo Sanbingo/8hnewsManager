@@ -24,4 +24,7 @@ module.exports = {
   [`POST ${ApiPrefix}/infoSpiderResultDetail`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/spider/result/detail');
   },
+  [`POST ${ApiPrefix}/infoDocumentBatchMark`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/document/batch/mark');
+  },
 }

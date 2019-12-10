@@ -68,4 +68,6 @@ export default {
   infoSpiderResultGroupList: 'POST /infoSpiderResultGroupList',
   infoSpiderResultDetailList: 'POST /infoSpiderResultDetailList',
   infoSpiderResultDetail: 'POST /infoSpiderResultDetail',
+  infoDocumentBatchMark: 'POST /infoDocumentBatchMark',
+
 }

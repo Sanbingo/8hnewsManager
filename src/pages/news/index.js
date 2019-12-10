@@ -5,7 +5,8 @@ import { stringify } from 'qs'
 import { connect } from 'dva'
 import { Pagination } from 'antd'
 import Filter from './components/filter'
-import Card from './components/card'
+// import Card from './components/card'
+import List from './components/list'
 import Modal from './components/modal'
 
 @connect(({ news, loading }) => ({ news, loading }))
@@ -142,7 +143,8 @@ class NewsComponent extends React.Component {
     return (
       <Page inner>
         <Filter {...this.filterProps} />
-        <Card {...this.cardProps} />
+        {/* <Card {...this.cardProps} /> */}
+        <List {...this.cardProps} />
         <Modal {...this.modalProps} />
       </Page>
     )
