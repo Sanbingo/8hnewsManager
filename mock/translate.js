@@ -1,6 +1,7 @@
 import qs from 'querystring'
 import md5 from 'md5'
 import nodeJsonp from 'node-jsonp';
+import { trim } from 'lodash';
 import { Constant, getCookieByName } from './_utils'
 import { jinshanApi } from '../src/pages/common/jinshan';
 import { soApi } from '../src/pages/common/so';
@@ -34,7 +35,7 @@ const contentPreSplit = (content) => {
   const contentArr = content.split('\r\n');
   const contentArrTemp = []
   const MAX_LIMIT_LENGTH = 4900;
-  contentArr.filter(item => !!item).forEach(item => {
+  contentArr.filter(item => !!trim(item)).forEach(item => {
     // 针对单个段落超过5000个字符长度的处理
     if(item.length < MAX_LIMIT_LENGTH) {
       contentArrTemp.push(item)

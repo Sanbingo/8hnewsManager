@@ -1,7 +1,7 @@
 import api from 'api'
 import { pathMatchRegexp } from 'utils'
 import { message } from 'antd'
-import { isNil, isEmpty, get } from 'lodash'
+import { isNil, isEmpty, get, trim } from 'lodash'
 import moment from 'moment'
 import store from 'store';
 import { searchToObject } from '../common'
@@ -137,7 +137,7 @@ export default {
             return false
           })
           // 使用有道云翻译
-          const listArrReq = unTranslateList.filter(item => !!item.title).map(item => youdaoTranslate(item.title))
+          const listArrReq = unTranslateList.filter(item => !!trim(item.title)).map(item => youdaoTranslate(item.title))
           const [...listArrRes] = yield Promise.all([...listArrReq])
 
           // 有道云返回结果通用逻辑        
@@ -388,7 +388,7 @@ export default {
         // 正文翻译，由于正文篇幅过长，分段翻译
         const contentArr = detail.content.split('\r\n')
         const contentArrReq = contentArr
-          .filter(item => !!item)
+          .filter(item => !!trim(item))
           .map(item => youdaoTranslate(item, appId, encrypt))
         const [...contentRes] = yield Promise.all([...contentArrReq])
         // 针对正文内容：有道云返回结果通用逻辑   
