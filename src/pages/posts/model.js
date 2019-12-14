@@ -48,6 +48,7 @@ export default {
     searchForm: {
       ymd: moment().subtract(1, 'days'),
       spiderDetailBizStatus: '0',
+      wordCount: '150'
     },
     pagination: {
       current: 1,

@@ -4,6 +4,11 @@ import moment from 'moment';
 import { createOptions, arrayToMapObject } from '../../common/index'
 
 const FormItem = Form.Item
+const WORD_COUNT_MAP = {
+  150: '150个字以上',
+  250: '250个字以上',
+  500: '500个字以上'
+}
 
 class FilterComponent extends Component {
   handleSubmit = () => {
@@ -24,6 +29,9 @@ class FilterComponent extends Component {
         }} />)}</FormItem>
         <FormItem>
           {getFieldDecorator('siteDomain')(createOptions(siteDomains, '文章站点'))}
+        </FormItem>
+        <FormItem>
+          {getFieldDecorator('wordCount')(createOptions(WORD_COUNT_MAP, '文章字数'))}
         </FormItem>
         <FormItem>
           {getFieldDecorator('categoryId')(createOptions(categorymap, '文章类型'))}
@@ -57,6 +65,9 @@ export default Form.create({
       }),
       siteDomain: Form.createFormField({
         value: props.searchForm.siteDomain,
+      }),
+      wordCount: Form.createFormField({
+        value: props.searchForm.wordCount,
       }),
       categoryId: Form.createFormField({
         value: props.searchForm.categoryId,
