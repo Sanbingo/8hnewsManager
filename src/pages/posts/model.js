@@ -22,7 +22,8 @@ const {
   infoEmpowerMy,
   infoDocumentQueryList,
   infoDocumentDetail,
-  infoDocumentBatchMark
+  infoDocumentBatchMark,
+  translatePartial
 } = api
 
 const processResultsByYoudaopay = (res=[]) => {
@@ -115,6 +116,22 @@ export default {
           },
       })
       const { success, data }  = result
+      // 如果有道云不可用，使用金山词霸翻译
+      const jsResult = yield call(translatePartial, {list: data.data || []})
+      yield put({
+        type: 'querySuccess',
+        payload: {
+          list: data.data.map((item, index) => ({...item, translate: jsResult.data && jsResult.data[index]})),
+          pagination: {
+            showTotal: total => `共 ${total} 条`,
+            showQuickJumper: true,
+            current,
+            pageSize,
+            total: data.pageInfo.total,
+          },
+        },
+      })
+      /*
       if (success) {
         let listTemp = data.data;
         let newIndex = [];
@@ -187,6 +204,7 @@ export default {
       } else {
         message.warning(result.message)
       }
+      */
     },
     *base({ payload = {} }, { call, put }) {
       const data = yield call(queryBaseData, payload)
