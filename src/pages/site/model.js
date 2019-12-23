@@ -187,7 +187,7 @@ export default {
       const { employPagination, bindCurrentItem } = yield select(_ => _.site);
       const { current, pageSize } = employPagination
       const { data, success } = yield call(queryEmployeeList, {
-        pageSize: 10,
+        pageSize: 100,
         pageNum: current || 1,
       })
       if (success) {

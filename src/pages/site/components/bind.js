@@ -48,7 +48,7 @@ class SiteModal extends Component {
     };
     return (
       <Modal {...modalProps} onOk={this.handleOk}>
-        <Table rowSelection={rowSelection} columns={this.columns} dataSource={employees} />
+        <Table size="small" rowSelection={rowSelection} columns={this.columns} dataSource={employees} pagination={false} />
       </Modal>
     )
   }
