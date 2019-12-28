@@ -46,7 +46,7 @@ class SiteModal extends Component {
               ],
             })(<Input />)}
           </FormItem>
-          <FormItem label="站点地址">
+          <FormItem label="站点后台">
             {getFieldDecorator('dstSiteUrl', {
               initialValue: item.dstSiteUrl,
               rules: [
@@ -75,6 +75,27 @@ class SiteModal extends Component {
                 },
               ],
             })(<Input />)}
+          </FormItem>
+          <FormItem label="API 地址">
+            {getFieldDecorator('dstSiteSyncHost', {
+              initialValue: item.dstSiteSyncHost,
+              rules: [
+                {
+                  required: true,
+                },
+              ],
+            })(<Input placeholder="不用带协议" />)}
+          </FormItem>
+          <FormItem label="站点同步方式">
+            {getFieldDecorator('dstSiteSyncType', {
+              initialValue: item.dstSiteSyncType,
+              rules: [
+                {
+                  message: '请选择同步方式',
+                  required: true,
+                },
+              ],
+            })(createRadios({1: 'API同步', 0: '数据库同步'}))}
           </FormItem>
           </Col>
           <Col span={12}>
