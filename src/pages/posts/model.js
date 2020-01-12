@@ -360,6 +360,7 @@ export default {
       }
     },
     *translateByYoudao({ payload }, { call, put, select }) {
+      const { primary } = payload;
       const { detail } = yield select(_ => _.posts)
       const { keysecret={} } = yield select(_ => _.app)
       const { appId, encrypt, id } = keysecret
@@ -400,8 +401,8 @@ export default {
       }
 
       let content = []
-      // 如果翻译成功，且翻译返回内容不为空，则使用金山
-      if (statusCode === 200 && data.content && data.content.filter(item => item).length !== 0) {
+      // 如果翻译成功，且翻译返回内容不为空，则使用金山。PS 2020.01.12: primary为true，表示指定使用有道云翻译，忽略金山翻译
+      if (!primary && statusCode === 200 && data.content && data.content.filter(item => item).length !== 0) {
         content = data.content
       } else {
         // 正文翻译，由于正文篇幅过长，分段翻译

@@ -22,7 +22,7 @@ export const youdaoTranslate = (value, appkey, appSecret) => {
   const params = {
     q: query,
     appKey: APP_KEY,
-    from: 'en',
+    from: 'auto',
     to: 'zh-CHS',
     sign: md5(str),
     salt,

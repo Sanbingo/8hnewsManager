@@ -86,7 +86,7 @@ class Posts extends React.PureComponent {
     }
   }
   renderModalHeader(){
-    const { posts: { translation, detail={} } } = this.props
+    const { dispatch, posts: { translation, detail={} } } = this.props
     const isViewMode = get(store.get('userconfig'), 'cooperateId') === '10002'
     const titleCopy = isViewMode ? detail.title : translation.title;
     const contentCopy = isViewMode ? detail.content : translation.content;
@@ -94,18 +94,16 @@ class Posts extends React.PureComponent {
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>{isViewMode ? '查看': '翻译'}</div>
           <div style={{ marginRight: '50px' }}>
-            <CopyToClipboard text={titleCopy} style={{ marginRight: '5px' }}
-              onCopy={() => message.success('复制成功~')}>
-              <Button>
-                标题复制
-              </Button>
-            </CopyToClipboard>
-            <CopyToClipboard text={contentCopy}
-              onCopy={() => message.success('复制成功~')}>
-              <Button>
-                内容复制
-              </Button>
-            </CopyToClipboard>
+            <Button onClick={() => {
+              dispatch({
+                type: 'posts/translateByYoudao',
+                payload: {
+                  primary: true
+                },
+              })
+            }}>
+                手动翻译
+            </Button>
           </div>
         </div>
       );
