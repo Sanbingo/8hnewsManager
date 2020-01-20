@@ -3,6 +3,7 @@ import { Form, Button, DatePicker, Input } from 'antd'
 import moment from 'moment';
 import { createOptions, arrayToMapObject } from '../../common/index'
 
+const { RangePicker } = DatePicker
 const FormItem = Form.Item
 const WORD_COUNT_MAP = {
   150: '150个字以上',
@@ -24,7 +25,7 @@ class FilterComponent extends Component {
     const categorymap = arrayToMapObject(empower.categories, 'categoryId', 'categoryName');
     return (
       <Form layout="inline" onSubmit={this.handleSubmit}>
-        <FormItem>{getFieldDecorator('ymd')(<DatePicker disabledDate={(date) => {
+        <FormItem>{getFieldDecorator('ymd')(<RangePicker disabledDate={(date) => {
           return date < moment().subtract(30, "days")
         }} />)}</FormItem>
         <FormItem>

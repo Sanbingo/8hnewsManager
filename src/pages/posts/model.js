@@ -47,7 +47,7 @@ export default {
     modalVisible: false,
     translation: {},
     searchForm: {
-      ymd: moment().subtract(1, 'days'),
+      ymd: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
       spiderDetailBizStatus: '0',
       wordCount: '150'
     },
@@ -101,18 +101,36 @@ export default {
     },
     *query(payload, { call, put, select }) {
       const { searchForm, pagination } = yield select(_ => _.posts)
-      const { ymd } = searchForm;
+      const {
+        ymd,
+        spiderDetailBizStatus,
+        siteDomain,
+        wordCount,
+        categoryId,
+      } = searchForm;
       if (isNil(ymd)) {
         message.warning('请先选择日期再查询~');
         return;
       }
+      // 日期范围不能超过7天
+      if ((searchForm.ymd[1]).diff(searchForm.ymd[0], 'days') > 6) {
+        message.warning('日期范围不能超过7天，请重新选择~')
+        return;
+      }
+      const startTime = searchForm.ymd && moment(searchForm.ymd[0]).format('YYYY-MM-DD')
+      const endTime = searchForm.ymd && moment(searchForm.ymd[1]).format('YYYY-MM-DD')
+
       const { current, pageSize } = pagination
       const result = yield call(infoDocumentQueryList, {
         pageSize,
           pageNum: current,
           entity: {
-            ...searchForm,
-            ymd: searchForm.ymd && moment(searchForm.ymd).format('YYYY-MM-DD'),
+            spiderDetailBizStatus,
+            siteDomain,
+            wordCount,
+            categoryId,
+            startTime,
+            endTime
           },
       })
       const { success, data }  = result

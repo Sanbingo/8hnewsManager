@@ -122,8 +122,12 @@ class Posts extends React.PureComponent {
       );
   }
   setQuillEditortDefaultStatus = () => {
-    let quill = this.refs.postmodal.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
-    quill.setSelection(0) //关闭发布对话框把光标置为0
+    try {
+      let quill = this.refs.postmodal.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
+      quill.setSelection(0) //关闭发布对话框把光标置为0
+    } catch(e) {
+      message.warning('看到这条消息请截图发给我，谢谢！', e)
+    }    
   }
   getQuillContentByText = () => {
     let quill = this.refs.postmodal.refs.quillEditRef.refs.reactQuillRef.getEditor() //获取到编辑器本身
