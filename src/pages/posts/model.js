@@ -123,15 +123,15 @@ export default {
       const { current, pageSize } = pagination
       const result = yield call(infoDocumentQueryList, {
         pageSize,
-          pageNum: current,
-          entity: {
-            spiderDetailBizStatus,
-            siteDomain,
-            wordCount,
-            categoryId,
-            startTime,
-            endTime
-          },
+        pageNum: current,
+        startTime,
+        endTime,
+        entity: {
+          spiderDetailBizStatus,
+          siteDomain,
+          wordCount,
+          categoryId
+        },
       })
       const { success, data }  = result
       // 如果有道云不可用，使用金山词霸翻译
