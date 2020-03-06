@@ -97,6 +97,17 @@ class SiteModal extends Component {
               ],
             })(createRadios({1: 'API同步', 0: '数据库同步'}))}
           </FormItem>
+          <FormItem label="站点类型">
+            {getFieldDecorator('dstSiteType', {
+              initialValue: item.dstSiteType,
+              rules: [
+                {
+                  message: '请选择站点类型',
+                  required: true,
+                },
+              ],
+            })(createRadios({1: 'phpcms', 2: '文案系统'}))}
+          </FormItem>
           </Col>
           <Col span={12}>
           <FormItem label="数据库用户名">
