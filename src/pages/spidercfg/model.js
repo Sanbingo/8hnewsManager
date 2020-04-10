@@ -42,8 +42,9 @@ export default {
       const { data, success } = yield call(querySpiderCfgList, {
         pageSize: 10,
         pageNum: current,
+        queryKey: searchForm.queryKey,
         entity: {
-          ...searchForm,
+          categoryId: searchForm.categoryId,
         }
       })
       if (success) {

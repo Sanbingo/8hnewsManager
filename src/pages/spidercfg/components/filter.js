@@ -14,8 +14,8 @@ class FilterComponent extends PureComponent {
     return (
       <Form layout="inline" style={{ marginBottom: "10px" }}>
         <FormItem>
-          {getFieldDecorator('siteSourceId')(
-            <Input placeholder="源站点ID" />
+          {getFieldDecorator('queryKey')(
+            <Input placeholder="关键字搜索" />
           )}
         </FormItem>
         <FormItem>
@@ -37,8 +37,8 @@ export default Form.create({
   },
   mapPropsToFields: (props) => {
     return {
-      siteSourceId: Form.createFormField({
-        value: props.searchForm.siteSourceId
+      queryKey: Form.createFormField({
+        value: props.searchForm.queryKey
       }),
       categoryId: Form.createFormField({
         value: props.searchForm.categoryId
