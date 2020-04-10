@@ -9,4 +9,7 @@ module.exports = {
   [`POST ${ApiPrefix}/employee`]: async (req, res) => {
     await ReqWithAuth(req, res, '/info/user/create');
   },
+  [`POST ${ApiPrefix}/employeeDelete`]: async (req, res) => {
+    await ReqWithAuth(req, res, '/info/user/remove');
+  },
 }

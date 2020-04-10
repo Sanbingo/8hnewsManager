@@ -45,6 +45,7 @@ export default {
   createSpiderCfg: 'POST /spider',
   queryEmployeeList: 'POST /employees',
   createEmployee: 'POST /employee',
+  deleteEmployee: 'POST /employeeDelete',
   querySiteList: 'POST /sites',
   mySiteList: 'POST /mySites',
   createSite: 'POST /site',

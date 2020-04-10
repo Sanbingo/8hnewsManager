@@ -1,6 +1,6 @@
 import { pathMatchRegexp } from 'utils'
 import api from 'api'
-const  { queryEmployeeList, createEmployee } = api
+const  { queryEmployeeList, createEmployee, deleteEmployee } = api
 
 export default {
   namespace: 'employee',
@@ -66,6 +66,16 @@ export default {
       if (success) {
         yield put({ type: 'query' })
         yield put({ type: 'hideModal' })
+      } else {
+        throw data
+      }
+    },
+    *delete({ payload }, { call, put }) {
+      const {data, success} = yield call(deleteEmployee, {
+        entity: { ...payload }
+      })
+      if (success) {
+        yield put({ type: 'query' })
       } else {
         throw data
       }

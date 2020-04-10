@@ -17,7 +17,7 @@ class ListComponent extends PureComponent {
       confirm({
         title: i18n.t`Are you sure delete this record?`,
         onOk() {
-          onDeleteItem(record.id)
+          onDeleteItem({ id: record.id })
         },
       })
     }
@@ -62,17 +62,15 @@ class ListComponent extends PureComponent {
     dataIndex: 'operator',
     title: '操作',
     render: (text, record) => {
-      return '-'
-      // 暂不开放操作
-      // return (
-      //   <DropOption
-      //     onMenuClick={e => this.handleMenuClick(record, e)}
-      //     menuOptions={[
-      //       { key: '1', name: '编辑' },
-      //       { key: '2', name: '删除' },
-      //     ]}
-      //   />
-      // )
+      return (
+        <DropOption
+          onMenuClick={e => this.handleMenuClick(record, e)}
+          menuOptions={[
+            // { key: '1', name: '编辑' },
+            { key: '2', name: '删除' },
+          ]}
+        />
+      )
     }
   }]
   render() {
