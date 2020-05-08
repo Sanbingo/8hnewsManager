@@ -172,7 +172,7 @@ module.exports = {
   [`POST ${ApiPrefix}/user/login`](req, res) {
     const { username, password } = req.body
     rp({
-      uri: 'http://139.196.86.217:8088/info/test/auth/login',
+      uri: 'http://39.107.57.75:8088/info/test/auth/login',
       method: 'POST',
       body: {
         userAcc: username,

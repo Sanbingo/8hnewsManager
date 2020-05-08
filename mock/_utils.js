@@ -118,12 +118,12 @@ export const getCookieByName = (cookie, name) => {
   return result.value
 }
 
-const PROD_PORT = 8089;
+const PROD_PORT = 8088;
 const TEST_PORT = 8088;
 const env = 'test' ; // prod or test
 const Apis = {
-  prod: url => `http://139.196.86.217:${PROD_PORT}${url}`,
-  test: url => `http://139.196.86.217:${TEST_PORT}${url}`
+  prod: url => `http://39.107.57.75:${PROD_PORT}${url}`,
+  test: url => `http://39.107.57.75:${TEST_PORT}${url}`
 }
 
 export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
