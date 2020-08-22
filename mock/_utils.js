@@ -137,7 +137,7 @@ export const ReqWithAuth = (req, res, url, method='POST', options={}) => {
   if (!token){
     return res.status(401).json({
       status: 401,
-      message: '登录信息已过期，请重新登录',
+      message: '登录信息已过期，请重新登录~',
       data: null
     })
   } else {
